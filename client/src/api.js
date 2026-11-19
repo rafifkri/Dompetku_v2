@@ -1,6 +1,9 @@
 // Dua mode:
 //  - Normal  : memanggil backend Express (/api/...)
-//  - Statis  : (VITE_STATIC=true, mis. GitHub Pages) meniru API yang sama memakai localStorage browser
+//  - Supabase: penyimpanan cloud dan akun lintas perangkat
+//  - Statis  : fallback localStorage browser jika Supabase belum dikonfigurasi
+import { supabase } from './supabase';
+
 export const STATIC = import.meta.env.VITE_STATIC === 'true';
 const API_BASE = (import.meta.env.VITE_API_URL || '').replace(/\/+$/, '');
 const TOKEN_KEY = 'dompetku_token_v2';
@@ -64,8 +67,101 @@ function local(url, method, b) {
   return { ok: true };
 }
 
+const userOrThrow = async () => {
+  const { data, error } = await supabase.auth.getUser();
+  if (error || !data.user) throw new Error('Login diperlukan');
+  return data.user;
+};
+const profileShape = (p) => ({
+  id: p.id, name: p.name, email: p.email, bio: p.bio || '', photo: p.photo || '', cover: p.cover || '',
+  photoScale: p.photo_scale || 1, photoX: p.photo_x || 0, photoY: p.photo_y || 0,
+  coverScale: p.cover_scale || 1, coverX: p.cover_x || 0, coverY: p.cover_y || 0,
+});
+const cloud = async (url, method = 'GET', b) => {
+  if (url === '/api/auth/register' && method === 'POST') {
+    const { data, error } = await supabase.auth.signUp({ email: b.email.trim().toLowerCase(), password: b.password, options: { data: { name: b.name.trim() } } });
+    if (error || !data.user || !data.session) throw new Error(error?.message || 'Konfirmasi email Supabase diperlukan');
+    await supabase.from('profiles').upsert({ id: data.user.id, email: data.user.email, name: b.name.trim() });
+    return { token: data.session.access_token, user: { id: data.user.id, name: b.name.trim(), email: data.user.email, bio: '', photo: '', cover: '' } };
+  }
+  if (url === '/api/auth/login' && method === 'POST') {
+    const { data, error } = await supabase.auth.signInWithPassword({ email: b.email.trim().toLowerCase(), password: b.password });
+    if (error || !data.session) throw new Error(error?.message || 'Login gagal');
+    const p = await cloud('/api/profile');
+    return { token: data.session.access_token, user: p };
+  }
+  if (url === '/api/auth/me') {
+    const p = await cloud('/api/profile');
+    return { user: p };
+  }
+  if (url === '/api/auth/logout') { await supabase.auth.signOut(); return { ok: true }; }
+  if (url === '/api/profile' && method === 'GET') {
+    const user = await userOrThrow();
+    const { data, error } = await supabase.from('profiles').select('*').eq('id', user.id).single();
+    if (error) throw error;
+    return profileShape(data);
+  }
+  if (url === '/api/profile' && method === 'PUT') {
+    const user = await userOrThrow();
+    const p = { id: user.id, name: b.name.trim(), email: b.email.trim().toLowerCase(), bio: b.bio || '', photo: b.photo || '', cover: b.cover || '', photo_scale: b.photoScale || 1, photo_x: b.photoX || 0, photo_y: b.photoY || 0, cover_scale: b.coverScale || 1, cover_x: b.coverX || 0, cover_y: b.coverY || 0 };
+    const { data, error } = await supabase.from('profiles').upsert(p).select().single();
+    if (error) throw error;
+    return profileShape(data);
+  }
+  const user = await userOrThrow();
+  if (url === '/api/data' && method === 'GET') {
+    const [{ data: tx, error: txError }, { data: settings, error: settingsError }] = await Promise.all([
+      supabase.from('transactions').select('id,ts,type,amount,cat,sub,date,desc,method').eq('user_id', user.id).order('date', { ascending: false }),
+      supabase.from('settings').select('key,value').eq('user_id', user.id),
+    ]);
+    if (txError || settingsError) throw txError || settingsError;
+    const s = Object.fromEntries(settings.map((x) => [x.key, x.value]));
+    return { tx: tx || [], saldoAwal: s.saldoAwal || 0, budget: s.budget || {}, cats: s.cats || null };
+  }
+  if (url === '/api/tx' && method === 'POST') {
+    const r = cleanTransaction(b);
+    const { error } = await supabase.from('transactions').upsert({ ...r, user_id: user.id });
+    if (error) throw error;
+    return { ok: true };
+  }
+  if (url.startsWith('/api/tx/') && method === 'DELETE') {
+    const { error } = await supabase.from('transactions').delete().eq('user_id', user.id).eq('id', decodeURIComponent(url.slice(8)));
+    if (error) throw error;
+    return { ok: true };
+  }
+  if (url === '/api/settings' && method === 'PUT') {
+    const rows = [['saldoAwal', Math.max(0, Number(b.saldoAwal) || 0)], ['budget', b.budget || {}]];
+    if (b.cats) rows.push(['cats', b.cats]);
+    const { error } = await supabase.from('settings').upsert(rows.map(([key, value]) => ({ user_id: user.id, key, value })));
+    if (error) throw error;
+    return { ok: true };
+  }
+  if (url === '/api/rename' && method === 'POST') {
+    const { data, error } = await supabase.from('transactions').select('id,cat').eq('user_id', user.id).eq('type', b.type).eq('cat', b.from);
+    if (error) throw error;
+    await Promise.all(data.map((t) => supabase.from('transactions').update({ cat: b.to }).eq('user_id', user.id).eq('id', t.id)));
+    return { ok: true };
+  }
+  if (url === '/api/restore' && method === 'POST') {
+    await supabase.from('transactions').delete().eq('user_id', user.id);
+    const rows = b.tx.map((t) => ({ ...cleanTransaction(t), user_id: user.id }));
+    if (rows.length) await supabase.from('transactions').insert(rows);
+    await supabase.from('settings').upsert([['saldoAwal', b.saldoAwal || 0], ['budget', b.budget || {}], ['cats', b.cats]].map(([key, value]) => ({ user_id: user.id, key, value })));
+    return { ok: true };
+  }
+  throw new Error('Endpoint tidak dikenal');
+};
+
+const cleanTransaction = (b) => {
+  const amount = Math.round(Number(b.amount));
+  if (!b.id || !['income', 'expense'].includes(b.type) || !(amount > 0) || !/^\d{4}-\d{2}-\d{2}$/.test(b.date) || !b.cat) throw new Error('Data tidak valid');
+  return { id: b.id, ts: Number(b.ts) || Date.now(), type: b.type, amount, cat: String(b.cat), sub: String(b.sub || ''), date: b.date, desc: String(b.desc || '').slice(0, 120), method: String(b.method || 'Cash') };
+};
+
 export const api = (url, method = 'GET', body) =>
-  STATIC
+  supabase
+    ? Promise.resolve().then(() => cloud(url, method, body))
+    : STATIC
     ? Promise.resolve().then(() => local(url, method, body))
     : fetch(API_BASE + url, {
         method,

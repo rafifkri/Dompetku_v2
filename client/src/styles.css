@@ -310,7 +310,8 @@ canvas { max-height: 280px }
 
 .profile-layout { display: grid; grid-template-columns: minmax(250px, .7fr) minmax(360px, 1.3fr); gap: 18px }
 .profile-hero { position: relative; overflow: hidden; padding: 0 24px 24px }
-.profile-cover { width: calc(100% + 48px); height: 124px; margin: 0 -24px; padding: 0; background: radial-gradient(circle at 75% 20%, rgba(102, 158, 255, .5), transparent 28%), linear-gradient(135deg, #080b14, #1d4d82); background-position: center; background-size: cover; position: relative }
+.profile-cover { width: calc(100% + 48px); height: 124px; margin: 0 -24px; padding: 0; overflow: hidden; background: radial-gradient(circle at 75% 20%, rgba(102, 158, 255, .5), transparent 28%), linear-gradient(135deg, #080b14, #1d4d82); background-position: center; background-size: cover; position: relative }
+.profile-cover-image { position: absolute; inset: -20%; width: 140%; height: 140%; max-width: none; object-fit: cover; transform-origin: center; pointer-events: none }
 .profile-identity { display: flex; align-items: end; gap: 14px; margin-top: -40px; position: relative }
 .profile-avatar-large { width: 88px; height: 88px; border: 4px solid var(--card); font-size: 30px; cursor: pointer; position: relative }
 .avatar-edit { position: absolute; right: -3px; bottom: -2px; width: 25px; height: 25px; display: grid; place-items: center; border-radius: 50%; background: var(--pri); color: var(--onpri); font-size: 18px; line-height: 1 }
@@ -326,6 +327,23 @@ canvas { max-height: 280px }
 .profile-section-heading p { margin: 0 }
 .save-state { color: var(--em); font-size: 13px; font-weight: 700 }
 .profile-actions { display: flex; gap: 10px; margin-top: 20px }
+.image-adjuster-backdrop { position: fixed; inset: 0; z-index: 30; display: grid; place-items: center; padding: 20px; background: rgba(2, 5, 12, .76); backdrop-filter: blur(8px) }
+.image-adjuster { width: min(430px, 100%); padding: 20px; border: 1px solid var(--line); border-radius: 20px; background: var(--card); box-shadow: var(--sh) }
+.image-adjuster-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px }
+.image-adjuster-head h2 { margin: 0 }
+.image-adjuster-frame { height: 220px; overflow: hidden; display: grid; place-items: center; border-radius: 14px; background: var(--card-soft); cursor: grab; touch-action: none }
+.image-adjuster-frame.round { width: 220px; margin: 0 auto; border-radius: 50% }
+.image-adjuster-frame:active { cursor: grabbing }
+.image-adjuster-frame img { width: 100%; height: 100%; max-width: none; object-fit: cover; pointer-events: none; user-select: none }
+.image-adjuster label { margin-top: 18px }
+.image-adjuster input[type="range"] { padding: 0; accent-color: var(--em) }
+.profile-main { max-width: none; min-height: 100vh; padding: 0 0 40px }
+.profile-main .top { padding: 28px 36px 24px; margin-bottom: 0 }
+.profile-main .profile-layout { min-height: calc(100vh - 105px); grid-template-columns: minmax(300px, .8fr) minmax(420px, 1.2fr); gap: 0; align-items: stretch }
+.profile-main .profile-hero, .profile-main .profile-form { border-radius: 0; box-shadow: none }
+.profile-main .profile-hero { min-height: calc(100vh - 105px); padding: 0 32px 32px; border-left: 0; border-right: 1px solid var(--line); border-bottom: 0 }
+.profile-main .profile-cover { width: calc(100% + 64px); height: clamp(190px, 30vh, 280px); margin-left: -32px; margin-right: -32px }
+.profile-main .profile-form { padding: 36px 48px; border-left: 0; border-right: 0; border-bottom: 0 }
 
 @media (max-width: 860px) {
   .top-actions { width: 100%; justify-content: space-between }
@@ -339,5 +357,10 @@ canvas { max-height: 280px }
   .auth-form-wrap { padding: 0 16px 30px; margin-top: -18px; position: relative }
   .auth-form { padding: 28px 22px }
   .auth-mobile-logo { display: none }
-  .profile-layout { grid-template-columns: 1fr }
+  .profile-main { padding-bottom: 86px }
+  .profile-main .top { padding: 20px 16px }
+  .profile-main .profile-layout { min-height: auto; grid-template-columns: 1fr; gap: 0 }
+  .profile-main .profile-hero { min-height: auto; padding: 0 24px 24px; border-right: 0; border-bottom: 1px solid var(--line) }
+  .profile-main .profile-form { padding: 28px 22px; border-radius: 0 }
+  .profile-main .profile-cover { width: calc(100% + 48px); height: 190px; margin-left: -24px; margin-right: -24px }
 }

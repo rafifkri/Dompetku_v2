@@ -400,17 +400,27 @@ pm2 save && pm2 startup
 
 Letakkan Nginx atau Caddy di depannya untuk HTTPS.
 
-### GitHub Pages (gratis, penyimpanan lokal)
+### GitHub Pages + Supabase Free (sinkron antar perangkat)
 
-GitHub Pages hanya menyajikan frontend statis. Mode GitHub Pages memakai `localStorage`, sehingga login, profil, foto, dan data keuangan tersimpan di browser masing-masing perangkat.
+GitHub Pages menyajikan frontend secara gratis. Jika variable Supabase diisi, akun, profil, foto, background, transaksi, budget, dan kategori disimpan di Supabase sehingga laptop dan HP dapat memakai data yang sama. Jika variable belum diisi, aplikasi otomatis memakai `localStorage` sebagai fallback lokal.
 
-Deploy otomatis sudah disiapkan di `.github/workflows/pages.yml`:
+#### Setup Supabase
 
-1. Push proyek ke GitHub (branch `master` atau `main`).
-2. Buka **Settings → Pages → Build and deployment → Source: GitHub Actions**.
-3. Setiap push akan membangun dan men-deploy aplikasi secara gratis.
+1. Buat project baru di Supabase.
+2. Buka **SQL Editor**, lalu jalankan isi [supabase/schema.sql](./supabase/schema.sql).
+3. Di **Authentication → Providers → Email**, nonaktifkan *Confirm email* untuk login langsung setelah registrasi.
+4. Salin **Project URL** dan **anon public key** dari **Project Settings → API**.
+5. Di GitHub, buka **Settings → Secrets and variables → Actions → Variables**, lalu buat:
 
-Catatan: data di GitHub Pages tidak tersinkron antar perangkat. Gunakan backup JSON dari menu Pengaturan jika ingin memindahkan data.
+   ```text
+   VITE_SUPABASE_URL=https://project-id.supabase.co
+   VITE_SUPABASE_ANON_KEY=eyJ...
+   ```
+
+6. Buka **Settings → Pages → Build and deployment → Source: GitHub Actions**.
+7. Push ke branch `master` atau `main`. Workflow `.github/workflows/pages.yml` akan membangun frontend dengan Supabase.
+
+Supabase Free memiliki kuota penggunaan, tetapi tidak membutuhkan Railway. Foto dibatasi 2 MB per file dan disimpan sebagai data profil.
 
 Untuk menjalankan mode static lokal tanpa backend (PowerShell):
 
@@ -420,6 +430,8 @@ $env:VITE_STATIC="true"; $env:VITE_BASE="/Dompetku/"
 npm run build
 npm run preview
 ```
+
+Untuk memakai Supabase saat build lokal, gunakan `VITE_SUPABASE_URL` dan `VITE_SUPABASE_ANON_KEY` sebagai environment variable. Jangan masukkan service role key ke frontend.
 
 ### Platform PaaS (Railway, Render, Fly.io, dan sejenisnya)
 - Build command: `npm run install:all && npm run build`
@@ -442,7 +454,7 @@ npm run preview
 ## 15. Keamanan
 
 - Mode normal memakai akun, password hash, token sesi, dan data transaksi terpisah per pengguna.
-- Mode GitHub Pages memakai `localStorage`; data hanya tersedia di browser/perangkat yang sama dan tidak boleh dianggap sebagai penyimpanan cloud.
+- Jika variable Supabase belum diisi, mode GitHub Pages memakai `localStorage`; data hanya tersedia di browser/perangkat yang sama.
 - Jika mode normal diakses dari internet, gunakan **HTTPS**. `APP_PASSWORD` adalah Basic Auth tambahan dan tidak boleh diaktifkan bersamaan dengan login aplikasi tanpa penyesuaian frontend.
 - Query database memakai prepared statement, sehingga aman dari SQL injection. Teks yang tampil di UI di-escape oleh React.
 - Backend memvalidasi ulang semua input, tidak hanya mengandalkan validasi di browser.
@@ -466,16 +478,14 @@ npm run preview
 ## 17. Batasan yang Diketahui dan Pengembangan Lanjutan
 
 **Batasan saat ini**
-- Mode GitHub Pages tidak menyinkronkan data antar perangkat.
-- Password dan profil pada mode static hanya berlaku di browser lokal.
+- Fallback static tidak menyinkronkan data antar perangkat. Dengan Supabase Free, data akun dapat digunakan lintas perangkat.
+- Supabase Free memiliki batas kuota dan foto profil disimpan sebagai data profil dengan batas 2 MB per file.
 - Budget berlaku sama untuk semua bulan (belum ada budget terpisah per bulan).
 - Belum ada pengujian otomatis (unit atau end-to-end).
 
 **Ide pengembangan**
-- Sinkronisasi akun static ke backend cloud.
 - Budget per bulan dan transaksi berulang (langganan, cicilan).
 - Target tabungan dan notifikasi budget.
-- Migrasi ke PostgreSQL atau Supabase untuk penggunaan multi-perangkat dengan banyak pengguna.
 - Impor transaksi dari CSV atau mutasi bank, serta dukungan upload struk.
 - Pengujian dengan Vitest dan Playwright.
 

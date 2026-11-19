@@ -25,7 +25,7 @@ function Shell({ profile, onLogout, onProfileChange }) {
   return (
     <>
       <Sidebar view={view} onNav={(v) => (v === 'add' ? setForm({}) : setView(v))} />
-      <main>
+      <main className={view === 'prof' ? 'profile-main' : ''}>
         <div className="top">
           <div><h1>{title}</h1><div className="sub">{BLN[m - 1]} {y}</div></div>
           <div className="top-actions">

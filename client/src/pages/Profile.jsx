@@ -5,6 +5,7 @@ export default function Profile({ onLogout, onProfileChange }) {
   const [form, setForm] = useState(null);
   const [saved, setSaved] = useState(false);
   const [showPicker, setShowPicker] = useState(false);
+  const [editor, setEditor] = useState(null);
   const fileRef = useRef();
   const coverRef = useRef();
   useEffect(() => { api('/api/profile').then(setForm).catch(() => setForm({ name: '', email: '', bio: '', photo: '' })); }, []);
@@ -27,20 +28,28 @@ export default function Profile({ onLogout, onProfileChange }) {
     if (!file.type.startsWith('image/')) return;
     if (file.size > 2 * 1024 * 1024) return setSaved('Foto maksimal 2 MB.');
     const reader = new FileReader();
-    reader.onload = () => { setForm((p) => ({ ...p, [field]: reader.result })); setShowPicker(false); };
+    reader.onload = () => {
+      const prefix = field === 'photo' ? 'photo' : 'cover';
+      setEditor({ field, src: reader.result, scale: form[`${prefix}Scale`] || 1, x: form[`${prefix}X`] || 0, y: form[`${prefix}Y`] || 0 });
+      setShowPicker(false);
+    };
     reader.readAsDataURL(file);
   };
 
   if (!form) return <div className="empty">Memuat profil…</div>;
   const initials = (form.name || form.email || '?').slice(0, 1).toUpperCase();
+  const applyEditor = () => {
+    const prefix = editor.field === 'photo' ? 'photo' : 'cover';
+    setForm((p) => ({ ...p, [editor.field]: editor.src, [`${prefix}Scale`]: editor.scale, [`${prefix}X`]: editor.x, [`${prefix}Y`]: editor.y }));
+    setEditor(null);
+  };
   return (
     <div className="profile-layout">
       <section className="card profile-hero">
-        <div className="profile-cover" style={form.cover ? { backgroundImage: `linear-gradient(90deg, rgba(5, 8, 18, .64), rgba(30, 82, 145, .28)), url(${form.cover})` } : undefined}>
-        </div>
+        <div className="profile-cover">{form.cover && <img className="profile-cover-image" src={form.cover} alt="" style={{ transform: `translate(${form.coverX || 0}px, ${form.coverY || 0}px) scale(${form.coverScale || 1})` }} />}</div>
         <div className="profile-identity">
           <button className="profile-avatar profile-avatar-large" type="button" onClick={() => setShowPicker((p) => !p)} aria-label="Ubah foto atau background profil" aria-expanded={showPicker}>
-            {form.photo ? <img src={form.photo} alt="Foto profil" /> : initials}
+            {form.photo ? <img src={form.photo} alt="Foto profil" style={{ transform: `translate(${form.photoX || 0}px, ${form.photoY || 0}px) scale(${form.photoScale || 1})` }} /> : initials}
             <span className="avatar-edit">+</span>
           </button>
           {showPicker && <div className="profile-picker-menu">
@@ -60,6 +69,27 @@ export default function Profile({ onLogout, onProfileChange }) {
         <label>Tentang kamu<textarea rows={4} value={form.bio} onChange={(e) => setForm({ ...form, bio: e.target.value })} placeholder="Ceritakan sedikit tentang dirimu..." /></label>
         <div className="profile-actions"><button className="btn" type="submit">Simpan perubahan</button><button className="btn g" type="button" onClick={onLogout}>Keluar</button></div>
       </form>
+      {editor && <ImageAdjuster editor={editor} setEditor={setEditor} onApply={applyEditor} />}
+    </div>
+  );
+}
+
+function ImageAdjuster({ editor, setEditor, onApply }) {
+  const drag = useRef(null);
+  const move = (e) => {
+    if (!drag.current) return;
+    setEditor((p) => ({ ...p, x: drag.current.x + e.clientX - drag.current.clientX, y: drag.current.y + e.clientY - drag.current.clientY }));
+  };
+  return (
+    <div className="image-adjuster-backdrop">
+      <div className="image-adjuster">
+        <div className="image-adjuster-head"><h2>Atur {editor.field === 'photo' ? 'avatar' : 'background'}</h2><button className="btn g s" type="button" onClick={() => setEditor(null)}>×</button></div>
+        <div className={'image-adjuster-frame ' + (editor.field === 'photo' ? 'round' : '')} onPointerDown={(e) => { e.currentTarget.setPointerCapture(e.pointerId); drag.current = { clientX: e.clientX, clientY: e.clientY, x: editor.x, y: editor.y }; }} onPointerMove={move} onPointerUp={() => { drag.current = null; }} onPointerCancel={() => { drag.current = null; }}>
+          <img src={editor.src} alt="Pratinjau" style={{ transform: `translate(${editor.x}px, ${editor.y}px) scale(${editor.scale})` }} />
+        </div>
+        <label>Zoom<input type="range" min="1" max="3" step=".05" value={editor.scale} onChange={(e) => setEditor({ ...editor, scale: Number(e.target.value) })} /></label>
+        <button className="btn" type="button" onClick={onApply}>Gunakan gambar</button>
+      </div>
     </div>
   );
 }
