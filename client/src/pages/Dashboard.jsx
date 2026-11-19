@@ -41,24 +41,24 @@ export default function Dashboard({ openEdit }) {
         <SummaryCard label="Total Pemasukan" value={rp(inc)} icon="📈" color="var(--inc)" pct={inc > 0 ? 100 : 0} note="Uang masuk bulan ini" />
         <SummaryCard label="Total Pengeluaran" value={rp(exp)} icon="📉" color="var(--exp)" pct={pc(exp, inc)} note={inc > 0 ? Math.round((exp / inc) * 100) + '% dari pemasukan' : 'Uang keluar bulan ini'} />
         <SummaryCard label="Sisa Saldo" value={rp(bal)} icon="🏦" color="var(--bal)" pct={pc(bal, inc + (+S.saldoAwal || 0))} note={S.saldoAwal > 0 ? 'Termasuk saldo awal ' + rp(S.saldoAwal) : 'Pemasukan − pengeluaran'} />
-        <SummaryCard label="Total Transaksi" value={monthTx.length} icon="🧾" color="var(--em)" pct={Math.min(100, monthTx.length * 2)} note={monthTx.length ? 'Rata-rata ' + rp(exp / n) + ' / hari' : 'Belum ada transaksi'} />
+        <SummaryCard label="Total Transaksi" value={monthTx.length} icon="🧾" color="var(--pri)" pct={Math.min(100, monthTx.length * 2)} note={monthTx.length ? 'Rata-rata ' + rp(exp / n) + ' / hari' : 'Belum ada transaksi'} />
       </div>
       <div className="grid g2" style={{ marginTop: 18 }}>
         <ChartCard title="Pemasukan vs Pengeluaran">
           <Bar key={theme + 'a'} options={opt} data={{ labels: d.L, datasets: [
-            { label: 'Pemasukan', data: d.di, backgroundColor: '#16a34a', borderRadius: 5 },
-            { label: 'Pengeluaran', data: d.de, backgroundColor: '#f0624d', borderRadius: 5 }] }} />
+            { label: 'Pemasukan', data: d.di, backgroundColor: '#2f8f5b', borderRadius: 5 },
+            { label: 'Pengeluaran', data: d.de, backgroundColor: '#d65a43', borderRadius: 5 }] }} />
         </ChartCard>
         <ChartCard title="Pengeluaran per Kategori">
           <Doughnut key={theme + 'b'} data={{ labels: d.cats, datasets: [{ data: d.cats.map((k) => d.bc[k]), backgroundColor: PAL, borderWidth: 0 }] }}
             options={{ responsive: true, cutout: '62%', plugins: { legend: { position: 'bottom' }, tooltip: { callbacks: { label: (c) => ` ${c.label}: ${rp(c.parsed)} (${Math.round((c.parsed / total) * 100)}%)` } } } }} />
         </ChartCard>
         <ChartCard title="Tren Pengeluaran Harian">
-          <Line key={theme + 'c'} options={opt} data={{ labels: d.L, datasets: [{ label: 'Pengeluaran', data: d.de, borderColor: '#f0624d', backgroundColor: 'rgba(240,98,77,.15)', fill: true, tension: 0.35, pointRadius: 2 }] }} />
+          <Line key={theme + 'c'} options={opt} data={{ labels: d.L, datasets: [{ label: 'Pengeluaran', data: d.de, borderColor: '#d65a43', backgroundColor: 'rgba(214,90,67,.15)', fill: true, tension: 0.35, pointRadius: 2 }] }} />
         </ChartCard>
         <ChartCard title="Aktivitas: Hari Tertinggi & Terendah">
           <Bar key={theme + 'd'} options={{ ...opt, indexAxis: 'y', plugins: { legend: { display: false }, tooltip: opt.plugins.tooltip } }}
-            data={{ labels: d.sel.map((x) => 'Tgl ' + x[0]), datasets: [{ data: d.sel.map((x) => x[1]), backgroundColor: d.sel.map((_, i) => (i < d.nHi ? '#f0624d' : '#10b981')), borderRadius: 6 }] }} />
+            data={{ labels: d.sel.map((x) => 'Tgl ' + x[0]), datasets: [{ data: d.sel.map((x) => x[1]), backgroundColor: d.sel.map((_, i) => (i < d.nHi ? '#d65a43' : '#2f8f5b')), borderRadius: 6 }] }} />
         </ChartCard>
       </div>
       <div className="card" style={{ marginTop: 18 }}>

@@ -1,5 +1,19 @@
 <div align="center">
 
+<img src="client/public/logo.png" alt="Dompetku" width="420">
+
+**Personal Monthly Finance Dashboard**
+
+Catat pemasukan dan pengeluaran, pantau budget, dan lihat ke mana uangmu pergi setiap bulan.
+
+![React](https://img.shields.io/badge/React-18-61dafb?logo=react&logoColor=white)
+![Vite](https://img.shields.io/badge/Vite-5-646cff?logo=vite&logoColor=white)
+![Express](https://img.shields.io/badge/Express-4-000000?logo=express&logoColor=white)
+![SQLite](https://img.shields.io/badge/SQLite-better--sqlite3-003b57?logo=sqlite&logoColor=white)
+![Chart.js](https://img.shields.io/badge/Chart.js-4-ff6384?logo=chartdotjs&logoColor=white)
+
+</div>
+
 ---
 
 ## Daftar Isi
@@ -32,10 +46,10 @@ Mata uang yang digunakan adalah Rupiah (IDR) dengan format `Rp1.000.000`.
 
 Proyek ini terdiri dari tiga lapisan:
 
-| Lapisan  | Teknologi                   | Peran                                |
-| -------- | --------------------------- | ------------------------------------ |
-| Frontend | React + Vite + Chart.js     | Tampilan, interaksi, dan grafik      |
-| Backend  | Node.js + Express           | REST API dan validasi data           |
+| Lapisan | Teknologi | Peran |
+|---|---|---|
+| Frontend | React + Vite + Chart.js | Tampilan, interaksi, dan grafik |
+| Backend | Node.js + Express | REST API dan validasi data |
 | Database | SQLite (`better-sqlite3`) | Penyimpanan permanen dalam satu file |
 
 ---
@@ -43,7 +57,6 @@ Proyek ini terdiri dari tiga lapisan:
 ## 2. Fitur
 
 ### Dashboard
-
 - Empat kartu ringkasan: **Total Pemasukan**, **Total Pengeluaran**, **Sisa Saldo** (termasuk saldo awal), dan **Total Transaksi**.
 - Empat grafik interaktif:
   - Pemasukan vs pengeluaran per tanggal (batang)
@@ -53,41 +66,35 @@ Proyek ini terdiri dari tiga lapisan:
 - Daftar lima transaksi terbaru.
 
 ### Transaksi
-
 - Form tambah dan edit dengan **subkategori yang berubah otomatis** mengikuti kategori.
 - Jenis: pemasukan atau pengeluaran. Metode bayar: Cash, Transfer, E-Wallet, atau Lainnya.
 - Kolom deskripsi bisa dipakai sebagai nama kegiatan manual (misalnya untuk kategori Date Bareng Pacar).
 - Validasi nominal (harus lebih dari 0) di frontend dan backend. Setiap transaksi punya ID unik (UUID).
 
 ### Riwayat Transaksi
-
 - Urut dari tanggal terbaru, dengan pembeda warna untuk pemasukan (hijau) dan pengeluaran (merah).
 - Pencarian nama atau deskripsi, filter jenis, filter kategori, dan pilihan **bulan terpilih** atau **semua bulan**.
 - Edit dan hapus langsung dari daftar.
 
 ### Kategori
-
 - Kategori dan subkategori untuk pemasukan dan pengeluaran bisa **ditambah, diedit, dan dihapus**.
 - Mengganti nama kategori ikut memperbarui transaksi lama dan budget terkait.
 
 ### Budget Bulanan
-
 - Batas pengeluaran per kategori yang bisa diubah kapan saja.
 - Persentase pemakaian, sisa budget, indikator oranye saat pemakaian mencapai 80% atau lebih, dan peringatan merah saat melebihi budget.
 
 ### Analisis Keuangan
-
 - Insight otomatis dari data nyata: kategori terbesar, total pengeluaran bersama teman, total pengeluaran date, rata-rata per hari, hari tertinggi, pemasukan vs pengeluaran, persentase uang yang ditabung, dan kategori paling sering dipakai.
 - Tabel **rekapitulasi semua bulan** untuk membandingkan kondisi keuangan antarbulan.
 
 ### Pengaturan dan Data
-
 - Saldo awal, tema terang atau gelap (mengikuti pengaturan perangkat secara default).
 - **Unduh CSV** (bisa dibuka di Excel) dan **unduh backup JSON**.
 - Restore dari file `.json` atau teks, dan reset semua data.
 
 ### Desain
-
+- Identitas visual mengikuti logo: palet krem hangat dan hitam tinta, dengan warna hijau/koral/biru hanya untuk makna keuangan (pemasukan, pengeluaran, saldo).
 - Layout sidebar kiri, kartu bersudut membulat, animasi ringan antar halaman.
 - Responsif untuk desktop, tablet, dan smartphone (sidebar berubah menjadi bar navigasi bawah di layar kecil).
 
@@ -95,13 +102,13 @@ Proyek ini terdiri dari tiga lapisan:
 
 ## 3. Teknologi
 
-| Bagian     | Paket                              | Versi      |
-| ---------- | ---------------------------------- | ---------- |
-| UI         | `react`, `react-dom`           | ^18.3      |
+| Bagian | Paket | Versi |
+|---|---|---|
+| UI | `react`, `react-dom` | ^18.3 |
 | Build tool | `vite`, `@vitejs/plugin-react` | ^5.4, ^4.3 |
-| Grafik     | `chart.js`, `react-chartjs-2`  | ^4.4, ^5.2 |
-| Server     | `express`                        | ^4.19      |
-| Database   | `better-sqlite3`                 | ^11.3      |
+| Grafik | `chart.js`, `react-chartjs-2` | ^4.4, ^5.2 |
+| Server | `express` | ^4.19 |
+| Database | `better-sqlite3` | ^11.3 |
 
 ---
 
@@ -116,6 +123,7 @@ dompetku/
 │
 ├── client/                    # Frontend React (Vite)
 │   ├── index.html
+│   ├── public/            # Favicon, apple-touch-icon, dan logo untuk README
 │   ├── package.json
 │   ├── vite.config.js         # Proxy /api ke localhost:3000 saat development
 │   └── src/
@@ -128,6 +136,7 @@ dompetku/
 │       ├── defaults.js        # Kategori dan budget awal
 │       ├── chartSetup.js      # Registrasi dan tema Chart.js
 │       ├── styles.css         # Seluruh gaya (design tokens, light/dark)
+│       ├── assets/            # Logo dan ikon navigasi (PNG transparan, warna mengikuti tema)
 │       ├── components/        # Komponen reusable
 │       │   ├── Sidebar.jsx
 │       │   ├── SummaryCard.jsx
@@ -193,12 +202,12 @@ Buka **http://localhost:5173**. Vite meneruskan semua request `/api/*` ke backen
 
 ### Script yang tersedia
 
-| Perintah                           | Fungsi                                         |
-| ---------------------------------- | ---------------------------------------------- |
-| `npm run install:all`            | Memasang dependensi root dan `client/`       |
-| `npm run build`                  | Build frontend ke `client/dist`              |
+| Perintah | Fungsi |
+|---|---|
+| `npm run install:all` | Memasang dependensi root dan `client/` |
+| `npm run build` | Build frontend ke `client/dist` |
 | `npm start` / `npm run server` | Menjalankan backend (dan frontend hasil build) |
-| `npm run client`                 | Menjalankan Vite dev server                    |
+| `npm run client` | Menjalankan Vite dev server |
 
 ---
 
@@ -206,11 +215,11 @@ Buka **http://localhost:5173**. Vite meneruskan semua request `/api/*` ke backen
 
 Konfigurasi dilakukan lewat environment variable:
 
-| Variabel         | Default                | Keterangan                                                                                               |
-| ---------------- | ---------------------- | -------------------------------------------------------------------------------------------------------- |
-| `PORT`         | `3000`               | Port server                                                                                              |
-| `DB_FILE`      | `./data/dompetku.db` | Lokasi file database SQLite                                                                              |
-| `APP_PASSWORD` | *(kosong)*           | Jika diisi, seluruh aplikasi dilindungi Basic Auth. Username bebas, password harus sama dengan nilai ini |
+| Variabel | Default | Keterangan |
+|---|---|---|
+| `PORT` | `3000` | Port server |
+| `DB_FILE` | `./data/dompetku.db` | Lokasi file database SQLite |
+| `APP_PASSWORD` | *(kosong)* | Jika diisi, seluruh aplikasi dilindungi Basic Auth. Username bebas, password harus sama dengan nilai ini |
 
 Contoh:
 
@@ -263,27 +272,27 @@ SQLite dengan mode WAL. Skema dibuat otomatis oleh `server.js`.
 
 ### Tabel `transactions`
 
-| Kolom      | Tipe     | Keterangan                                                 |
-| ---------- | -------- | ---------------------------------------------------------- |
-| `id`     | TEXT, PK | UUID transaksi                                             |
-| `ts`     | INTEGER  | Waktu pembuatan (ms) untuk pengurutan                      |
-| `type`   | TEXT     | `income` atau `expense`                                |
-| `amount` | INTEGER  | Rupiah, **harus lebih dari 0** (constraint database) |
-| `cat`    | TEXT     | Nama kategori                                              |
-| `sub`    | TEXT     | Nama subkategori (boleh kosong)                            |
-| `date`   | TEXT     | Format `YYYY-MM-DD`, ber-index                           |
-| `desc`   | TEXT     | Deskripsi / nama kegiatan (maks. 120 karakter)             |
-| `method` | TEXT     | Cash, Transfer, E-Wallet, atau Lainnya                     |
+| Kolom | Tipe | Keterangan |
+|---|---|---|
+| `id` | TEXT, PK | UUID transaksi |
+| `ts` | INTEGER | Waktu pembuatan (ms) untuk pengurutan |
+| `type` | TEXT | `income` atau `expense` |
+| `amount` | INTEGER | Rupiah, **harus lebih dari 0** (constraint database) |
+| `cat` | TEXT | Nama kategori |
+| `sub` | TEXT | Nama subkategori (boleh kosong) |
+| `date` | TEXT | Format `YYYY-MM-DD`, ber-index |
+| `desc` | TEXT | Deskripsi / nama kegiatan (maks. 120 karakter) |
+| `method` | TEXT | Cash, Transfer, E-Wallet, atau Lainnya |
 
 ### Tabel `kv`
 
 Menyimpan pengaturan sebagai JSON:
 
-| Key           | Isi                                                                                                       |
-| ------------- | --------------------------------------------------------------------------------------------------------- |
-| `saldoAwal` | Angka saldo awal                                                                                          |
-| `budget`    | Objek `{ "Nama Kategori": nominal }`. Berlaku sama untuk semua bulan                                    |
-| `cats`      | Objek `{ income: {...}, expense: {...} }`, tiap kategori berisi `{ i: "emoji", s: ["sub1", "sub2"] }` |
+| Key | Isi |
+|---|---|
+| `saldoAwal` | Angka saldo awal |
+| `budget` | Objek `{ "Nama Kategori": nominal }`. Berlaku sama untuk semua bulan |
+| `cats` | Objek `{ income: {...}, expense: {...} }`, tiap kategori berisi `{ i: "emoji", s: ["sub1", "sub2"] }` |
 
 ---
 
@@ -292,7 +301,6 @@ Menyimpan pengaturan sebagai JSON:
 Semua request dan response berformat JSON, kecuali endpoint unduhan.
 
 ### `GET /api/data`
-
 Mengambil seluruh data.
 
 ```json
@@ -305,11 +313,9 @@ Mengambil seluruh data.
   "cats": { "income": { }, "expense": { } }
 }
 ```
-
 `cats` bernilai `null` jika database masih kosong.
 
 ### `POST /api/tx`
-
 Menambah transaksi baru atau memperbarui transaksi dengan `id` yang sama.
 
 ```bash
@@ -319,17 +325,15 @@ curl -X POST http://localhost:3000/api/tx \
        "sub":"Sarapan","date":"2026-11-19","desc":"Bubur","method":"Cash"}'
 ```
 
-| Respons                | Keterangan                                                                                             |
-| ---------------------- | ------------------------------------------------------------------------------------------------------ |
-| `200 {"ok":true}`    | Berhasil                                                                                               |
+| Respons | Keterangan |
+|---|---|
+| `200 {"ok":true}` | Berhasil |
 | `400 {"error":"…"}` | Validasi gagal: nominal ≤ 0, tanggal bukan `YYYY-MM-DD`, jenis tidak valid, ID atau kategori kosong |
 
 ### `DELETE /api/tx/:id`
-
 Menghapus transaksi. Respons: `{"ok":true}`.
 
 ### `PUT /api/settings`
-
 Menyimpan saldo awal, budget, dan kategori.
 
 ```json
@@ -337,7 +341,6 @@ Menyimpan saldo awal, budget, dan kategori.
 ```
 
 ### `POST /api/rename`
-
 Mengganti nama kategori pada semua transaksi lama.
 
 ```json
@@ -345,15 +348,12 @@ Mengganti nama kategori pada semua transaksi lama.
 ```
 
 ### `POST /api/restore`
-
 Mengganti **seluruh** isi database dengan data backup (dalam satu transaksi database; jika ada satu baris tidak valid, tidak ada yang berubah). Body berformat sama dengan hasil `GET /api/backup.json`.
 
 ### `GET /api/backup.json`
-
 Mengunduh file `dompetku-backup.json`.
 
 ### `GET /api/export.csv`
-
 Mengunduh `laporan-keuangan.csv` (UTF-8 dengan BOM agar terbaca benar di Excel) dengan kolom: Tanggal, Jenis, Kategori, Subkategori, Deskripsi, Metode, Nominal.
 
 ---
@@ -404,7 +404,6 @@ npm run preview
 ```
 
 ### Platform PaaS (Railway, Render, Fly.io, dan sejenisnya)
-
 - Build command: `npm run install:all && npm run build`
 - Start command: `npm start`
 - Pasang **volume persisten** dan arahkan `DB_FILE` ke dalamnya (misalnya `DB_FILE=/data/dompetku.db`). Tanpa volume, database akan hilang setiap deploy ulang.
@@ -433,28 +432,26 @@ npm run preview
 
 ## 16. Troubleshooting
 
-| Masalah                                        | Penyebab dan solusi                                                                                                                                                                                        |
-| ---------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `npm install` gagal pada `better-sqlite3`  | Pastikan Node.js 18 atau lebih baru. Jika tidak ada binary prebuilt untuk platformmu, pasang build tools (Windows: *Visual Studio Build Tools*, Linux: `build-essential` dan `python3`), lalu ulangi |
-| Halaman menampilkan "Server tidak terjangkau"  | Backend belum jalan. Jalankan `npm start` (atau `npm run server` saat development)                                                                                                                     |
-| Halaman kosong / `Cannot GET /`              | Frontend belum di-build. Jalankan `npm run build`                                                                                                                                                        |
-| `EADDRINUSE` (port dipakai)                  | Gunakan port lain: `PORT=3001 npm start`                                                                                                                                                                 |
-| Data tidak muncul setelah pindah server        | Database ada di `data/dompetku.db` per server. Pindahkan file tersebut atau gunakan backup JSON                                                                                                          |
-| Setelah deploy data hilang                     | Platform tidak punya penyimpanan persisten. Pasang volume dan set `DB_FILE`                                                                                                                              |
-| Perubahan frontend tidak terlihat di port 3000 | Port 3000 menyajikan hasil build. Jalankan `npm run build` lagi, atau gunakan port 5173 saat development                                                                                                 |
+| Masalah | Penyebab dan solusi |
+|---|---|
+| `npm install` gagal pada `better-sqlite3` | Pastikan Node.js 18 atau lebih baru. Jika tidak ada binary prebuilt untuk platformmu, pasang build tools (Windows: *Visual Studio Build Tools*, Linux: `build-essential` dan `python3`), lalu ulangi |
+| Halaman menampilkan "Server tidak terjangkau" | Backend belum jalan. Jalankan `npm start` (atau `npm run server` saat development) |
+| Halaman kosong / `Cannot GET /` | Frontend belum di-build. Jalankan `npm run build` |
+| `EADDRINUSE` (port dipakai) | Gunakan port lain: `PORT=3001 npm start` |
+| Data tidak muncul setelah pindah server | Database ada di `data/dompetku.db` per server. Pindahkan file tersebut atau gunakan backup JSON |
+| Setelah deploy data hilang | Platform tidak punya penyimpanan persisten. Pasang volume dan set `DB_FILE` |
+| Perubahan frontend tidak terlihat di port 3000 | Port 3000 menyajikan hasil build. Jalankan `npm run build` lagi, atau gunakan port 5173 saat development |
 
 ---
 
 ## 17. Batasan yang Diketahui dan Pengembangan Lanjutan
 
 **Batasan saat ini**
-
 - Single-user, tanpa login per akun.
 - Budget berlaku sama untuk semua bulan (belum ada budget terpisah per bulan).
 - Belum ada pengujian otomatis (unit atau end-to-end).
 
 **Ide pengembangan**
-
 - Autentikasi multi-user (misalnya JWT) dengan data terpisah per pengguna.
 - Budget per bulan dan transaksi berulang (langganan, cicilan).
 - Target tabungan dan notifikasi budget.
@@ -465,3 +462,7 @@ npm run preview
 ---
 
 <div align="center">
+
+Dibuat untuk membantu mengelola keuangan pribadi dengan lebih tenang. 💚
+
+</div>
