@@ -384,17 +384,21 @@ pm2 save && pm2 startup
 
 Letakkan Nginx atau Caddy di depannya untuk HTTPS.
 
-### GitHub Pages (mode demo, tanpa backend)
+### GitHub Pages + Railway (sinkron antar perangkat)
 
-GitHub Pages hanya menyajikan file statis, jadi Express dan SQLite tidak bisa berjalan di sana. Sebagai gantinya, frontend React punya **mode statis** (`VITE_STATIC=true`): API ditiru di `client/src/api.js` dengan `localStorage`, sehingga seluruh fitur tetap berfungsi. Data tersimpan **di browser masing-masing pengunjung**, bukan di server.
+GitHub Pages hanya menyajikan frontend statis. Agar data tersinkronisasi antar laptop dan HP, backend Express harus dijalankan di Railway dan frontend diarahkan ke URL backend tersebut. Data kemudian disimpan di SQLite pada volume Railway, bukan di browser.
 
-Deploy otomatis sudah disiapkan di `.github/workflows/pages.yml`:
+Deploy otomatis frontend sudah disiapkan di `.github/workflows/pages.yml`:
 
 1. Push proyek ke GitHub (branch `master` atau `main`).
-2. Buka repo → **Settings → Pages → Build and deployment → Source: GitHub Actions**.
-3. Setiap push akan membangun dan men-deploy ke `https://<username>.github.io/<nama-repo>/`.
+2. Deploy repository ini ke Railway. Konfigurasi [railway.json](./railway.json) sudah menyediakan build command `npm run install:all && npm run build` dan start command `npm start`.
+3. Tambahkan volume persisten Railway dan set `DB_FILE` ke `/data/dompetku.db`.
+4. Set environment variable Railway `CORS_ORIGIN` ke origin GitHub Pages tanpa path (contoh `https://username.github.io`) dan, bila perlu, `APP_PASSWORD`.
+5. Di GitHub, buka **Settings → Secrets and variables → Actions → Variables**, lalu buat `VITE_API_URL` berisi URL publik Railway (contoh `https://dompetku-production.up.railway.app`).
+6. Buka **Settings → Pages → Build and deployment → Source: GitHub Actions**.
+7. Setiap push akan membangun dan men-deploy frontend yang memakai backend Railway.
 
-Mencoba build mode ini secara lokal (PowerShell):
+Untuk menjalankan mode static lokal tanpa backend (PowerShell):
 
 ```powershell
 cd client

@@ -2,6 +2,7 @@
 //  - Normal  : memanggil backend Express (/api/...)
 //  - Statis  : (VITE_STATIC=true, mis. GitHub Pages) meniru API yang sama memakai localStorage browser
 export const STATIC = import.meta.env.VITE_STATIC === 'true';
+const API_BASE = (import.meta.env.VITE_API_URL || '').replace(/\/+$/, '');
 
 const KEY = 'dompetku_static_v1';
 const read = () => {
@@ -33,5 +34,5 @@ function local(url, method, b) {
 export const api = (url, method = 'GET', body) =>
   STATIC
     ? Promise.resolve().then(() => local(url, method, body))
-    : fetch(url, { method, headers: { 'Content-Type': 'application/json' }, body: body ? JSON.stringify(body) : undefined })
+    : fetch(API_BASE + url, { method, headers: { 'Content-Type': 'application/json' }, body: body ? JSON.stringify(body) : undefined })
         .then((r) => { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); });

@@ -1,4 +1,4 @@
-# Deploy otomatis frontend React ke GitHub Pages (mode demo, data di localStorage)
+# Deploy frontend React ke GitHub Pages, menggunakan backend Railway
 name: Deploy to GitHub Pages
 on:
   push:
@@ -22,9 +22,13 @@ jobs:
       - name: Install & build
         working-directory: client
         env:
-          VITE_STATIC: "true"
           VITE_BASE: /${{ github.event.repository.name }}/
+          VITE_API_URL: ${{ vars.VITE_API_URL }}
         run: |
+          if [ -z "$VITE_API_URL" ]; then
+            echo "::error::GitHub Actions variable VITE_API_URL belum diatur."
+            exit 1
+          fi
           npm install
           npm run build
       - uses: actions/configure-pages@v5

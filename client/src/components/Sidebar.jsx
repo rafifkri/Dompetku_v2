@@ -1,5 +1,5 @@
 import Icon from './Icon';
-import logoMark from '../assets/logo-mark.png';
+import logo from '../assets/logo.png';
 import dashboard from '../assets/icons/dashboard.png';
 import tambah from '../assets/icons/tambah.png';
 import riwayat from '../assets/icons/riwayat.png';
@@ -13,7 +13,7 @@ const NAV = [['dash', dashboard, 'Dashboard'], ['add', tambah, 'Tambah Transaksi
 export default function Sidebar({ view, onNav }) {
   return (
     <aside>
-      <div className="logo"><Icon src={logoMark} />DOMPETKU</div>
+      <div className="logo"><img src={logo} alt="Dompetku" /></div>
       {NAV.map(([k, ic, l]) => (
         <button key={k} className={'nav' + (view === k ? ' on' : '')} onClick={() => onNav(k)}><Icon src={ic} /><span>{l}</span></button>
       ))}
