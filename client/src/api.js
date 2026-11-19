@@ -100,9 +100,13 @@ const cloud = async (url, method = 'GET', b) => {
   if (url === '/api/auth/logout') { await supabase.auth.signOut(); return { ok: true }; }
   if (url === '/api/profile' && method === 'GET') {
     const user = await userOrThrow();
-    const { data, error } = await supabase.from('profiles').select('*').eq('id', user.id).single();
+    const { data, error } = await supabase.from('profiles').select('*').eq('id', user.id).maybeSingle();
     if (error) throw error;
-    return profileShape(data);
+    if (data) return profileShape(data);
+    const fallback = { id: user.id, name: user.user_metadata?.name || user.email.split('@')[0], email: user.email, bio: '', photo: '', cover: '' };
+    const created = await supabase.from('profiles').upsert(fallback).select().maybeSingle();
+    if (created.error) throw created.error;
+    return profileShape(created.data || fallback);
   }
   if (url === '/api/profile' && method === 'PUT') {
     const user = await userOrThrow();

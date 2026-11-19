@@ -39,6 +39,14 @@ alter table public.profiles enable row level security;
 alter table public.transactions enable row level security;
 alter table public.settings enable row level security;
 
+grant usage on schema public to anon, authenticated;
+grant select, insert, update, delete on public.profiles to authenticated;
+grant select, insert, update, delete on public.transactions to authenticated;
+grant select, insert, update, delete on public.settings to authenticated;
+
+drop policy if exists "profiles own row" on public.profiles;
+drop policy if exists "transactions own rows" on public.transactions;
+drop policy if exists "settings own rows" on public.settings;
 create policy "profiles own row" on public.profiles for all using (auth.uid() = id) with check (auth.uid() = id);
 create policy "transactions own rows" on public.transactions for all using (auth.uid() = user_id) with check (auth.uid() = user_id);
 create policy "settings own rows" on public.settings for all using (auth.uid() = user_id) with check (auth.uid() = user_id);
