@@ -36,8 +36,7 @@ export default function Profile({ onLogout, onProfileChange }) {
   return (
     <div className="profile-layout">
       <section className="card profile-hero">
-        <div className="profile-cover" style={form.cover ? { backgroundImage: `linear-gradient(90deg, rgba(7, 17, 10, .58), rgba(31, 92, 54, .25)), url(${form.cover})` } : undefined}>
-          <span className="cover-edit">Ganti background</span>
+        <div className="profile-cover" style={form.cover ? { backgroundImage: `linear-gradient(90deg, rgba(5, 8, 18, .64), rgba(30, 82, 145, .28)), url(${form.cover})` } : undefined}>
         </div>
         <div className="profile-identity">
           <button className="profile-avatar profile-avatar-large" type="button" onClick={() => setShowPicker((p) => !p)} aria-label="Ubah foto atau background profil" aria-expanded={showPicker}>

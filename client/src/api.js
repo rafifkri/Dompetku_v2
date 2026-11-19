@@ -7,9 +7,9 @@ const TOKEN_KEY = 'dompetku_token_v2';
 const ACCOUNT_KEY = 'dompetku_static_account';
 const PROFILE_KEY = 'dompetku_profile';
 
-export const getToken = () => localStorage.getItem(TOKEN_KEY) || '';
-export const setToken = (token) => localStorage.setItem(TOKEN_KEY, token);
-export const clearToken = () => localStorage.removeItem(TOKEN_KEY);
+export const getToken = () => sessionStorage.getItem(TOKEN_KEY) || '';
+export const setToken = (token) => sessionStorage.setItem(TOKEN_KEY, token);
+export const clearToken = () => sessionStorage.removeItem(TOKEN_KEY);
 
 const KEY = 'dompetku_static_v1';
 const read = () => {

@@ -42,11 +42,13 @@ function Shell({ profile, onLogout, onProfileChange }) {
 }
 export default function App() {
   const [profile, setProfile] = useState(null);
-  const [checking, setChecking] = useState(Boolean(getToken()));
+  const freshNavigation = performance.getEntriesByType('navigation')[0]?.type === 'navigate';
+  const [checking, setChecking] = useState(!freshNavigation && Boolean(getToken()));
   useEffect(() => {
+    if (freshNavigation) { clearToken(); return; }
     if (!getToken()) return;
     api('/api/auth/me').then((d) => setProfile(d.user)).catch(() => clearToken()).finally(() => setChecking(false));
-  }, []);
+  }, [freshNavigation]);
   if (checking) return <div className="auth-loading">Memuat Dompetku…</div>;
   if (!profile) return <UIProvider><Login onLogin={setProfile} /></UIProvider>;
   return <UIProvider><FinanceProvider><Shell profile={profile} onLogout={() => { api('/api/auth/logout', 'POST').catch(() => {}).finally(() => { clearToken(); setProfile(null); }); }} onProfileChange={setProfile} /></FinanceProvider></UIProvider>;
