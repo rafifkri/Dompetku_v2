@@ -1,5 +1,7 @@
 import { useFinance } from '../store';
 import { icon, rp } from '../utils';
+import Icon from './Icon';
+import editIcon from '../assets/icons/edit.png';
 
 export default function TxRow({ t, onEdit, onDelete }) {
   const { S } = useFinance();
@@ -12,8 +14,8 @@ export default function TxRow({ t, onEdit, onDelete }) {
         <span className="sub">{t.cat}{t.sub ? ' · ' + t.sub : ''} · {t.date.split('-').reverse().join('/')} · {t.method}</span>
       </div>
       <div className={'amt ' + (inc ? 'in' : 'out')}>{inc ? '+' : '−'}{rp(t.amount)}</div>
-      {onEdit && <button className="btn g s" onClick={() => onEdit(t)}>✏️</button>}
-      {onDelete && <button className="btn g s" onClick={() => onDelete(t.id)}>🗑️</button>}
+      {onEdit && <button className="btn g s tx-action" aria-label="Edit transaksi" title="Edit transaksi" onClick={() => onEdit(t)}><Icon src={editIcon} /></button>}
+      {onDelete && <button className="btn g s tx-action tx-delete" aria-label="Hapus transaksi" title="Hapus transaksi" onClick={() => onDelete(t.id)}>×</button>}
     </div>
   );
 }

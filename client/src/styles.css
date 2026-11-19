@@ -197,6 +197,9 @@ input[type="month"] { color-scheme: inherit }
 .in { color: var(--inc) }
 .out { color: var(--exp) }
 .amt { font-weight: 700; white-space: nowrap }
+.tx-action { width: 38px; height: 34px; padding: 6px; display: grid; place-items: center }
+.tx-action .mi { width: 17px; height: 17px; color: var(--exp) }
+.tx-delete { color: var(--exp); font-size: 23px; line-height: 1; font-weight: 400 }
 .filters { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; margin-bottom: 16px }
 .chip { display: inline-flex; gap: 6px; align-items: center; background: var(--card-soft); border: 1px solid var(--line); border-radius: 99px; padding: 3px 6px 3px 12px; margin: 3px; font-size: 13px }
 .chip button { all: unset; cursor: pointer; color: var(--mut); padding: 0 6px }

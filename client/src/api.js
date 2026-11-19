@@ -3,7 +3,7 @@
 //  - Statis  : (VITE_STATIC=true, mis. GitHub Pages) meniru API yang sama memakai localStorage browser
 export const STATIC = import.meta.env.VITE_STATIC === 'true';
 const API_BASE = (import.meta.env.VITE_API_URL || '').replace(/\/+$/, '');
-const TOKEN_KEY = 'dompetku_token';
+const TOKEN_KEY = 'dompetku_token_v2';
 const ACCOUNT_KEY = 'dompetku_static_account';
 const PROFILE_KEY = 'dompetku_profile';
 

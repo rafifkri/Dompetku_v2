@@ -13,8 +13,8 @@ import transaksiIcon from '../assets/icons/total-transaksi.png';
 import saldoIcon from '../assets/icons/sisa-saldo.png';
 
 export default function Dashboard({ openEdit }) {
-  const { S, M, monthTx } = useFinance();
-  const { theme } = useUI();
+  const { S, M, monthTx, delTx } = useFinance();
+  const { theme, ask, toast } = useUI();
   themeCharts();
   const n = daysIn(M);
   const inc = sum(monthTx, 'income'), exp = sum(monthTx, 'expense');
@@ -37,6 +37,10 @@ export default function Dashboard({ openEdit }) {
   const tip = (c) => ' ' + (c.dataset.label ? c.dataset.label + ': ' : '') + rp(c.parsed.y ?? c.parsed.x ?? c.parsed);
   const opt = { responsive: true, plugins: { tooltip: { callbacks: { label: tip } } } };
   const total = d.cats.reduce((s, k) => s + d.bc[k], 0);
+  const remove = async (id) => {
+    if (await ask('Hapus transaksi ini?', '', true) === null) return;
+    try { await delTx(id); toast('Transaksi berhasil dihapus'); } catch { toast('Gagal menghapus transaksi'); }
+  };
 
   return (
     <>
@@ -67,7 +71,7 @@ export default function Dashboard({ openEdit }) {
       </div>
       <div className="card" style={{ marginTop: 18 }}>
         <h2>Transaksi Terbaru</h2>
-        {monthTx.length ? [...monthTx].sort(srt).slice(0, 5).map((t) => <TxRow key={t.id} t={t} onEdit={openEdit} />) : <div className="empty">Belum ada data</div>}
+        {monthTx.length ? [...monthTx].sort(srt).slice(0, 5).map((t) => <TxRow key={t.id} t={t} onEdit={openEdit} onDelete={remove} />) : <div className="empty">Belum ada data</div>}
       </div>
     </>
   );
