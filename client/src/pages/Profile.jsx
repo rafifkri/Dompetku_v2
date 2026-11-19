@@ -79,6 +79,8 @@ function ImageAdjuster({ editor, setEditor, onApply }) {
   const pointers = useRef(new Map());
   const pinch = useRef(null);
   const frameRef = useRef(null);
+  const [isDragging, setIsDragging] = useState(false);
+  const [isSettling, setIsSettling] = useState(false);
 
   const clampPosition = (x, y, scale) => {
     const frame = frameRef.current?.getBoundingClientRect();
@@ -130,6 +132,25 @@ function ImageAdjuster({ editor, setEditor, onApply }) {
       return { ...p, scale };
     });
   };
+  const startDrag = (e) => {
+    e.currentTarget.setPointerCapture(e.pointerId);
+    pointers.current.set(e.pointerId, { x: e.clientX, y: e.clientY });
+    drag.current = { clientX: e.clientX, clientY: e.clientY, x: editor.x, y: editor.y };
+    setIsDragging(true);
+    setIsSettling(false);
+    if (pointers.current.size === 2) pinch.current = { distance: pointerDistance(), scale: editor.scale };
+  };
+  const releaseDrag = (e) => {
+    pointers.current.delete(e.pointerId);
+    if (!pointers.current.size) {
+      setIsDragging(false);
+      setIsSettling(true);
+      setEditor((p) => ({ ...p, ...settlePosition(p, p.scale) }));
+      window.setTimeout(() => setIsSettling(false), 220);
+      drag.current = null;
+      pinch.current = null;
+    }
+  };
   return (
     <div className="image-adjuster-backdrop">
       <div className="image-adjuster">
@@ -137,29 +158,17 @@ function ImageAdjuster({ editor, setEditor, onApply }) {
         <p className="image-adjuster-help">Geser untuk mengatur posisi. Gunakan scroll atau pinch untuk memperbesar.</p>
         <div className={'image-adjuster-frame ' + (editor.field === 'photo' ? 'round' : '')}
           ref={frameRef}
-          onPointerDown={(e) => {
-            e.currentTarget.setPointerCapture(e.pointerId);
-            pointers.current.set(e.pointerId, { x: e.clientX, y: e.clientY });
-            drag.current = { clientX: e.clientX, clientY: e.clientY, x: editor.x, y: editor.y };
-            if (pointers.current.size === 2) pinch.current = { distance: pointerDistance(), scale: editor.scale };
-          }}
+          onPointerDown={startDrag}
           onPointerMove={move}
-          onPointerUp={(e) => {
-            pointers.current.delete(e.pointerId);
-            if (!pointers.current.size) {
-              setEditor((p) => ({ ...p, ...settlePosition(p, p.scale) }));
-              drag.current = null;
-              pinch.current = null;
-            }
-          }}
-          onPointerCancel={(e) => {
-            pointers.current.delete(e.pointerId);
-            setEditor((p) => ({ ...p, ...settlePosition(p, p.scale) }));
-            drag.current = null;
-            pinch.current = null;
-          }}
+          onPointerUp={releaseDrag}
+          onPointerCancel={releaseDrag}
           onWheel={wheel}>
-          <img src={editor.src} alt="Pratinjau" style={{ transform: `translate(${editor.x}px, ${editor.y}px) scale(${editor.scale})` }} />
+          <img
+            src={editor.src}
+            alt="Pratinjau"
+            className={(isDragging ? 'moving' : '') + (isSettling ? ' settling' : '')}
+            style={{ transform: `translate3d(${editor.x}px, ${editor.y}px, 0) scale(${editor.scale})` }}
+          />
         </div>
         <button className="btn g image-adjuster-reset" type="button" onClick={() => setEditor({ ...editor, scale: 1, x: 0, y: 0 })}>Reset posisi</button>
         <button className="btn image-adjuster-apply" type="button" onClick={onApply}>Gunakan gambar</button>

@@ -61,18 +61,22 @@ export default function DatePicker({ value, onChange }) {
               <select aria-label="Pilih bulan" value={cursor.m} onChange={(e) => setCursor((p) => ({ ...p, m: Number(e.target.value) }))}>
                 {BLN.map((name, index) => <option key={name} value={index}>{name}</option>)}
               </select>
-              <input
-                className="date-year-input"
-                aria-label="Pilih tahun"
-                type="number"
-                min="2000"
-                max="2100"
-                value={cursor.y}
-                onChange={(e) => {
-                  const year = Number(e.target.value);
-                  if (year >= 2000 && year <= 2100) setCursor((p) => ({ ...p, y: year }));
-                }}
-              />
+              <div className="date-year-stepper">
+                <button type="button" aria-label="Tahun sebelumnya" onClick={() => setCursor((p) => ({ ...p, y: Math.max(2000, p.y - 1) }))}>‹</button>
+                <input
+                  className="date-year-input"
+                  aria-label="Pilih tahun"
+                  type="number"
+                  min="2000"
+                  max="2100"
+                  value={cursor.y}
+                  onChange={(e) => {
+                    const year = Number(e.target.value);
+                    if (year >= 2000 && year <= 2100) setCursor((p) => ({ ...p, y: year }));
+                  }}
+                />
+                <button type="button" aria-label="Tahun berikutnya" onClick={() => setCursor((p) => ({ ...p, y: Math.min(2100, p.y + 1) }))}>›</button>
+              </div>
             </div>
             <button type="button" onClick={() => shift(1)} aria-label="Bulan berikutnya">›</button>
           </div>

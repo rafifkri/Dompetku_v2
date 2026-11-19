@@ -251,7 +251,10 @@ canvas { max-height: 280px }
 .date-head b { text-align: center; font-size: 14px }
 .date-head-selects { display: grid; grid-template-columns: 1.35fr .65fr; gap: 6px }
 .date-head-selects select { width: 100%; min-width: 0; height: 38px; border: 1px solid var(--line); border-radius: 9px; background: var(--card-soft); color: var(--tx); padding: 6px 8px; text-align: center; cursor: pointer }
-.date-year-input { width: 100%; min-width: 0; height: 38px; border: 1px solid var(--line); border-radius: 9px; background: var(--card-soft); color: var(--tx); padding: 6px 8px; text-align: center }
+.date-year-stepper { display: grid; grid-template-columns: 24px minmax(54px, 1fr) 24px; gap: 3px; height: 38px }
+.date-year-stepper button { border: 1px solid var(--line); border-radius: 8px; background: var(--card-soft); color: var(--tx); cursor: pointer; padding: 0 }
+.date-year-input { width: 100%; min-width: 0; height: 38px; border: 1px solid var(--line); border-radius: 8px; background: var(--card-soft); color: var(--tx); padding: 4px 2px; text-align: center; appearance: textfield }
+.date-year-input::-webkit-inner-spin-button, .date-year-input::-webkit-outer-spin-button { appearance: none; margin: 0 }
 .date-head button { width: 34px; height: 34px; border: 0; border-radius: 9px; background: var(--card-soft); color: var(--tx); cursor: pointer; font-size: 22px }
 .date-week, .date-grid { display: grid; grid-template-columns: repeat(7, 1fr); text-align: center }
 .date-week { color: var(--mut); font-size: 11px; margin-bottom: 4px }
@@ -360,7 +363,9 @@ canvas { max-height: 280px }
 .image-adjuster-frame { height: 220px; overflow: hidden; display: grid; place-items: center; border-radius: 14px; background: var(--card-soft); cursor: grab; touch-action: none }
 .image-adjuster-frame.round { width: 220px; margin: 0 auto; border-radius: 50% }
 .image-adjuster-frame:active { cursor: grabbing }
-.image-adjuster-frame img { width: 100%; height: 100%; max-width: none; object-fit: cover; pointer-events: none; user-select: none }
+.image-adjuster-frame img { width: 100%; height: 100%; max-width: none; object-fit: cover; pointer-events: none; user-select: none; will-change: transform }
+.image-adjuster-frame img.moving { transition: none }
+.image-adjuster-frame img.settling { transition: transform .22s cubic-bezier(.22, 1, .36, 1) }
 .image-adjuster label { margin-top: 18px }
 .image-adjuster input[type="range"] { padding: 0; accent-color: var(--em) }
 .image-adjuster-help { color: var(--mut); font-size: 12px; margin: -4px 0 12px }
