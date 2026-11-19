@@ -9,10 +9,11 @@ import Categories from './pages/Categories';
 import Budget from './pages/Budget';
 import Analysis from './pages/Analysis';
 import Settings from './pages/Settings';
-import { BLN } from './utils';
+import { BLN, today } from './utils';
 import Login from './pages/Login';
 import Profile from './pages/Profile';
 import { api, clearToken, getToken } from './api';
+import DatePicker from './components/DatePicker';
 
 const PAGES = { dash: [Dashboard, 'Dashboard'], hist: [History, 'Riwayat Transaksi'], cat: [Categories, 'Kategori'], bud: [Budget, 'Budget Bulanan'], ana: [Analysis, 'Analisis Keuangan'], set: [Settings, 'Pengaturan'], prof: [Profile, 'Profil Saya'] };
 
@@ -20,16 +21,29 @@ function Shell({ profile, onLogout, onProfileChange }) {
   const [view, setView] = useState('dash');
   const [form, setForm] = useState(null); // null | {} (baru) | { edit: transaksi }
   const { M, setM, ready, err } = useFinance();
+  const [selectedDate, setSelectedDate] = useState(today());
+  const [followToday, setFollowToday] = useState(true);
   const [Page, title] = PAGES[view];
-  const [y, m] = M.split('-');
+  useEffect(() => {
+    const timer = setInterval(() => { if (followToday) setSelectedDate(today()); }, 60 * 1000);
+    return () => clearInterval(timer);
+  }, [followToday]);
+  useEffect(() => {
+    setM(selectedDate.slice(0, 7));
+  }, [selectedDate, setM]);
+  const chooseDate = (date) => {
+    setSelectedDate(date);
+    setFollowToday(date === today());
+    setM(date.slice(0, 7));
+  };
   return (
     <>
       <Sidebar view={view} onNav={(v) => (v === 'add' ? setForm({}) : setView(v))} />
       <main className={view === 'prof' ? 'profile-main' : ''}>
         <div className="top">
-          <div><h1>{title}</h1><div className="sub">{BLN[m - 1]} {y}</div></div>
+          <div><h1>{title}</h1>{view === 'prof' ? <div className="sub">{BLN[selectedDate.slice(5, 7) - 1]} {selectedDate.slice(0, 4)}</div> : <DatePicker value={selectedDate} onChange={chooseDate} />}</div>
           <div className="top-actions">
-            {view !== 'prof' && <><input type="month" style={{ width: 'auto' }} value={M} onChange={(e) => e.target.value && setM(e.target.value)} /><button className="btn" onClick={() => setForm({})}>+ Tambah Transaksi</button></>}
+            {view !== 'prof' && <button className="btn" onClick={() => setForm({})}>+ Tambah Transaksi</button>}
             <button className="profile-chip" onClick={() => setView('prof')}><span className="profile-avatar">{profile.photo ? <img src={profile.photo} alt="" /> : profile.name.slice(0, 1).toUpperCase()}</span><span>{profile.name}</span></button>
           </div>
         </div>

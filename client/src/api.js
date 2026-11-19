@@ -4,7 +4,7 @@
 //  - Statis  : fallback localStorage browser jika Supabase belum dikonfigurasi
 import { supabase } from './supabase';
 
-export const STATIC = import.meta.env.VITE_STATIC === 'true';
+export const STATIC = import.meta.env.VITE_STATIC === 'true' || (!supabase && !import.meta.env.VITE_API_URL);
 const API_BASE = (import.meta.env.VITE_API_URL || '').replace(/\/+$/, '');
 const TOKEN_KEY = 'dompetku_token_v2';
 const ACCOUNT_KEY = 'dompetku_static_account';
