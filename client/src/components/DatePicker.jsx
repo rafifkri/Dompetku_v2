@@ -57,7 +57,14 @@ export default function DatePicker({ value, onChange }) {
         <div className="date-popover" role="dialog" aria-label="Pilih tanggal">
           <div className="date-head">
             <button type="button" onClick={() => shift(-1)} aria-label="Bulan sebelumnya">‹</button>
-            <b>{BLN[cursor.m]} {cursor.y}</b>
+            <div className="date-head-selects">
+              <select aria-label="Pilih bulan" value={cursor.m} onChange={(e) => setCursor((p) => ({ ...p, m: Number(e.target.value) }))}>
+                {BLN.map((name, index) => <option key={name} value={index}>{name}</option>)}
+              </select>
+              <select aria-label="Pilih tahun" value={cursor.y} onChange={(e) => setCursor((p) => ({ ...p, y: Number(e.target.value) }))}>
+                {Array.from({ length: 101 }, (_, i) => 2000 + i).map((year) => <option key={year} value={year}>{year}</option>)}
+              </select>
+            </div>
             <button type="button" onClick={() => shift(1)} aria-label="Bulan berikutnya">›</button>
           </div>
           <div className="date-week"><span>Sen</span><span>Sel</span><span>Rab</span><span>Kam</span><span>Jum</span><span>Sab</span><span>Min</span></div>

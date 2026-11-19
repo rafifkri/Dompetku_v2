@@ -58,7 +58,7 @@ export default function Profile({ onLogout, onProfileChange }) {
           </div>}
           <div><h2>{form.name || 'Profil kamu'}</h2><p className="sub">{form.email}</p></div>
         </div>
-        <p className="profile-tip">Klik avatar untuk mengganti foto atau klik background untuk mengganti cover.</p>
+        <p className="profile-tip">Klik avatar untuk memilih foto profil atau background.</p>
         <input ref={fileRef} type="file" accept="image/*" onChange={(e) => choosePhoto(e, 'photo')} hidden />
         <input ref={coverRef} type="file" accept="image/*" onChange={(e) => choosePhoto(e, 'cover')} hidden />
       </section>
@@ -76,22 +76,49 @@ export default function Profile({ onLogout, onProfileChange }) {
 
 function ImageAdjuster({ editor, setEditor, onApply }) {
   const drag = useRef(null);
+  const pointers = useRef(new Map());
+  const pinch = useRef(null);
+
+  const pointerDistance = () => {
+    const points = [...pointers.current.values()];
+    if (points.length < 2) return 0;
+    return Math.hypot(points[0].x - points[1].x, points[0].y - points[1].y);
+  };
   const move = (e) => {
+    if (!pointers.current.has(e.pointerId)) return;
+    pointers.current.set(e.pointerId, { x: e.clientX, y: e.clientY });
+    if (pointers.current.size >= 2) {
+      if (!pinch.current) pinch.current = { distance: pointerDistance(), scale: editor.scale };
+      const ratio = pointerDistance() / pinch.current.distance;
+      setEditor((p) => ({ ...p, scale: Math.max(1, Math.min(3, pinch.current.scale * ratio)) }));
+      return;
+    }
     if (!drag.current) return;
     setEditor((p) => ({ ...p, x: drag.current.x + e.clientX - drag.current.clientX, y: drag.current.y + e.clientY - drag.current.clientY }));
+  };
+  const wheel = (e) => {
+    e.preventDefault();
+    setEditor((p) => ({ ...p, scale: Math.max(1, Math.min(3, p.scale + (e.deltaY < 0 ? .08 : -.08))) }));
   };
   return (
     <div className="image-adjuster-backdrop">
       <div className="image-adjuster">
         <div className="image-adjuster-head"><h2>Atur {editor.field === 'photo' ? 'avatar' : 'background'}</h2><button className="btn g s" type="button" onClick={() => setEditor(null)}>×</button></div>
-        <p className="image-adjuster-help">Geser gambar untuk mengatur posisi, lalu gunakan slider untuk memperbesar atau memperkecil.</p>
-        <div className={'image-adjuster-frame ' + (editor.field === 'photo' ? 'round' : '')} onPointerDown={(e) => { e.currentTarget.setPointerCapture(e.pointerId); drag.current = { clientX: e.clientX, clientY: e.clientY, x: editor.x, y: editor.y }; }} onPointerMove={move} onPointerUp={() => { drag.current = null; }} onPointerCancel={() => { drag.current = null; }}>
+        <p className="image-adjuster-help">Geser untuk mengatur posisi. Gunakan scroll atau pinch untuk memperbesar.</p>
+        <div className={'image-adjuster-frame ' + (editor.field === 'photo' ? 'round' : '')}
+          onPointerDown={(e) => {
+            e.currentTarget.setPointerCapture(e.pointerId);
+            pointers.current.set(e.pointerId, { x: e.clientX, y: e.clientY });
+            drag.current = { clientX: e.clientX, clientY: e.clientY, x: editor.x, y: editor.y };
+            if (pointers.current.size === 2) pinch.current = { distance: pointerDistance(), scale: editor.scale };
+          }}
+          onPointerMove={move}
+          onPointerUp={(e) => { pointers.current.delete(e.pointerId); drag.current = pointers.current.size ? drag.current : null; pinch.current = pointers.current.size >= 2 ? pinch.current : null; }}
+          onPointerCancel={(e) => { pointers.current.delete(e.pointerId); drag.current = null; pinch.current = null; }}
+          onWheel={wheel}>
           <img src={editor.src} alt="Pratinjau" style={{ transform: `translate(${editor.x}px, ${editor.y}px) scale(${editor.scale})` }} />
         </div>
-        <div className="image-adjuster-controls">
-          <label>Zoom <strong>{Math.round(editor.scale * 100)}%</strong><input type="range" min="1" max="3" step=".05" value={editor.scale} onChange={(e) => setEditor({ ...editor, scale: Number(e.target.value) })} /></label>
-          <button className="btn g s" type="button" onClick={() => setEditor({ ...editor, scale: 1, x: 0, y: 0 })}>Reset</button>
-        </div>
+        <button className="btn g image-adjuster-reset" type="button" onClick={() => setEditor({ ...editor, scale: 1, x: 0, y: 0 })}>Reset posisi</button>
         <button className="btn image-adjuster-apply" type="button" onClick={onApply}>Gunakan gambar</button>
       </div>
     </div>
