@@ -4,6 +4,7 @@ import { api } from '../api';
 export default function Profile({ onLogout, onProfileChange }) {
   const [form, setForm] = useState(null);
   const [saved, setSaved] = useState(false);
+  const [showPicker, setShowPicker] = useState(false);
   const fileRef = useRef();
   const coverRef = useRef();
   useEffect(() => { api('/api/profile').then(setForm).catch(() => setForm({ name: '', email: '', bio: '', photo: '' })); }, []);
@@ -26,7 +27,7 @@ export default function Profile({ onLogout, onProfileChange }) {
     if (!file.type.startsWith('image/')) return;
     if (file.size > 2 * 1024 * 1024) return setSaved('Foto maksimal 2 MB.');
     const reader = new FileReader();
-    reader.onload = () => setForm((p) => ({ ...p, [field]: reader.result }));
+    reader.onload = () => { setForm((p) => ({ ...p, [field]: reader.result })); setShowPicker(false); };
     reader.readAsDataURL(file);
   };
 
@@ -35,14 +36,18 @@ export default function Profile({ onLogout, onProfileChange }) {
   return (
     <div className="profile-layout">
       <section className="card profile-hero">
-        <button className="profile-cover" type="button" onClick={() => coverRef.current.click()} style={form.cover ? { backgroundImage: `linear-gradient(90deg, rgba(7, 17, 10, .58), rgba(31, 92, 54, .25)), url(${form.cover})` } : undefined}>
+        <div className="profile-cover" style={form.cover ? { backgroundImage: `linear-gradient(90deg, rgba(7, 17, 10, .58), rgba(31, 92, 54, .25)), url(${form.cover})` } : undefined}>
           <span className="cover-edit">Ganti background</span>
-        </button>
+        </div>
         <div className="profile-identity">
-          <button className="profile-avatar profile-avatar-large" type="button" onClick={() => fileRef.current.click()} aria-label="Ganti foto profil">
+          <button className="profile-avatar profile-avatar-large" type="button" onClick={() => setShowPicker((p) => !p)} aria-label="Ubah foto atau background profil" aria-expanded={showPicker}>
             {form.photo ? <img src={form.photo} alt="Foto profil" /> : initials}
             <span className="avatar-edit">+</span>
           </button>
+          {showPicker && <div className="profile-picker-menu">
+            <button type="button" onClick={() => fileRef.current.click()}>Ganti foto profil</button>
+            <button type="button" onClick={() => coverRef.current.click()}>Ganti background</button>
+          </div>}
           <div><h2>{form.name || 'Profil kamu'}</h2><p className="sub">{form.email}</p></div>
         </div>
         <p className="profile-tip">Klik avatar untuk mengganti foto atau klik background untuk mengganti cover.</p>

@@ -7,12 +7,12 @@ export const useUI = () => useContext(Ctx);
 export function UIProvider({ children }) {
   const [msg, setMsg] = useState(''); const tm = useRef();
   const [p, setP] = useState(null);
-  const [theme, setThemeState] = useState(() => { try { return localStorage.getItem('dompetku_theme') || ''; } catch { return ''; } });
+  const [theme, setThemeState] = useState(() => { try { return localStorage.getItem('dompetku_theme_v2') || 'dark'; } catch { return 'dark'; } });
   if (theme && document.documentElement.dataset.theme !== theme) document.documentElement.dataset.theme = theme;
 
   const toast = useCallback((m) => { setMsg(m); clearTimeout(tm.current); tm.current = setTimeout(() => setMsg(''), 2200); }, []);
   const ask = useCallback((title, value = '', conf = false) => new Promise((resolve) => setP({ title, value, conf, resolve })), []);
-  const setTheme = (t) => { document.documentElement.dataset.theme = t; try { localStorage.setItem('dompetku_theme', t); } catch { /* abaikan */ } setThemeState(t); };
+  const setTheme = (t) => { document.documentElement.dataset.theme = t; try { localStorage.setItem('dompetku_theme_v2', t); } catch { /* abaikan */ } setThemeState(t); };
 
   return (
     <Ctx.Provider value={{ toast, ask, theme, setTheme }}>
