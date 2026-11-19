@@ -17,7 +17,14 @@ export default function Login({ onLogin }) {
       setToken(data.token);
       onLogin(data.user);
     } catch (err) {
-      setError(mode === 'register' ? 'Email sudah terdaftar atau data tidak valid.' : 'Email atau password salah.');
+      const message = String(err?.message || '');
+      if (mode === 'register') {
+        if (/confirm|konfirmasi/i.test(message)) setError('Periksa email untuk tautan konfirmasi akun.');
+        else if (/already|registered|terdaftar/i.test(message)) setError('Email sudah terdaftar. Pilih Masuk.');
+        else setError(message || 'Data registrasi tidak valid.');
+      } else {
+        setError(message || 'Email atau password salah.');
+      }
     }
   };
 
