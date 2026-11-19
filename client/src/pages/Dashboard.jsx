@@ -7,6 +7,10 @@ import SummaryCard from '../components/SummaryCard';
 import ChartCard from '../components/ChartCard';
 import TxRow from '../components/TxRow';
 import { PAL, daysIn, rp, srt, sum } from '../utils';
+import pemasukanIcon from '../assets/icons/total-pemasukan.png';
+import pengeluaranIcon from '../assets/icons/total-pengeluaran.png';
+import transaksiIcon from '../assets/icons/total-transaksi.png';
+import saldoIcon from '../assets/icons/sisa-saldo.png';
 
 export default function Dashboard({ openEdit }) {
   const { S, M, monthTx } = useFinance();
@@ -38,10 +42,10 @@ export default function Dashboard({ openEdit }) {
     <>
       {!S.tx.length && <div className="card empty" style={{ marginBottom: 18 }}>👋 Belum ada transaksi. Klik <b>+ Tambah Transaksi</b> untuk mulai mencatat. Semua grafik dihitung dari data yang kamu catat.</div>}
       <div className="grid g4">
-        <SummaryCard label="Total Pemasukan" value={rp(inc)} icon="📈" color="var(--inc)" pct={inc > 0 ? 100 : 0} note="Uang masuk bulan ini" />
-        <SummaryCard label="Total Pengeluaran" value={rp(exp)} icon="📉" color="var(--exp)" pct={pc(exp, inc)} note={inc > 0 ? Math.round((exp / inc) * 100) + '% dari pemasukan' : 'Uang keluar bulan ini'} />
-        <SummaryCard label="Sisa Saldo" value={rp(bal)} icon="🏦" color="var(--bal)" pct={pc(bal, inc + (+S.saldoAwal || 0))} note={S.saldoAwal > 0 ? 'Termasuk saldo awal ' + rp(S.saldoAwal) : 'Pemasukan − pengeluaran'} />
-        <SummaryCard label="Total Transaksi" value={monthTx.length} icon="🧾" color="var(--pri)" pct={Math.min(100, monthTx.length * 2)} note={monthTx.length ? 'Rata-rata ' + rp(exp / n) + ' / hari' : 'Belum ada transaksi'} />
+        <SummaryCard label="Sisa Saldo" value={rp(bal)} icon={saldoIcon} color="var(--bal)" pct={pc(bal, inc + (+S.saldoAwal || 0))} note={S.saldoAwal > 0 ? 'Termasuk saldo awal ' + rp(S.saldoAwal) : 'Pemasukan − pengeluaran'} />
+        <SummaryCard label="Total Pemasukan" value={rp(inc)} icon={pemasukanIcon} color="var(--inc)" pct={inc > 0 ? 100 : 0} note="Uang masuk bulan ini" />
+        <SummaryCard label="Total Pengeluaran" value={rp(exp)} icon={pengeluaranIcon} color="var(--exp)" pct={pc(exp, inc)} note={inc > 0 ? Math.round((exp / inc) * 100) + '% dari pemasukan' : 'Uang keluar bulan ini'} />
+        <SummaryCard label="Total Transaksi" value={monthTx.length} icon={transaksiIcon} color="var(--pri)" pct={Math.min(100, monthTx.length * 2)} note={monthTx.length ? 'Rata-rata ' + rp(exp / n) + ' / hari' : 'Belum ada transaksi'} />
       </div>
       <div className="grid g2" style={{ marginTop: 18 }}>
         <ChartCard title="Pemasukan vs Pengeluaran">

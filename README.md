@@ -393,10 +393,12 @@ Deploy otomatis frontend sudah disiapkan di `.github/workflows/pages.yml`:
 1. Push proyek ke GitHub (branch `master` atau `main`).
 2. Deploy repository ini ke Railway. Konfigurasi [railway.json](./railway.json) sudah menyediakan build command `npm run install:all && npm run build` dan start command `npm start`.
 3. Tambahkan volume persisten Railway dan set `DB_FILE` ke `/data/dompetku.db`.
-4. Set environment variable Railway `CORS_ORIGIN` ke origin GitHub Pages tanpa path (contoh `https://username.github.io`) dan, bila perlu, `APP_PASSWORD`.
+4. Set environment variable Railway `CORS_ORIGIN` ke origin GitHub Pages tanpa path (contoh `https://username.github.io`). Jangan set `APP_PASSWORD` karena login aplikasi memakai Bearer token.
 5. Di GitHub, buka **Settings → Secrets and variables → Actions → Variables**, lalu buat `VITE_API_URL` berisi URL publik Railway (contoh `https://dompetku-production.up.railway.app`).
 6. Buka **Settings → Pages → Build and deployment → Source: GitHub Actions**.
 7. Setiap push akan membangun dan men-deploy frontend yang memakai backend Railway.
+
+Autentikasi, profil, foto profil, transaksi, budget, dan kategori disimpan per akun di database Railway. Migrasi database versi 2 menghapus data lama yang belum memiliki akun, sehingga akun pertama dimulai dari data kosong sesuai kebijakan aplikasi ini. Jangan mengaktifkan `APP_PASSWORD` bersamaan dengan login aplikasi karena frontend memakai Bearer token.
 
 Untuk menjalankan mode static lokal tanpa backend (PowerShell):
 

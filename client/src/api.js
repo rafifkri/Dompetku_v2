@@ -3,6 +3,11 @@
 //  - Statis  : (VITE_STATIC=true, mis. GitHub Pages) meniru API yang sama memakai localStorage browser
 export const STATIC = import.meta.env.VITE_STATIC === 'true';
 const API_BASE = (import.meta.env.VITE_API_URL || '').replace(/\/+$/, '');
+const TOKEN_KEY = 'dompetku_token';
+
+export const getToken = () => localStorage.getItem(TOKEN_KEY) || '';
+export const setToken = (token) => localStorage.setItem(TOKEN_KEY, token);
+export const clearToken = () => localStorage.removeItem(TOKEN_KEY);
 
 const KEY = 'dompetku_static_v1';
 const read = () => {
@@ -34,5 +39,9 @@ function local(url, method, b) {
 export const api = (url, method = 'GET', body) =>
   STATIC
     ? Promise.resolve().then(() => local(url, method, body))
-    : fetch(API_BASE + url, { method, headers: { 'Content-Type': 'application/json' }, body: body ? JSON.stringify(body) : undefined })
+    : fetch(API_BASE + url, {
+        method,
+        headers: { 'Content-Type': 'application/json', ...(getToken() ? { Authorization: 'Bearer ' + getToken() } : {}) },
+        body: body ? JSON.stringify(body) : undefined,
+      })
         .then((r) => { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); });
