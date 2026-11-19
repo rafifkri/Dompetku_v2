@@ -78,6 +78,25 @@ function ImageAdjuster({ editor, setEditor, onApply }) {
   const drag = useRef(null);
   const pointers = useRef(new Map());
   const pinch = useRef(null);
+  const frameRef = useRef(null);
+
+  const clampPosition = (x, y, scale) => {
+    const frame = frameRef.current?.getBoundingClientRect();
+    if (!frame) return { x, y };
+    const maxX = Math.max(0, frame.width * (scale - 1) / 2);
+    const maxY = Math.max(0, frame.height * (scale - 1) / 2);
+    return { x: Math.max(-maxX, Math.min(maxX, x)), y: Math.max(-maxY, Math.min(maxY, y)) };
+  };
+
+  const settlePosition = (position, scale) => {
+    if (scale <= 1) return { x: 0, y: 0 };
+    const frame = frameRef.current?.getBoundingClientRect();
+    if (!frame) return position;
+    const maxX = Math.max(0, frame.width * (scale - 1) / 2);
+    const maxY = Math.max(0, frame.height * (scale - 1) / 2);
+    if (Math.abs(position.x) > maxX + 1 || Math.abs(position.y) > maxY + 1) return { x: 0, y: 0 };
+    return clampPosition(position.x, position.y, scale);
+  };
 
   const pointerDistance = () => {
     const points = [...pointers.current.values()];
@@ -90,15 +109,26 @@ function ImageAdjuster({ editor, setEditor, onApply }) {
     if (pointers.current.size >= 2) {
       if (!pinch.current) pinch.current = { distance: pointerDistance(), scale: editor.scale };
       const ratio = pointerDistance() / pinch.current.distance;
-      setEditor((p) => ({ ...p, scale: Math.max(1, Math.min(3, pinch.current.scale * ratio)) }));
+      setEditor((p) => {
+        const scale = Math.max(1, Math.min(3, pinch.current.scale * ratio));
+        return scale <= 1 ? { ...p, scale: 1, x: 0, y: 0 } : { ...p, scale };
+      });
       return;
     }
     if (!drag.current) return;
-    setEditor((p) => ({ ...p, x: drag.current.x + e.clientX - drag.current.clientX, y: drag.current.y + e.clientY - drag.current.clientY }));
+    setEditor((p) => {
+      const rawX = drag.current.x + e.clientX - drag.current.clientX;
+      const rawY = drag.current.y + e.clientY - drag.current.clientY;
+      return { ...p, x: rawX, y: rawY };
+    });
   };
   const wheel = (e) => {
     e.preventDefault();
-    setEditor((p) => ({ ...p, scale: Math.max(1, Math.min(3, p.scale + (e.deltaY < 0 ? .08 : -.08))) }));
+    setEditor((p) => {
+      const scale = Math.max(1, Math.min(3, p.scale + (e.deltaY < 0 ? .08 : -.08)));
+      if (scale <= 1) return { ...p, scale: 1, x: 0, y: 0 };
+      return { ...p, scale };
+    });
   };
   return (
     <div className="image-adjuster-backdrop">
@@ -106,6 +136,7 @@ function ImageAdjuster({ editor, setEditor, onApply }) {
         <div className="image-adjuster-head"><h2>Atur {editor.field === 'photo' ? 'avatar' : 'background'}</h2><button className="btn g s" type="button" onClick={() => setEditor(null)}>×</button></div>
         <p className="image-adjuster-help">Geser untuk mengatur posisi. Gunakan scroll atau pinch untuk memperbesar.</p>
         <div className={'image-adjuster-frame ' + (editor.field === 'photo' ? 'round' : '')}
+          ref={frameRef}
           onPointerDown={(e) => {
             e.currentTarget.setPointerCapture(e.pointerId);
             pointers.current.set(e.pointerId, { x: e.clientX, y: e.clientY });
@@ -113,8 +144,20 @@ function ImageAdjuster({ editor, setEditor, onApply }) {
             if (pointers.current.size === 2) pinch.current = { distance: pointerDistance(), scale: editor.scale };
           }}
           onPointerMove={move}
-          onPointerUp={(e) => { pointers.current.delete(e.pointerId); drag.current = pointers.current.size ? drag.current : null; pinch.current = pointers.current.size >= 2 ? pinch.current : null; }}
-          onPointerCancel={(e) => { pointers.current.delete(e.pointerId); drag.current = null; pinch.current = null; }}
+          onPointerUp={(e) => {
+            pointers.current.delete(e.pointerId);
+            if (!pointers.current.size) {
+              setEditor((p) => ({ ...p, ...settlePosition(p, p.scale) }));
+              drag.current = null;
+              pinch.current = null;
+            }
+          }}
+          onPointerCancel={(e) => {
+            pointers.current.delete(e.pointerId);
+            setEditor((p) => ({ ...p, ...settlePosition(p, p.scale) }));
+            drag.current = null;
+            pinch.current = null;
+          }}
           onWheel={wheel}>
           <img src={editor.src} alt="Pratinjau" style={{ transform: `translate(${editor.x}px, ${editor.y}px) scale(${editor.scale})` }} />
         </div>

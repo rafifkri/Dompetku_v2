@@ -61,9 +61,18 @@ export default function DatePicker({ value, onChange }) {
               <select aria-label="Pilih bulan" value={cursor.m} onChange={(e) => setCursor((p) => ({ ...p, m: Number(e.target.value) }))}>
                 {BLN.map((name, index) => <option key={name} value={index}>{name}</option>)}
               </select>
-              <select aria-label="Pilih tahun" value={cursor.y} onChange={(e) => setCursor((p) => ({ ...p, y: Number(e.target.value) }))}>
-                {Array.from({ length: 101 }, (_, i) => 2000 + i).map((year) => <option key={year} value={year}>{year}</option>)}
-              </select>
+              <input
+                className="date-year-input"
+                aria-label="Pilih tahun"
+                type="number"
+                min="2000"
+                max="2100"
+                value={cursor.y}
+                onChange={(e) => {
+                  const year = Number(e.target.value);
+                  if (year >= 2000 && year <= 2100) setCursor((p) => ({ ...p, y: year }));
+                }}
+              />
             </div>
             <button type="button" onClick={() => shift(1)} aria-label="Bulan berikutnya">›</button>
           </div>

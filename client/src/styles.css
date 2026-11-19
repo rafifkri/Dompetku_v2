@@ -251,6 +251,7 @@ canvas { max-height: 280px }
 .date-head b { text-align: center; font-size: 14px }
 .date-head-selects { display: grid; grid-template-columns: 1.35fr .65fr; gap: 6px }
 .date-head-selects select { width: 100%; min-width: 0; height: 38px; border: 1px solid var(--line); border-radius: 9px; background: var(--card-soft); color: var(--tx); padding: 6px 8px; text-align: center; cursor: pointer }
+.date-year-input { width: 100%; min-width: 0; height: 38px; border: 1px solid var(--line); border-radius: 9px; background: var(--card-soft); color: var(--tx); padding: 6px 8px; text-align: center }
 .date-head button { width: 34px; height: 34px; border: 0; border-radius: 9px; background: var(--card-soft); color: var(--tx); cursor: pointer; font-size: 22px }
 .date-week, .date-grid { display: grid; grid-template-columns: repeat(7, 1fr); text-align: center }
 .date-week { color: var(--mut); font-size: 11px; margin-bottom: 4px }
