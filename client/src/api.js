@@ -82,6 +82,7 @@ const cloud = async (url, method = 'GET', b) => {
     if (!String(b.name || '').trim() || !/^\S+@\S+\.\S+$/.test(String(b.email || '').trim()) || String(b.password || '').length < 8) throw new Error('Nama, email, atau password tidak valid');
     const { data, error } = await supabase.auth.signUp({ email: b.email.trim().toLowerCase(), password: b.password, options: { data: { name: b.name.trim() } } });
     if (error) throw new Error(error.message);
+    if (data.user && Array.isArray(data.user.identities) && data.user.identities.length === 0) throw new Error('Email sudah terdaftar');
     if (!data.user || !data.session) throw new Error('Konfirmasi email Supabase diperlukan');
     await supabase.from('profiles').upsert({ id: data.user.id, email: data.user.email, name: b.name.trim() });
     return { token: data.session.access_token, user: { id: data.user.id, name: b.name.trim(), email: data.user.email, bio: '', photo: '', cover: '' } };
