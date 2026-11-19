@@ -4,6 +4,8 @@
 export const STATIC = import.meta.env.VITE_STATIC === 'true';
 const API_BASE = (import.meta.env.VITE_API_URL || '').replace(/\/+$/, '');
 const TOKEN_KEY = 'dompetku_token';
+const ACCOUNT_KEY = 'dompetku_static_account';
+const PROFILE_KEY = 'dompetku_profile';
 
 export const getToken = () => localStorage.getItem(TOKEN_KEY) || '';
 export const setToken = (token) => localStorage.setItem(TOKEN_KEY, token);
@@ -17,6 +19,32 @@ const read = () => {
 
 function local(url, method, b) {
   const d = read();
+  if (url === '/api/auth/register' && method === 'POST') {
+    if (localStorage.getItem(ACCOUNT_KEY)) throw new Error('Email sudah terdaftar');
+    const user = { id: 'local', name: String(b.name).trim(), email: String(b.email).trim().toLowerCase(), bio: '', photo: '' };
+    localStorage.setItem(ACCOUNT_KEY, JSON.stringify({ ...user, password: b.password }));
+    localStorage.setItem(PROFILE_KEY, JSON.stringify(user));
+    return { token: 'local-session', user };
+  }
+  if (url === '/api/auth/login' && method === 'POST') {
+    const account = JSON.parse(localStorage.getItem(ACCOUNT_KEY) || 'null');
+    if (!account || account.email !== String(b.email).trim().toLowerCase() || account.password !== b.password) throw new Error('Login gagal');
+    return { token: 'local-session', user: account };
+  }
+  if (url === '/api/auth/me' && method === 'GET') {
+    const user = JSON.parse(localStorage.getItem(PROFILE_KEY) || 'null');
+    if (!user) throw new Error('Login diperlukan');
+    return { user };
+  }
+  if (url === '/api/auth/logout' && method === 'POST') return { ok: true };
+  if (url === '/api/profile' && method === 'GET') return JSON.parse(localStorage.getItem(PROFILE_KEY) || 'null');
+  if (url === '/api/profile' && method === 'PUT') {
+    const account = JSON.parse(localStorage.getItem(ACCOUNT_KEY) || 'null');
+    const user = { ...b, id: 'local' };
+    localStorage.setItem(PROFILE_KEY, JSON.stringify(user));
+    if (account) localStorage.setItem(ACCOUNT_KEY, JSON.stringify({ ...account, name: user.name, email: user.email, bio: user.bio, photo: user.photo }));
+    return user;
+  }
   if (url === '/api/data' && method === 'GET') return d;
   if (url === '/api/tx' && method === 'POST') {
     const amount = Math.round(Number(b.amount));
