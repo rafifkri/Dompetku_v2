@@ -57,13 +57,18 @@ Proyek ini terdiri dari tiga lapisan:
 ## 2. Fitur
 
 ### Dashboard
-- Empat kartu ringkasan: **Total Pemasukan**, **Total Pengeluaran**, **Sisa Saldo** (termasuk saldo awal), dan **Total Transaksi**.
+- Empat kartu ringkasan berurutan: **Sisa Saldo**, **Total Pemasukan**, **Total Pengeluaran**, dan **Total Transaksi**.
 - Empat grafik interaktif:
   - Pemasukan vs pengeluaran per tanggal (batang)
   - Pengeluaran per kategori beserta persentasenya (doughnut)
   - Tren pengeluaran harian (garis)
   - Aktivitas: hari dengan pengeluaran tertinggi dan terendah
-- Daftar lima transaksi terbaru.
+- Daftar lima transaksi terbaru dengan icon edit dan aksi hapus berkonfirmasi.
+
+### Akun dan Profil
+- Halaman registrasi dan login.
+- Profil dengan nama, email, bio, serta foto dari perangkat.
+- Mode GitHub Pages menyimpan akun dan profil secara lokal di browser.
 
 ### Transaksi
 - Form tambah dan edit dengan **subkategori yang berubah otomatis** mengikuti kategori.
@@ -92,6 +97,7 @@ Proyek ini terdiri dari tiga lapisan:
 - Saldo awal, tema terang atau gelap (mengikuti pengaturan perangkat secara default).
 - **Unduh CSV** (bisa dibuka di Excel) dan **unduh backup JSON**.
 - Restore dari file `.json` atau teks, dan reset semua data.
+- Login, profil, dan foto profil tersimpan di browser pada mode static.
 
 ### Desain
 - Identitas visual mengikuti logo: palet krem hangat dan hitam tinta, dengan warna hijau/koral/biru hanya untuk makna keuangan (pemasukan, pengeluaran, saldo).
@@ -219,12 +225,12 @@ Konfigurasi dilakukan lewat environment variable:
 |---|---|---|
 | `PORT` | `3000` | Port server |
 | `DB_FILE` | `./data/dompetku.db` | Lokasi file database SQLite |
-| `APP_PASSWORD` | *(kosong)* | Jika diisi, seluruh aplikasi dilindungi Basic Auth. Username bebas, password harus sama dengan nilai ini |
+| `APP_PASSWORD` | *(kosong)* | Basic Auth tambahan untuk server. Jangan diaktifkan bersamaan dengan login aplikasi tanpa menambahkan header Basic Auth di frontend |
 
 Contoh:
 
 ```bash
-PORT=8080 DB_FILE=/var/data/dompetku.db APP_PASSWORD=rahasia123 npm start
+PORT=8080 DB_FILE=/var/data/dompetku.db npm start
 ```
 
 ---
@@ -241,7 +247,8 @@ PORT=8080 DB_FILE=/var/data/dompetku.db APP_PASSWORD=rahasia123 npm start
    - 🔴 merah: melebihi budget
 6. **Cari dan koreksi transaksi** di *Riwayat Transaksi* dengan filter dan tombol ✏️ atau 🗑️.
 7. **Lihat insight** dan perbandingan antarbulan di *Analisis Keuangan*.
-8. **Amankan data** secara berkala lewat *Pengaturan* dengan **Unduh Backup JSON**.
+8. **Kelola akun** lewat tombol profil di kanan atas. Foto profil dapat dipilih dari perangkat.
+9. **Amankan data** secara berkala lewat *Pengaturan* dengan **Unduh Backup JSON**.
 
 ---
 
@@ -249,17 +256,15 @@ PORT=8080 DB_FILE=/var/data/dompetku.db APP_PASSWORD=rahasia123 npm start
 
 ```
 ┌──────────────────────────┐        HTTP / JSON         ┌─────────────────────────┐
-│  React (browser)         │  ───────────────────────▶  │  Express (server.js)    │
-│  store.jsx (useFinance)  │  ◀───────────────────────  │  validasi + REST API    │
-└──────────────────────────┘                            └───────────┬─────────────┘
-                                                                    │ better-sqlite3
-                                                        ┌───────────▼─────────────┐
-                                                        │  SQLite: dompetku.db    │
-                                                        └─────────────────────────┘
+│ React (browser)          │ ─── mode normal ───▶ │ Express + SQLite           │
+│ store.jsx / api.js       │                       │ server.js                  │
+│                          │ ─── mode static ───▶ │ localStorage browser       │
+└──────────────────────────┘                       └────────────────────────────┘
 ```
 
-- Saat aplikasi dibuka, frontend memanggil `GET /api/data` dan menyimpan hasilnya di state React.
-- **Transaksi** disimpan dulu ke server (`POST /api/tx`). State di browser baru diperbarui setelah server berhasil, sehingga tampilan selalu sama dengan isi database.
+- Pada mode normal, frontend login ke API lalu memanggil `GET /api/data`; token Bearer dikirim pada setiap request.
+- Pada mode static (`VITE_STATIC=true`), API ditiru oleh `client/src/api.js` menggunakan `localStorage`.
+- **Transaksi** disimpan ke server pada mode normal atau ke browser pada mode static.
 - **Pengaturan** (saldo awal, budget, kategori) disimpan ke server dengan jeda singkat (debounce 250 ms) supaya tidak membanjiri server saat mengetik.
 - Seluruh ringkasan dan grafik dihitung di frontend dari data transaksi, sehingga langsung berubah setiap ada perubahan.
 - Pada pertama kali dibuka dengan database kosong, frontend mengirim kategori dan budget awal ke server.
@@ -270,11 +275,19 @@ PORT=8080 DB_FILE=/var/data/dompetku.db APP_PASSWORD=rahasia123 npm start
 
 SQLite dengan mode WAL. Skema dibuat otomatis oleh `server.js`.
 
+### Tabel `users`
+
+Menyimpan akun, password hash, profil, dan foto profil.
+
+### Tabel `sessions`
+
+Menyimpan token sesi yang sudah di-hash beserta masa berlakunya.
+
 ### Tabel `transactions`
 
 | Kolom | Tipe | Keterangan |
 |---|---|---|
-| `id` | TEXT, PK | UUID transaksi |
+| `user_id`, `id` | PK gabungan | Pemilik dan ID transaksi |
 | `ts` | INTEGER | Waktu pembuatan (ms) untuk pengurutan |
 | `type` | TEXT | `income` atau `expense` |
 | `amount` | INTEGER | Rupiah, **harus lebih dari 0** (constraint database) |
@@ -286,7 +299,7 @@ SQLite dengan mode WAL. Skema dibuat otomatis oleh `server.js`.
 
 ### Tabel `kv`
 
-Menyimpan pengaturan sebagai JSON:
+Menyimpan pengaturan sebagai JSON per pengguna:
 
 | Key | Isi |
 |---|---|
@@ -299,6 +312,9 @@ Menyimpan pengaturan sebagai JSON:
 ## 11. Referensi REST API
 
 Semua request dan response berformat JSON, kecuali endpoint unduhan.
+
+Endpoint akun tersedia di `POST /api/auth/register`, `POST /api/auth/login`, `GET /api/auth/me`, dan `POST /api/auth/logout`.
+Endpoint profil tersedia di `GET /api/profile` dan `PUT /api/profile`. Endpoint data membutuhkan header `Authorization: Bearer <token>`.
 
 ### `GET /api/data`
 Mengambil seluruh data.
@@ -425,8 +441,9 @@ npm run preview
 
 ## 15. Keamanan
 
-- Aplikasi **belum memiliki sistem akun pengguna**. Satu server berarti satu set data keuangan.
-- Jika diakses dari internet, **aktifkan `APP_PASSWORD`** dan pasang **HTTPS**, karena Basic Auth mengirim password dalam bentuk yang mudah dibaca jika tanpa HTTPS.
+- Mode normal memakai akun, password hash, token sesi, dan data transaksi terpisah per pengguna.
+- Mode GitHub Pages memakai `localStorage`; data hanya tersedia di browser/perangkat yang sama dan tidak boleh dianggap sebagai penyimpanan cloud.
+- Jika mode normal diakses dari internet, gunakan **HTTPS**. `APP_PASSWORD` adalah Basic Auth tambahan dan tidak boleh diaktifkan bersamaan dengan login aplikasi tanpa penyesuaian frontend.
 - Query database memakai prepared statement, sehingga aman dari SQL injection. Teks yang tampil di UI di-escape oleh React.
 - Backend memvalidasi ulang semua input, tidak hanya mengandalkan validasi di browser.
 
@@ -449,12 +466,13 @@ npm run preview
 ## 17. Batasan yang Diketahui dan Pengembangan Lanjutan
 
 **Batasan saat ini**
-- Single-user, tanpa login per akun.
+- Mode GitHub Pages tidak menyinkronkan data antar perangkat.
+- Password dan profil pada mode static hanya berlaku di browser lokal.
 - Budget berlaku sama untuk semua bulan (belum ada budget terpisah per bulan).
 - Belum ada pengujian otomatis (unit atau end-to-end).
 
 **Ide pengembangan**
-- Autentikasi multi-user (misalnya JWT) dengan data terpisah per pengguna.
+- Sinkronisasi akun static ke backend cloud.
 - Budget per bulan dan transaksi berulang (langganan, cicilan).
 - Target tabungan dan notifikasi budget.
 - Migrasi ke PostgreSQL atau Supabase untuk penggunaan multi-perangkat dengan banyak pengguna.

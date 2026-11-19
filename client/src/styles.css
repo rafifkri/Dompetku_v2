@@ -1,27 +1,35 @@
 :root {
-  --bg: #f5f2ea;
-  --card: #fffdf8;
-  --card-soft: #f0ede4;
-  --tx: #172019;
-  --mut: #6d786f;
-  --line: #e2e5dc;
-  --cream: #f5f2ea;
-  --side: #172019;
-  --side-deep: #101711;
-  --sidetx: #cbd6ca;
-  --pri: #1d2b21;
-  --onpri: #fffdf8;
+  --bg: #0c130f;
+  --card: #141e17;
+  --card-soft: #1c2a20;
+  --tx: #edf4ed;
+  --mut: #9baa9e;
+  --line: #293a2d;
+  --cream: #1e3024;
+  --side: #080e0a;
+  --side-deep: #050906;
+  --sidetx: #c5d3c7;
+  --pri: #d7ecd9;
+  --onpri: #132018;
   --em: #31875a;
   --inc: #31875a;
   --exp: #d35d4c;
   --bal: #467f70;
   --focus: #6bb98a;
-  --sh: 0 2px 4px rgba(27, 43, 31, .05), 0 14px 32px rgba(27, 43, 31, .07);
+  --sh: 0 2px 5px rgba(0, 0, 0, .28), 0 16px 36px rgba(0, 0, 0, .2);
   --r: 18px;
-  color-scheme: light;
+  color-scheme: dark;
   box-sizing: border-box;
   padding-top: env(safe-area-inset-top, 0px);
   padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+:root[data-theme="light"] {
+  --bg: #f5f2ea; --card: #fffdf8; --card-soft: #f0ede4; --tx: #172019;
+  --mut: #6d786f; --line: #e2e5dc; --cream: #f5f2ea; --side: #172019;
+  --side-deep: #101711; --sidetx: #cbd6ca; --pri: #1d2b21; --onpri: #fffdf8;
+  --sh: 0 2px 4px rgba(27, 43, 31, .05), 0 14px 32px rgba(27, 43, 31, .07);
+  color-scheme: light;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -302,7 +310,8 @@ canvas { max-height: 280px }
 
 .profile-layout { display: grid; grid-template-columns: minmax(250px, .7fr) minmax(360px, 1.3fr); gap: 18px }
 .profile-hero { position: relative; overflow: hidden; padding: 0 24px 24px }
-.profile-cover { height: 124px; margin: 0 -24px 0; background: radial-gradient(circle at 75% 20%, rgba(181, 226, 187, .5), transparent 28%), linear-gradient(135deg, var(--side), var(--em)); }
+.profile-cover { width: calc(100% + 48px); height: 124px; margin: 0 -24px; padding: 0; border: 0; cursor: pointer; background: radial-gradient(circle at 75% 20%, rgba(181, 226, 187, .5), transparent 28%), linear-gradient(135deg, var(--side), var(--em)); background-position: center; background-size: cover; position: relative }
+.cover-edit { position: absolute; right: 16px; top: 16px; padding: 6px 10px; border: 1px solid rgba(255,255,255,.25); border-radius: 99px; background: rgba(5, 15, 8, .42); color: #e4f2e5; font-size: 11px; font-weight: 700 }
 .profile-identity { display: flex; align-items: end; gap: 14px; margin-top: -40px; position: relative }
 .profile-avatar-large { width: 88px; height: 88px; border: 4px solid var(--card); font-size: 30px; cursor: pointer; position: relative }
 .avatar-edit { position: absolute; right: -3px; bottom: -2px; width: 25px; height: 25px; display: grid; place-items: center; border-radius: 50%; background: var(--pri); color: var(--onpri); font-size: 18px; line-height: 1 }

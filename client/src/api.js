@@ -21,7 +21,7 @@ function local(url, method, b) {
   const d = read();
   if (url === '/api/auth/register' && method === 'POST') {
     if (localStorage.getItem(ACCOUNT_KEY)) throw new Error('Email sudah terdaftar');
-    const user = { id: 'local', name: String(b.name).trim(), email: String(b.email).trim().toLowerCase(), bio: '', photo: '' };
+    const user = { id: 'local', name: String(b.name).trim(), email: String(b.email).trim().toLowerCase(), bio: '', photo: '', cover: '' };
     localStorage.setItem(ACCOUNT_KEY, JSON.stringify({ ...user, password: b.password }));
     localStorage.setItem(PROFILE_KEY, JSON.stringify(user));
     return { token: 'local-session', user };
