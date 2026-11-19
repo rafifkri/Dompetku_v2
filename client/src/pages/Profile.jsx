@@ -84,11 +84,15 @@ function ImageAdjuster({ editor, setEditor, onApply }) {
     <div className="image-adjuster-backdrop">
       <div className="image-adjuster">
         <div className="image-adjuster-head"><h2>Atur {editor.field === 'photo' ? 'avatar' : 'background'}</h2><button className="btn g s" type="button" onClick={() => setEditor(null)}>×</button></div>
+        <p className="image-adjuster-help">Geser gambar untuk mengatur posisi, lalu gunakan slider untuk memperbesar atau memperkecil.</p>
         <div className={'image-adjuster-frame ' + (editor.field === 'photo' ? 'round' : '')} onPointerDown={(e) => { e.currentTarget.setPointerCapture(e.pointerId); drag.current = { clientX: e.clientX, clientY: e.clientY, x: editor.x, y: editor.y }; }} onPointerMove={move} onPointerUp={() => { drag.current = null; }} onPointerCancel={() => { drag.current = null; }}>
           <img src={editor.src} alt="Pratinjau" style={{ transform: `translate(${editor.x}px, ${editor.y}px) scale(${editor.scale})` }} />
         </div>
-        <label>Zoom<input type="range" min="1" max="3" step=".05" value={editor.scale} onChange={(e) => setEditor({ ...editor, scale: Number(e.target.value) })} /></label>
-        <button className="btn" type="button" onClick={onApply}>Gunakan gambar</button>
+        <div className="image-adjuster-controls">
+          <label>Zoom <strong>{Math.round(editor.scale * 100)}%</strong><input type="range" min="1" max="3" step=".05" value={editor.scale} onChange={(e) => setEditor({ ...editor, scale: Number(e.target.value) })} /></label>
+          <button className="btn g s" type="button" onClick={() => setEditor({ ...editor, scale: 1, x: 0, y: 0 })}>Reset</button>
+        </div>
+        <button className="btn image-adjuster-apply" type="button" onClick={onApply}>Gunakan gambar</button>
       </div>
     </div>
   );

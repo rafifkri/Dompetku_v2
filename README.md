@@ -64,11 +64,17 @@ Proyek ini terdiri dari tiga lapisan:
   - Tren pengeluaran harian (garis)
   - Aktivitas: hari dengan pengeluaran tertinggi dan terendah
 - Daftar lima transaksi terbaru dengan icon edit dan aksi hapus berkonfirmasi.
+- Pemilih tanggal kalender interaktif di bagian atas; tanggal awal mengikuti tanggal perangkat dan diperbarui otomatis setiap hari.
+- Pemilihan tanggal manual dihentikan dari pembaruan otomatis sampai tombol **Hari ini** dipilih.
 
 ### Akun dan Profil
 - Halaman registrasi dan login.
-- Profil dengan nama, email, bio, serta foto dari perangkat.
-- Mode GitHub Pages menyimpan akun dan profil secara lokal di browser.
+- Profil dengan nama, email, dan bio.
+- Avatar lingkaran penuh serta cover latar profil.
+- Menu dari avatar menyediakan pilihan ganti avatar atau ganti background.
+- Editor gambar mendukung drag/pindahkan posisi, zoom, persentase zoom, dan reset.
+- Sesi tetap aktif saat refresh pada tab yang sama; membuka link baru dapat meminta login ulang.
+- Dengan Supabase, profil dan data tersinkron antar perangkat.
 
 ### Transaksi
 - Form tambah dan edit dengan **subkategori yang berubah otomatis** mengikuti kategori.
@@ -97,10 +103,11 @@ Proyek ini terdiri dari tiga lapisan:
 - Saldo awal, tema terang atau gelap (mengikuti pengaturan perangkat secara default).
 - **Unduh CSV** (bisa dibuka di Excel) dan **unduh backup JSON**.
 - Restore dari file `.json` atau teks, dan reset semua data.
-- Login, profil, dan foto profil tersimpan di browser pada mode static.
+- Pada fallback static, login, profil, dan foto tersimpan di browser.
 
 ### Desain
-- Identitas visual mengikuti logo: palet krem hangat dan hitam tinta, dengan warna hijau/koral/biru hanya untuk makna keuangan (pemasukan, pengeluaran, saldo).
+- Tema utama memakai gradasi hitam-biru gelap dengan kartu berkontras.
+- Warna hijau/koral/biru dipakai untuk makna keuangan, sedangkan merah digunakan untuk pengeluaran.
 - Layout sidebar kiri, kartu bersudut membulat, animasi ringan antar halaman.
 - Responsif untuk desktop, tablet, dan smartphone (sidebar berubah menjadi bar navigasi bawah di layar kecil).
 
@@ -134,7 +141,7 @@ dompetku/
 │   ├── vite.config.js         # Proxy /api ke localhost:3000 saat development
 │   └── src/
 │       ├── main.jsx           # Entry point
-│       ├── App.jsx            # Layout, pemilih bulan, pergantian halaman
+│       ├── App.jsx            # Layout, kalender, pergantian halaman
 │       ├── store.jsx          # State global dan semua panggilan API (useFinance)
 │       ├── ui.jsx             # Toast, dialog input/konfirmasi, tema (useUI)
 │       ├── api.js             # Helper fetch
@@ -237,7 +244,7 @@ PORT=8080 DB_FILE=/var/data/dompetku.db npm start
 
 ## 8. Panduan Penggunaan
 
-1. **Pilih bulan** lewat pemilih bulan di kanan atas. Semua halaman mengikuti bulan yang dipilih, dan data bulan lain tetap tersimpan.
+1. **Pilih tanggal** lewat kalender interaktif di header. Tanggal awal mengikuti hari ini dan akan diperbarui otomatis.
 2. **Atur kategori** (opsional) di menu *Kategori*. Sesuaikan dengan kebiasaanmu sebelum mulai mencatat.
 3. **Isi saldo awal** (opsional) di *Pengaturan* jika ingin saldo awal ikut dihitung di Sisa Saldo.
 4. **Catat transaksi** lewat tombol **+ Tambah Transaksi** (tersedia di sidebar dan pojok kanan atas). Pilih jenis, isi nominal, kategori, subkategori, tanggal, dan deskripsi.
@@ -408,13 +415,13 @@ GitHub Pages menyajikan frontend secara gratis. Jika variable Supabase diisi, ak
 
 1. Buat project baru di Supabase.
 2. Buka **SQL Editor**, lalu jalankan isi [supabase/schema.sql](./supabase/schema.sql).
-3. Di **Authentication → Providers → Email**, nonaktifkan *Confirm email* untuk login langsung setelah registrasi.
-4. Salin **Project URL** dan **anon public key** dari **Project Settings → API**.
+3. Di **Authentication → Sign In / Providers**, matikan **Confirm email** pada pengaturan User Signups agar registrasi dapat langsung login.
+4. Salin **Project URL** dan publishable/anon key dari **Project Settings → API Keys**.
 5. Di GitHub, buka **Settings → Secrets and variables → Actions → Variables**, lalu buat:
 
    ```text
    VITE_SUPABASE_URL=https://project-id.supabase.co
-   VITE_SUPABASE_ANON_KEY=eyJ...
+   VITE_SUPABASE_ANON_KEY=sb_publishable_... atau publishable/anon key Supabase
    ```
 
 6. Buka **Settings → Pages → Build and deployment → Source: GitHub Actions**.
