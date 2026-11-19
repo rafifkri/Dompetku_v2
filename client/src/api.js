@@ -100,20 +100,20 @@ const cloud = async (url, method = 'GET', b) => {
   if (url === '/api/auth/logout') { await supabase.auth.signOut(); return { ok: true }; }
   if (url === '/api/profile' && method === 'GET') {
     const user = await userOrThrow();
-    const { data, error } = await supabase.from('profiles').select('*').eq('id', user.id).maybeSingle();
+    const { data, error } = await supabase.from('profiles').select('*').eq('id', user.id).limit(1);
     if (error) throw error;
-    if (data) return profileShape(data);
+    if (Array.isArray(data) && data.length) return profileShape(data[0]);
     const fallback = { id: user.id, name: user.user_metadata?.name || user.email.split('@')[0], email: user.email, bio: '', photo: '', cover: '' };
-    const created = await supabase.from('profiles').upsert(fallback).select().maybeSingle();
+    const created = await supabase.from('profiles').upsert(fallback).select('*').limit(1);
     if (created.error) throw created.error;
-    return profileShape(created.data || fallback);
+    return profileShape(Array.isArray(created.data) && created.data[0] ? created.data[0] : fallback);
   }
   if (url === '/api/profile' && method === 'PUT') {
     const user = await userOrThrow();
     const p = { id: user.id, name: b.name.trim(), email: b.email.trim().toLowerCase(), bio: b.bio || '', photo: b.photo || '', cover: b.cover || '', photo_scale: b.photoScale || 1, photo_x: b.photoX || 0, photo_y: b.photoY || 0, cover_scale: b.coverScale || 1, cover_x: b.coverX || 0, cover_y: b.coverY || 0 };
-    const { data, error } = await supabase.from('profiles').upsert(p).select().single();
+    const { data, error } = await supabase.from('profiles').upsert(p).select('*').limit(1);
     if (error) throw error;
-    return profileShape(data);
+    return profileShape(Array.isArray(data) && data[0] ? data[0] : p);
   }
   const user = await userOrThrow();
   if (url === '/api/data' && method === 'GET') {
