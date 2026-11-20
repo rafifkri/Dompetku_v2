@@ -135,11 +135,19 @@ aside {
   transition: background .2s, color .2s, transform .2s;
 }
 .nav:hover { background: rgba(195, 228, 201, .1); color: #f2faf2 }
+:root[data-theme="dark"] .nav:hover,
+:root:not([data-theme="light"]) .nav:hover { background: rgba(255, 255, 255, .08); color: #fff }
 .nav.on {
   background: #d7ead8;
   color: #193020;
   font-weight: 700;
   box-shadow: inset 3px 0 var(--em);
+}
+:root[data-theme="dark"] .nav.on,
+:root:not([data-theme="light"]) .nav.on {
+  background: var(--card-soft);
+  color: var(--tx);
+  box-shadow: inset 3px 0 #fff;
 }
 
 main { width: calc(100% - 240px); margin-left: 240px; padding: 32px 36px 64px }
@@ -215,7 +223,7 @@ input[type="month"] { color-scheme: inherit }
 .chip { display: inline-flex; gap: 6px; align-items: center; background: var(--card-soft); border: 1px solid var(--line); border-radius: 99px; padding: 3px 6px 3px 12px; margin: 3px; font-size: 13px }
 .chip button { all: unset; cursor: pointer; color: var(--mut); padding: 0 6px }
 dialog { border: 0; border-radius: 22px; padding: 24px; width: min(480px, 94vw); background: var(--card); color: var(--tx); box-shadow: 0 20px 60px rgba(0, 0, 0, .35) }
-dialog::backdrop { background: rgba(8, 24, 14, .58); backdrop-filter: blur(4px) }
+dialog::backdrop { background: rgba(2, 5, 12, .72); backdrop-filter: blur(4px) }
 label { display: block; font-size: 13px; color: var(--mut); margin: 12px 0 4px }
 .seg { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; background: var(--card-soft); padding: 5px; border-radius: 14px }
 .seg button { border: 0; background: none; padding: 9px; border-radius: 10px; cursor: pointer; font-weight: 700; color: var(--mut) }
