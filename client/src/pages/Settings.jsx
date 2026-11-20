@@ -52,6 +52,10 @@ export default function Settings() {
             <span className="theme-status-note">Tersimpan otomatis</span>
           </div>
           <div className="theme-tip">Perubahan tema langsung diterapkan ke seluruh aplikasi.</div>
+          <div className="theme-guide">
+            <div><b>Mode terang</b><span>Warna cerah untuk penggunaan siang hari.</span></div>
+            <div><b>Mode gelap</b><span>Lebih nyaman untuk kondisi minim cahaya.</span></div>
+          </div>
         </div>
       </div>
       <div className="card" style={{ marginTop: 18 }}>

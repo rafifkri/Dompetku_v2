@@ -256,6 +256,10 @@ th { color: var(--mut); font-size: 12px; font-weight: 700 }
 .theme-status-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--focus); flex: none }
 .theme-status-note { color: var(--mut); margin-left: auto }
 .theme-tip { color: var(--mut); font-size: 11px; margin-top: 7px; padding-top: 7px; border-top: 1px solid var(--line) }
+.theme-guide { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; margin-top: 12px }
+.theme-guide div { display: grid; gap: 2px; padding: 9px 10px; border-radius: 10px; background: var(--card-soft) }
+.theme-guide b { font-size: 11px }
+.theme-guide span { color: var(--mut); font-size: 10px; line-height: 1.35 }
 .theme-switch { width: 104px; height: 54px; flex: none; padding: 0; border: 0; border-radius: 99px; background: transparent; cursor: pointer; overflow: hidden }
 .theme-switch img { display: block; width: 100%; height: 100%; object-fit: contain; }
 .theme-switch.light img { filter: brightness(0); transform: scaleX(-1); }
