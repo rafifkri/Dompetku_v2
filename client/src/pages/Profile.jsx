@@ -82,6 +82,12 @@ function ImageAdjuster({ editor, setEditor, onApply }) {
   const [isDragging, setIsDragging] = useState(false);
   const [isSettling, setIsSettling] = useState(false);
 
+  useEffect(() => {
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    return () => { document.body.style.overflow = previousOverflow; };
+  }, []);
+
   const clampPosition = (x, y, scale) => {
     const frame = frameRef.current?.getBoundingClientRect();
     if (!frame) return { x, y };
@@ -113,7 +119,8 @@ function ImageAdjuster({ editor, setEditor, onApply }) {
       const ratio = pointerDistance() / pinch.current.distance;
       setEditor((p) => {
         const scale = Math.max(1, Math.min(3, pinch.current.scale * ratio));
-        return scale <= 1 ? { ...p, scale: 1, x: 0, y: 0 } : { ...p, scale };
+        if (scale <= 1) return { ...p, scale: 1, x: 0, y: 0 };
+        return { ...p, scale, ...clampPosition(p.x, p.y, scale) };
       });
       return;
     }
@@ -121,18 +128,20 @@ function ImageAdjuster({ editor, setEditor, onApply }) {
     setEditor((p) => {
       const rawX = drag.current.x + e.clientX - drag.current.clientX;
       const rawY = drag.current.y + e.clientY - drag.current.clientY;
-      return { ...p, x: rawX, y: rawY };
+      return { ...p, ...clampPosition(rawX, rawY, p.scale) };
     });
   };
   const wheel = (e) => {
     e.preventDefault();
+    e.stopPropagation();
     setEditor((p) => {
       const scale = Math.max(1, Math.min(3, p.scale + (e.deltaY < 0 ? .08 : -.08)));
       if (scale <= 1) return { ...p, scale: 1, x: 0, y: 0 };
-      return { ...p, scale };
+      return { ...p, scale, ...clampPosition(p.x, p.y, scale) };
     });
   };
   const startDrag = (e) => {
+    e.preventDefault();
     e.currentTarget.setPointerCapture(e.pointerId);
     pointers.current.set(e.pointerId, { x: e.clientX, y: e.clientY });
     drag.current = { clientX: e.clientX, clientY: e.clientY, x: editor.x, y: editor.y };
@@ -149,10 +158,14 @@ function ImageAdjuster({ editor, setEditor, onApply }) {
       window.setTimeout(() => setIsSettling(false), 220);
       drag.current = null;
       pinch.current = null;
+    } else if (pointers.current.size === 1) {
+      const remaining = [...pointers.current.values()][0];
+      drag.current = { clientX: remaining.x, clientY: remaining.y, x: editor.x, y: editor.y };
+      pinch.current = null;
     }
   };
   return (
-    <div className="image-adjuster-backdrop">
+    <div className="image-adjuster-backdrop" onPointerDown={(e) => e.stopPropagation()} onWheel={(e) => e.stopPropagation()}>
       <div className="image-adjuster">
         <div className="image-adjuster-head"><h2>Atur {editor.field === 'photo' ? 'avatar' : 'background'}</h2><button className="btn g s" type="button" onClick={() => setEditor(null)}>×</button></div>
         <p className="image-adjuster-help">Geser untuk mengatur posisi. Gunakan scroll atau pinch untuk memperbesar.</p>
@@ -162,7 +175,8 @@ function ImageAdjuster({ editor, setEditor, onApply }) {
           onPointerMove={move}
           onPointerUp={releaseDrag}
           onPointerCancel={releaseDrag}
-          onWheel={wheel}>
+          onWheelCapture={wheel}
+          onContextMenu={(e) => e.preventDefault()}>
           <img
             src={editor.src}
             alt="Pratinjau"
