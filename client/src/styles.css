@@ -260,6 +260,12 @@ th { color: var(--mut); font-size: 12px; font-weight: 700 }
 .theme-guide div { display: grid; gap: 2px; padding: 9px 10px; border-radius: 10px; background: var(--card-soft) }
 .theme-guide b { font-size: 11px }
 .theme-guide span { color: var(--mut); font-size: 10px; line-height: 1.35 }
+.data-status-card { margin-top: 18px }
+.data-status-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px }
+.data-status-grid > div { display: grid; gap: 3px; padding: 14px; border: 1px solid var(--line); border-radius: 12px; background: var(--card-soft) }
+.data-status-label { color: var(--mut); font-size: 12px }
+.data-status-grid b { font-size: 15px }
+.data-status-grid small { color: var(--mut); font-size: 11px; line-height: 1.4 }
 .theme-switch { width: 104px; height: 54px; flex: none; padding: 0; border: 0; border-radius: 99px; background: transparent; cursor: pointer; overflow: hidden }
 .theme-switch img { display: block; width: 100%; height: 100%; object-fit: contain; }
 .theme-switch.light img { filter: brightness(0); transform: scaleX(-1); }
@@ -297,7 +303,7 @@ canvas { max-height: 280px }
   .nav span:first-child { font-size: 18px }
   .nav.on { box-shadow: inset 0 3px var(--em) }
   main { width: 100%; margin: 0; padding: 20px 16px 100px }
-  .g2, .g4 { grid-template-columns: 1fr }
+  .g2, .g4, .data-status-grid { grid-template-columns: 1fr }
 }
 @media (max-width: 860px) { .nav .mi { width: 22px; height: 22px } }
 

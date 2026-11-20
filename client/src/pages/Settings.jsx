@@ -71,6 +71,14 @@ export default function Settings() {
         <hr style={{ border: 0, borderTop: '1px solid var(--line)', margin: '18px 0' }} />
         <button className="btn d icon-text" onClick={wipe}><Icon src={trashIcon} />Hapus semua data</button>
       </div>
+      <div className="card data-status-card">
+        <h2>Data &amp; Penyimpanan</h2>
+        <div className="data-status-grid">
+          <div><span className="data-status-label">Penyimpanan</span><b>{STATIC ? 'Browser lokal' : 'Cloud database'}</b><small>{STATIC ? 'Hanya tersedia di perangkat ini' : 'Tersimpan di akun Supabase'}</small></div>
+          <div><span className="data-status-label">Sinkronisasi</span><b>{STATIC ? 'Tidak aktif' : 'Aktif'}</b><small>{STATIC ? 'Aktifkan Supabase untuk lintas perangkat' : 'Data mengikuti akun yang sedang masuk'}</small></div>
+          <div><span className="data-status-label">Isi backup</span><b>Data lengkap</b><small>Transaksi, budget, target, kategori, dan transaksi berulang</small></div>
+        </div>
+      </div>
     </>
   );
 }
