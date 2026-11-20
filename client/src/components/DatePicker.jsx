@@ -4,18 +4,31 @@ import calendarIcon from '../assets/icons/calender.webp';
 
 const pad = (n) => String(n).padStart(2, '0');
 const MIN_YEAR = 2000;
-const MAX_YEAR = 2011;
+const MAX_YEAR = 2100;
 
 export default function DatePicker({ value, onChange }) {
   const [open, setOpen] = useState(false);
+  const [yearMenuOpen, setYearMenuOpen] = useState(false);
   const [cursor, setCursor] = useState(() => {
     const [y, m] = value.split('-').map(Number);
     return { y: Math.max(MIN_YEAR, Math.min(MAX_YEAR, y)), m: m - 1 };
   });
   const root = useRef();
+  const yearMenu = useRef();
 
   useEffect(() => {
-    const close = (e) => { if (root.current && !root.current.contains(e.target)) setOpen(false); };
+    if (!yearMenuOpen) return;
+    const selected = yearMenu.current?.querySelector('[aria-selected="true"]');
+    selected?.scrollIntoView({ block: 'nearest' });
+  }, [yearMenuOpen, cursor.y]);
+
+  useEffect(() => {
+    const close = (e) => {
+      if (root.current && !root.current.contains(e.target)) {
+        setOpen(false);
+        setYearMenuOpen(false);
+      }
+    };
     document.addEventListener('pointerdown', close);
     return () => document.removeEventListener('pointerdown', close);
   }, []);
@@ -67,9 +80,37 @@ export default function DatePicker({ value, onChange }) {
               <select aria-label="Pilih bulan" value={cursor.m} onChange={(e) => setCursor((p) => ({ ...p, m: Number(e.target.value) }))}>
                 {BLN.map((name, index) => <option key={name} value={index}>{name}</option>)}
               </select>
-              <select aria-label="Pilih tahun" value={cursor.y} onChange={(e) => setCursor((p) => ({ ...p, y: Number(e.target.value) }))}>
-                {Array.from({ length: MAX_YEAR - MIN_YEAR + 1 }, (_, index) => MIN_YEAR + index).map((year) => <option key={year} value={year}>{year}</option>)}
-              </select>
+              <div className="date-year-select">
+                <button
+                  type="button"
+                  className="date-year-trigger"
+                  aria-label="Pilih tahun"
+                  aria-haspopup="listbox"
+                  aria-expanded={yearMenuOpen}
+                  onClick={() => setYearMenuOpen((p) => !p)}
+                >
+                  {cursor.y}
+                </button>
+                {yearMenuOpen && (
+                  <div className="date-year-menu" ref={yearMenu} role="listbox" aria-label="Pilih tahun">
+                    {Array.from({ length: MAX_YEAR - MIN_YEAR + 1 }, (_, index) => MIN_YEAR + index).map((year) => (
+                      <button
+                        key={year}
+                        type="button"
+                        role="option"
+                        aria-selected={cursor.y === year}
+                        className={cursor.y === year ? 'selected' : ''}
+                        onClick={() => {
+                          setCursor((p) => ({ ...p, y: year }));
+                          setYearMenuOpen(false);
+                        }}
+                      >
+                        {year}
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
             </div>
             <button type="button" onClick={() => shift(1)} aria-label="Bulan berikutnya">›</button>
           </div>
