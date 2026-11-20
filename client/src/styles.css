@@ -247,7 +247,7 @@ canvas { max-height: 280px }
 .date-trigger-icon { width: 18px; height: 18px; object-fit: contain; flex: none; filter: brightness(0) invert(1) }
 .date-chevron { margin-left: auto; color: var(--mut) }
 .date-popover { position: absolute; left: 0; top: calc(100% + 8px); z-index: 30; width: 320px; padding: 12px; border: 1px solid var(--line); border-radius: 16px; background: var(--card); box-shadow: 0 18px 50px rgba(0, 0, 0, .38) }
-.date-head { display: grid; grid-template-columns: 38px minmax(0, 1fr) 38px; column-gap: 8px; align-items: center; margin-bottom: 10px }
+.date-head { display: grid; grid-template-columns: 38px minmax(0, 1fr) 38px; column-gap: 12px; align-items: center; margin-bottom: 10px }
 .date-head b { text-align: center; font-size: 14px }
 .date-head-selects { display: grid; grid-template-columns: repeat(2, 112px); gap: 8px; min-width: 0 }
 .date-head-selects select { width: 112px; min-width: 112px; max-width: 112px; height: 38px; border: 1px solid var(--line); border-radius: 9px; background: var(--card-soft); color: var(--tx); padding: 6px 10px; text-align: center; text-align-last: center; font-size: 15px; cursor: pointer }
@@ -373,6 +373,24 @@ canvas { max-height: 280px }
 .image-adjuster-controls strong { color: var(--tx); margin-left: 4px }
 .image-adjuster-apply { width: 100%; margin-top: 14px }
 .image-adjuster-reset { width: 100%; margin-top: 12px }
+.budget-summary { min-height: 280px }
+.budget-summary-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; margin-bottom: 16px }
+.budget-summary-head h2 { margin-bottom: 2px }
+.budget-summary-head .sub { margin: 0 }
+.budget-summary-total { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 14px }
+.budget-summary-total div { min-width: 0; padding: 10px 12px; border: 1px solid var(--line); border-radius: 12px; background: var(--card-soft) }
+.budget-summary-total span { display: block; color: var(--mut); font-size: 11px; margin-bottom: 3px }
+.budget-summary-total strong { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 16px }
+.budget-summary-progress > div:first-child { display: flex; justify-content: space-between; gap: 12px; color: var(--mut); font-size: 11px; margin-bottom: 6px }
+.budget-summary-progress .bar { height: 8px }
+.budget-category-list { display: grid; gap: 10px; margin-top: 16px }
+.budget-category > div:first-child { display: flex; justify-content: space-between; gap: 10px; margin-bottom: 5px; font-size: 12px }
+.budget-category > div:first-child span { color: var(--mut) }
+.budget-category .bar { height: 5px }
+.budget-empty { min-height: 210px; display: grid; place-items: center; align-content: center; text-align: center; gap: 8px; border: 1px dashed var(--line); border-radius: 14px; background: color-mix(in srgb, var(--card-soft) 55%, transparent); padding: 18px }
+.budget-empty-icon { width: 42px; height: 42px; display: grid; place-items: center; border-radius: 50%; background: var(--card-soft); color: var(--mut); font-size: 25px }
+.budget-empty b { display: block; margin-bottom: 3px }
+.budget-empty span { display: block; color: var(--mut); font-size: 12px; margin-bottom: 8px }
 .profile-main { max-width: none; min-height: 100vh; padding: 0 0 40px }
 .profile-main .top { padding: 28px 36px 24px; margin-bottom: 0 }
 .profile-main .profile-layout { min-height: calc(100vh - 105px); grid-template-columns: minmax(300px, .8fr) minmax(420px, 1.2fr); gap: 0; align-items: stretch }

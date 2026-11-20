@@ -48,7 +48,7 @@ function Shell({ profile, onLogout, onProfileChange }) {
           </div>
         </div>
         {err && <div className="card out" style={{ marginBottom: 18 }}>⚠️ {err}</div>}
-        {ready ? <div className="page" key={view}><Page openEdit={(t) => setForm({ edit: t })} onLogout={onLogout} onProfileChange={onProfileChange} /></div> : <div className="empty">Memuat data…</div>}
+        {ready ? <div className="page" key={view}><Page openEdit={(t) => setForm({ edit: t })} onNavigate={setView} onLogout={onLogout} onProfileChange={onProfileChange} /></div> : <div className="empty">Memuat data…</div>}
       </main>
       {form && <TxForm edit={form.edit} onClose={() => setForm(null)} />}
     </>

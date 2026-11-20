@@ -12,7 +12,7 @@ import pengeluaranIcon from '../assets/icons/total-pengeluaran.png';
 import transaksiIcon from '../assets/icons/total-transaksi.png';
 import saldoIcon from '../assets/icons/sisa-saldo.png';
 
-export default function Dashboard({ openEdit }) {
+export default function Dashboard({ openEdit, onNavigate }) {
   const { S, M, monthTx, delTx } = useFinance();
   const { theme, ask, toast } = useUI();
   themeCharts();
@@ -42,6 +42,20 @@ export default function Dashboard({ openEdit }) {
     try { await delTx(id); toast('Transaksi berhasil dihapus'); } catch { toast('Gagal menghapus transaksi'); }
   };
 
+  const budgetEntries = Object.entries(S.budget || {})
+    .map(([category, limit]) => {
+      const budget = Math.max(0, +limit || 0);
+      const used = monthTx
+        .filter((t) => t.type === 'expense' && t.cat === category)
+        .reduce((sumAmount, t) => sumAmount + t.amount, 0);
+      return { category, budget, used, percent: budget ? (used / budget) * 100 : 0 };
+    })
+    .filter((item) => item.budget > 0)
+    .sort((a, b) => b.percent - a.percent);
+  const totalBudget = budgetEntries.reduce((s, item) => s + item.budget, 0);
+  const usedBudget = budgetEntries.reduce((s, item) => s + item.used, 0);
+  const budgetPercent = totalBudget ? Math.min(100, (usedBudget / totalBudget) * 100) : 0;
+
   return (
     <>
       {!S.tx.length && <div className="card empty" style={{ marginBottom: 18 }}>👋 Belum ada transaksi. Klik <b>+ Tambah Transaksi</b> untuk mulai mencatat. Semua grafik dihitung dari data yang kamu catat.</div>}
@@ -68,6 +82,47 @@ export default function Dashboard({ openEdit }) {
           <Bar key={theme + 'd'} options={{ ...opt, indexAxis: 'y', plugins: { legend: { display: false }, tooltip: opt.plugins.tooltip } }}
             data={{ labels: d.sel.map((x) => 'Tgl ' + x[0]), datasets: [{ data: d.sel.map((x) => x[1]), backgroundColor: d.sel.map((_, i) => (i < d.nHi ? '#d65a43' : '#2f8f5b')), borderRadius: 6 }] }} />
         </ChartCard>
+        <div className="card budget-summary">
+          <div className="budget-summary-head">
+            <div>
+              <h2>Ringkasan Budget</h2>
+              <p className="sub">Pantauan batas pengeluaran bulan ini</p>
+            </div>
+            {budgetEntries.length > 0 && <button className="btn g s" type="button" onClick={() => onNavigate?.('bud')}>Kelola</button>}
+          </div>
+          {budgetEntries.length ? (
+            <>
+              <div className="budget-summary-total">
+                <div><span>Total budget</span><strong>{rp(totalBudget)}</strong></div>
+                <div><span>Terpakai</span><strong className={usedBudget > totalBudget ? 'out' : ''}>{rp(usedBudget)}</strong></div>
+              </div>
+              <div className="budget-summary-progress">
+                <div><span>{Math.round((usedBudget / totalBudget) * 100)}% terpakai</span><span>{rp(Math.max(0, totalBudget - usedBudget))} sisa</span></div>
+                <div className="bar"><i style={{ width: budgetPercent + '%', background: usedBudget > totalBudget ? 'var(--exp)' : 'var(--em)' }} /></div>
+              </div>
+              <div className="budget-category-list">
+                {budgetEntries.slice(0, 3).map((item) => {
+                  const color = item.percent > 100 ? 'var(--exp)' : item.percent >= 80 ? '#f59e0b' : 'var(--em)';
+                  return (
+                    <div className="budget-category" key={item.category}>
+                      <div><b>{item.category}</b><span>{Math.round(item.percent)}%</span></div>
+                      <div className="bar"><i style={{ width: Math.min(100, item.percent) + '%', background: color }} /></div>
+                    </div>
+                  );
+                })}
+              </div>
+            </>
+          ) : (
+            <div className="budget-empty">
+              <div className="budget-empty-icon">◎</div>
+              <div>
+                <b>Belum ada budget yang dibuat</b>
+                <span>Atur batas pengeluaran agar lebih terkontrol.</span>
+              </div>
+              <button className="btn" type="button" onClick={() => onNavigate?.('bud')}>Buat Budget</button>
+            </div>
+          )}
+        </div>
       </div>
       <div className="card" style={{ marginTop: 18 }}>
         <h2>Transaksi Terbaru</h2>
