@@ -38,7 +38,7 @@ export default function Settings() {
           <input type="number" min="0" placeholder="0" value={sa} onChange={(e) => setSa(e.target.value)} />
           <button className="btn" style={{ marginTop: 12 }} onClick={() => { upd((p) => ({ ...p, saldoAwal: Math.max(0, +sa || 0) })); toast('Saldo awal disimpan'); }}>Simpan</button>
         </div>
-        <div className="card">
+        <div className="card theme-card">
           <h2>Tema</h2>
           <div className="theme-switch-row">
             <span className="sub">Pilih tampilan aplikasi</span>
