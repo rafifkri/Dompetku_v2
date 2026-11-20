@@ -91,7 +91,7 @@ export default function Dashboard({ openEdit, onNavigate }) {
             { label: 'Pengeluaran', data: d.de, backgroundColor: '#d65a43', borderRadius: 5 }] }} />
         </ChartCard>
         <ChartCard title="Pengeluaran per Kategori">
-          {doughnut(total, <Doughnut key={theme + 'b'} data={{ labels: d.cats, datasets: [{ data: d.cats.map((k) => d.bc[k]), backgroundColor: PAL, borderWidth: 0 }] }}
+          {doughnut(total, <Doughnut key={theme + 'b' + monthTx.length + total + d.cats.join('|')} data={{ labels: d.cats, datasets: [{ data: d.cats.map((k) => d.bc[k]), backgroundColor: PAL, borderWidth: 0 }] }}
             options={{ responsive: true, cutout: '62%', plugins: { legend: { position: 'bottom' }, tooltip: { callbacks: { label: (c) => ` ${c.label}: ${rp(c.parsed)} (${Math.round((c.parsed / total) * 100)}%)` } } } }} />)}
         </ChartCard>
         <ChartCard title="Tren Pengeluaran Harian">
@@ -105,7 +105,7 @@ export default function Dashboard({ openEdit, onNavigate }) {
           <div className="chart-filter" role="group" aria-label="Pilih metode pembayaran">
             {d.methods.map((method) => <button key={method} type="button" className={'btn g s' + (paymentMethod === method ? ' on' : '')} onClick={() => setPaymentMethod(method)}>{method}</button>)}
           </div>
-          {doughnut(d.payment[paymentMethod] || 0, <Doughnut key={theme + paymentMethod} data={{ labels: [paymentMethod, 'Metode lain'], datasets: [{ data: [d.payment[paymentMethod] || 0, Math.max(0, exp - (d.payment[paymentMethod] || 0))], backgroundColor: ['#467f70', '#27344a'], borderWidth: 0 }] }}
+          {doughnut(d.payment[paymentMethod] || 0, <Doughnut key={theme + paymentMethod + monthTx.length + exp + (d.payment[paymentMethod] || 0)} data={{ labels: [paymentMethod, 'Metode lain'], datasets: [{ data: [d.payment[paymentMethod] || 0, Math.max(0, exp - (d.payment[paymentMethod] || 0))], backgroundColor: ['#467f70', '#27344a'], borderWidth: 0 }] }}
             options={{ responsive: true, cutout: '62%', plugins: { legend: { position: 'bottom' }, tooltip: { callbacks: { label: (c) => ` ${c.label}: ${rp(c.parsed)}` } } } }} />)}
         </ChartCard>
         <div className="card budget-summary">
