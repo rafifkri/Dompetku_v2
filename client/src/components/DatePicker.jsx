@@ -8,16 +8,19 @@ const MAX_YEAR = 2100;
 
 export default function DatePicker({ value, onChange }) {
   const [open, setOpen] = useState(false);
+  const [yearOpen, setYearOpen] = useState(false);
   const [cursor, setCursor] = useState(() => {
     const [y, m] = value.split('-').map(Number);
     return { y: Math.max(MIN_YEAR, Math.min(MAX_YEAR, y)), m: m - 1 };
   });
   const root = useRef();
+  const yearMenuRef = useRef();
 
   useEffect(() => {
     const close = (e) => {
       if (root.current && !root.current.contains(e.target)) {
         setOpen(false);
+        setYearOpen(false);
       }
     };
     document.addEventListener('pointerdown', close);
@@ -71,11 +74,16 @@ export default function DatePicker({ value, onChange }) {
               <select aria-label="Pilih bulan" value={cursor.m} onChange={(e) => setCursor((p) => ({ ...p, m: Number(e.target.value) }))}>
                 {BLN.map((name, index) => <option key={name} value={index}>{name}</option>)}
               </select>
-              <select aria-label="Pilih tahun" value={cursor.y} onChange={(e) => setCursor((p) => ({ ...p, y: Number(e.target.value) }))}>
-                {Array.from({ length: MAX_YEAR - MIN_YEAR + 1 }, (_, index) => MIN_YEAR + index).map((year) => (
-                  <option key={year} value={year}>{year}</option>
-                ))}
-              </select>
+              <div className="date-year-select">
+                <button className="date-year-trigger" type="button" onClick={() => setYearOpen((p) => !p)} aria-haspopup="listbox" aria-expanded={yearOpen}>
+                  {cursor.y}
+                </button>
+                {yearOpen && <div className="date-year-menu" ref={yearMenuRef} role="listbox">
+                  {Array.from({ length: MAX_YEAR - MIN_YEAR + 1 }, (_, index) => MIN_YEAR + index).map((year) => (
+                    <button className={cursor.y === year ? 'selected' : ''} type="button" role="option" aria-selected={cursor.y === year} key={year} onClick={() => { setCursor((p) => ({ ...p, y: year })); setYearOpen(false); }}>{year}</button>
+                  ))}
+                </div>}
+              </div>
             </div>
             <button type="button" onClick={() => shift(1)} aria-label="Bulan berikutnya">›</button>
           </div>
