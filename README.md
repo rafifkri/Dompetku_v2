@@ -63,6 +63,8 @@ fallback is used only when Supabase and an API URL are not configured.
 - Interactive monthly calendar with month and year selectors.
 - Daily income and expense charts.
 - Category spending doughnut chart and spending trend chart.
+- Payment-method chart with separate Cash, Transfer, E-Wallet, QRIS, and Other
+  views.
 - Latest transactions and monthly insights.
 - Budget usage warnings beginning at 80% usage.
 - Current-month comparison with the previous month.
@@ -71,6 +73,9 @@ fallback is used only when Supabase and an API URL are not configured.
 
 - Add, edit, and delete income or expense transactions.
 - Payment methods: Cash, Transfer, E-Wallet, and Other.
+- QRIS is available as a payment method.
+- Rupiah amount fields format thousands automatically while typing (for example
+  `1000` becomes `1.000`).
 - Dynamic subcategories based on the selected category.
 - Search by name or description.
 - Filter by transaction type, category, selected month, or all months.
@@ -80,6 +85,8 @@ fallback is used only when Supabase and an API URL are not configured.
 
 - Monthly budget limits per category with usage indicators.
 - Financial goals with target amount, progress, and deadline.
+- Edit goal name, target amount, accumulated amount, and deadline.
+- Delete goals when they are no longer needed.
 - Monthly recurring transactions with active/inactive status.
 - Active recurring transactions are generated once per month.
 - Budget notifications are available from the application header.
@@ -117,6 +124,9 @@ fallback is used only when Supabase and an API URL are not configured.
   expenses.
 - Monthly summary comparison table.
 - CSV export for spreadsheets.
+- The CSV export is generated from the current in-memory transaction state;
+  download it again after deleting or editing transactions to get the latest
+  snapshot.
 - JSON backup and restore, including transactions, budgets, categories, goals,
   and recurring transactions.
 - Reset-all-data action with confirmation.

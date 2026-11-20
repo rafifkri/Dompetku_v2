@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 import { useFinance } from '../store';
-import { icon, rp } from '../utils';
+import { formatAmount, icon, parseAmount, rp } from '../utils';
 import CategoryIcon from '../components/CategoryIcon';
 
 export default function Budget() {
@@ -23,7 +23,7 @@ export default function Budget() {
               <div className="bar" style={{ margin: '8px 0 4px' }}><i style={{ width: Math.min(100, p) + '%', background: col }} /></div>
               <span className="sub" style={{ color: p > 100 ? 'var(--exp)' : undefined }}>{rp(u)} terpakai{b ? ` (${Math.round(p)}%)` : ''} · {msg}</span>
             </div>
-            <input type="number" min="0" style={{ width: 150 }} placeholder="Budget" value={b || ''} onChange={(e) => setB(c, e.target.value)} />
+            <input inputMode="numeric" style={{ width: 150 }} placeholder="Budget" value={b ? formatAmount(b) : ''} onChange={(e) => setB(c, parseAmount(e.target.value))} />
           </div>
         );
       })}

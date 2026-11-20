@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import { Bar, Doughnut, Line } from 'react-chartjs-2';
 import { themeCharts } from '../chartSetup';
 import { useFinance } from '../store';
@@ -16,6 +16,7 @@ import handWaveIcon from '../assets/icons/hand-wave.png';
 export default function Dashboard({ openEdit, onNavigate }) {
   const { S, M, monthTx, delTx } = useFinance();
   const { theme, ask, toast } = useUI();
+  const [paymentMethod, setPaymentMethod] = useState('Cash');
   themeCharts();
   const n = daysIn(M);
   const inc = sum(monthTx, 'income'), exp = sum(monthTx, 'expense');
@@ -25,14 +26,17 @@ export default function Dashboard({ openEdit, onNavigate }) {
   const d = useMemo(() => {
     const L = Array.from({ length: n }, (_, i) => i + 1);
     const di = L.map(() => 0), de = L.map(() => 0), bc = {};
+    const payment = {};
     monthTx.forEach((t) => {
       const i = +t.date.slice(8) - 1;
       if (t.type === 'income') di[i] += t.amount; else { de[i] += t.amount; bc[t.cat] = (bc[t.cat] || 0) + t.amount; }
+      if (t.type === 'expense') payment[t.method] = (payment[t.method] || 0) + t.amount;
     });
     const cats = Object.keys(bc).sort((a, b) => bc[b] - bc[a]);
     const act = L.map((day, i) => [day, de[i]]).filter((x) => x[1] > 0).sort((a, b) => b[1] - a[1]);
     const hi = act.slice(0, 3), lo = act.slice(3).slice(-3).reverse();
-    return { L, di, de, bc, cats, sel: [...hi, ...lo], nHi: hi.length };
+    const methods = ['Cash', 'Transfer', 'E-Wallet', 'QRIS', 'Lainnya'];
+    return { L, di, de, bc, cats, sel: [...hi, ...lo], nHi: hi.length, payment, methods };
   }, [monthTx, n]);
 
   const tip = (c) => ' ' + (c.dataset.label ? c.dataset.label + ': ' : '') + rp(c.parsed.y ?? c.parsed.x ?? c.parsed);
@@ -95,6 +99,13 @@ export default function Dashboard({ openEdit, onNavigate }) {
         <ChartCard title="Aktivitas: Hari Tertinggi & Terendah">
           <Bar key={theme + 'd'} options={{ ...opt, indexAxis: 'y', plugins: { legend: { display: false }, tooltip: opt.plugins.tooltip } }}
             data={{ labels: d.sel.map((x) => 'Tgl ' + x[0]), datasets: [{ data: d.sel.map((x) => x[1]), backgroundColor: d.sel.map((_, i) => (i < d.nHi ? '#d65a43' : '#2f8f5b')), borderRadius: 6 }] }} />
+        </ChartCard>
+        <ChartCard title="Pengeluaran berdasarkan Metode">
+          <div className="chart-filter" role="group" aria-label="Pilih metode pembayaran">
+            {d.methods.map((method) => <button key={method} type="button" className={'btn g s' + (paymentMethod === method ? ' on' : '')} onClick={() => setPaymentMethod(method)}>{method}</button>)}
+          </div>
+          <Doughnut key={theme + paymentMethod} data={{ labels: [paymentMethod, 'Metode lain'], datasets: [{ data: [d.payment[paymentMethod] || 0, Math.max(0, exp - (d.payment[paymentMethod] || 0))], backgroundColor: ['#467f70', '#27344a'], borderWidth: 0 }] }}
+            options={{ responsive: true, cutout: '62%', plugins: { legend: { position: 'bottom' }, tooltip: { callbacks: { label: (c) => ` ${c.label}: ${rp(c.parsed)}` } } } }} />
         </ChartCard>
         <div className="card budget-summary">
           <div className="budget-summary-head">

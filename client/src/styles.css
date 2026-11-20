@@ -277,6 +277,7 @@ th { color: var(--mut); font-size: 12px; font-weight: 700 }
 .goal-item:last-child, .recurring-item:last-child { border-bottom: 0 }
 .goal-head, .recurring-item, .goal-values { display: flex; justify-content: space-between; align-items: center; gap: 12px }
 .goal-head > div:first-child, .recurring-item > div:first-child { min-width: 0 }
+.goal-actions { display: flex; gap: 4px; flex: none }
 .goal-head b, .goal-head span, .recurring-item b, .recurring-item span { display: block }
 .goal-head span, .recurring-item span { color: var(--mut); font-size: 12px; margin-top: 2px }
 .goal-values { margin: 12px 0 6px; align-items: baseline }
@@ -291,6 +292,8 @@ th { color: var(--mut); font-size: 12px; font-weight: 700 }
 .budget-alert span { color: var(--mut); flex: 1; min-width: 0 }
 .budget-alert .btn { flex: none }
 canvas { max-height: 280px }
+.chart-filter { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 12px }
+.chart-filter .btn.on { background: var(--pri); color: var(--onpri); border-color: var(--pri) }
 
 @media (max-width: 1100px) and (min-width: 861px) {
   .g4 { grid-template-columns: repeat(2, minmax(0, 1fr)) }

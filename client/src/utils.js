@@ -1,4 +1,9 @@
 export const rp = (n) => (n < 0 ? '-' : '') + 'Rp' + Math.round(Math.abs(n)).toLocaleString('id-ID');
+export const formatAmount = (value) => {
+  const digits = String(value ?? '').replace(/\D/g, '');
+  return digits ? Number(digits).toLocaleString('id-ID') : '';
+};
+export const parseAmount = (value) => Number(String(value ?? '').replace(/\D/g, '')) || 0;
 export const BLN = ['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'];
 export const today = () => { const d = new Date(); return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`; };
 export const daysIn = (M) => { const [y, m] = M.split('-').map(Number); return new Date(y, m, 0).getDate(); };

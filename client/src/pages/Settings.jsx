@@ -3,7 +3,7 @@ import { useFinance } from '../store';
 import { useUI } from '../ui';
 import { DEF } from '../defaults';
 import { STATIC } from '../api';
-import { download, toCSV } from '../utils';
+import { download, formatAmount, parseAmount, toCSV } from '../utils';
 import Icon from '../components/Icon';
 import trashIcon from '../assets/icons/sampah.png';
 import themeLightIcon from '../assets/icons/theme-light.png';
@@ -35,8 +35,8 @@ export default function Settings() {
         <div className="card">
           <h2>Saldo Awal</h2>
           <p className="sub" style={{ marginTop: 0 }}>Ditambahkan ke Sisa Saldo di dashboard.</p>
-          <input type="number" min="0" placeholder="0" value={sa} onChange={(e) => setSa(e.target.value)} />
-          <button className="btn" style={{ marginTop: 12 }} onClick={() => { upd((p) => ({ ...p, saldoAwal: Math.max(0, +sa || 0) })); toast('Saldo awal disimpan'); }}>Simpan</button>
+          <input inputMode="numeric" placeholder="0" value={sa ? formatAmount(sa) : ''} onChange={(e) => setSa(parseAmount(e.target.value))} />
+          <button className="btn" style={{ marginTop: 12 }} onClick={() => { upd((p) => ({ ...p, saldoAwal: Math.max(0, parseAmount(sa)) })); toast('Saldo awal disimpan'); }}>Simpan</button>
         </div>
         <div className="card theme-card">
           <h2>Tema</h2>

@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useFinance } from '../store';
 import { useUI } from '../ui';
-import { rp, uid } from '../utils';
+import { formatAmount, parseAmount, rp, uid } from '../utils';
 import Icon from '../components/Icon';
 import trashIcon from '../assets/icons/sampah.png';
 
@@ -13,7 +13,7 @@ export default function Recurring() {
   const cats = Object.keys(S.cats[form.type]);
   const add = (e) => {
     e.preventDefault();
-    const amount = Math.round(+form.amount), day = Math.max(1, Math.min(28, +form.day || 1));
+    const amount = parseAmount(form.amount), day = Math.max(1, Math.min(28, +form.day || 1));
     if (!form.desc.trim() || !(amount > 0)) return;
     upd((p) => ({ ...p, recurring: [...(p.recurring || []), { id: uid(), desc: form.desc.trim(), amount, type: form.type, cat: form.cat, sub: S.cats[form.type][form.cat]?.s?.[0] || '', day, active: true, lastRun: '' }] }));
     setForm({ ...form, desc: '', amount: '' });
@@ -27,7 +27,7 @@ export default function Recurring() {
         <h2>Transaksi Berulang</h2><p className="sub">Siapkan tagihan atau pemasukan bulanan agar tidak lupa dicatat.</p>
         <label>Nama transaksi<input value={form.desc} onChange={(e) => setForm({ ...form, desc: e.target.value })} placeholder="Tagihan internet" required /></label>
         <div className="seg"><button type="button" className={'o' + (form.type === 'expense' ? ' on' : '')} onClick={() => setForm({ ...form, type: 'expense', cat: Object.keys(S.cats.expense)[0] })}>Pengeluaran</button><button type="button" className={'i' + (form.type === 'income' ? ' on' : '')} onClick={() => setForm({ ...form, type: 'income', cat: Object.keys(S.cats.income)[0] })}>Pemasukan</button></div>
-        <label>Nominal<input type="number" min="1" value={form.amount} onChange={(e) => setForm({ ...form, amount: e.target.value })} placeholder="250000" required /></label>
+        <label>Nominal<input inputMode="numeric" value={form.amount} onChange={(e) => setForm({ ...form, amount: formatAmount(e.target.value) })} placeholder="250.000" required /></label>
         <label>Kategori<select value={form.cat} onChange={(e) => setForm({ ...form, cat: e.target.value })}>{cats.map((c) => <option key={c}>{c}</option>)}</select></label>
         <label>Tanggal setiap bulan<input type="number" min="1" max="28" value={form.day} onChange={(e) => setForm({ ...form, day: e.target.value })} /></label>
         <button className="btn" type="submit">Tambah jadwal</button>
