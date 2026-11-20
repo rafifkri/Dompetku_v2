@@ -250,9 +250,9 @@ th { color: var(--mut); font-size: 12px; font-weight: 700 }
 .icon-btn .mi { width: 17px; height: 17px; color: #fff }
 .icon-text { display: inline-flex; align-items: center; gap: 7px }
 .icon-text .mi { width: 16px; height: 16px; color: #fff }
-.theme-switch-row { display: flex; align-items: center; justify-content: space-between; gap: 16px; min-height: 64px }
-.theme-card { align-self: start }
-.theme-switch { width: 112px; height: 64px; flex: none; padding: 0; border: 0; border-radius: 99px; background: transparent; cursor: pointer; overflow: hidden }
+.theme-switch-row { display: flex; align-items: center; justify-content: space-between; gap: 16px; min-height: 54px }
+.theme-card { align-self: start; padding: 16px 20px }
+.theme-switch { width: 104px; height: 54px; flex: none; padding: 0; border: 0; border-radius: 99px; background: transparent; cursor: pointer; overflow: hidden }
 .theme-switch img { display: block; width: 100%; height: 100%; object-fit: contain; }
 .theme-switch.light img { filter: brightness(0); transform: scaleX(-1); }
 .theme-switch.dark img { filter: invert(1); }
