@@ -249,6 +249,13 @@ th { color: var(--mut); font-size: 12px; font-weight: 700 }
 .icon-btn .mi { width: 17px; height: 17px; color: #fff }
 .icon-text { display: inline-flex; align-items: center; gap: 7px }
 .icon-text .mi { width: 16px; height: 16px; color: #fff }
+.theme-switch-row { display: flex; align-items: center; justify-content: space-between; gap: 16px; min-height: 42px }
+.theme-switch { position: relative; width: 76px; height: 38px; flex: none; padding: 3px; border: 1px solid #fff; border-radius: 99px; background: #080b14; cursor: pointer; transition: background .2s, border-color .2s }
+.theme-switch-icon { position: absolute; z-index: 1; top: 50%; left: 10px; color: #fff; font-size: 19px; line-height: 1; transform: translateY(-50%) }
+.theme-switch i { position: absolute; top: 4px; left: 4px; width: 28px; height: 28px; border: 1px solid #fff; border-radius: 50%; background: #080b14; transition: transform .22s ease, background .2s }
+.theme-switch.light { background: #fff; border-color: #fff }
+.theme-switch.light .theme-switch-icon { left: auto; right: 10px; color: #111827 }
+.theme-switch.light i { background: #fff; border-color: #111827; transform: translateX(38px) }
 .icon-action .mi { width: 16px; height: 16px; color: #fff }
 .chip-edit { display: inline-flex !important; align-items: center; justify-content: center; }
 .chip-edit .mi { width: 13px; height: 13px; color: #fff }

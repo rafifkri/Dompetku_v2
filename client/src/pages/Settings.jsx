@@ -9,7 +9,7 @@ import trashIcon from '../assets/icons/sampah.png';
 
 export default function Settings() {
   const { S, upd, restore } = useFinance();
-  const { toast, ask, setTheme } = useUI();
+  const { toast, ask, theme, setTheme } = useUI();
   const [sa, setSa] = useState(S.saldoAwal || '');
   const [txt, setTxt] = useState('');
 
@@ -38,9 +38,12 @@ export default function Settings() {
         </div>
         <div className="card">
           <h2>Tema</h2>
-          <div style={{ display: 'flex', gap: 8 }}>
-            <button className="btn g" onClick={() => setTheme('light')}>Terang</button>
-            <button className="btn g" onClick={() => setTheme('dark')}>Gelap</button>
+          <div className="theme-switch-row">
+            <span className="sub">Pilih tampilan aplikasi</span>
+            <button className={'theme-switch ' + (theme === 'light' ? 'light' : 'dark')} type="button" role="switch" aria-checked={theme === 'light'} aria-label={`Aktifkan mode ${theme === 'light' ? 'gelap' : 'terang'}`} onClick={() => setTheme(theme === 'light' ? 'dark' : 'light')}>
+              <span className="theme-switch-icon">{theme === 'light' ? '☼' : '☾'}</span>
+              <i />
+            </button>
           </div>
         </div>
       </div>
