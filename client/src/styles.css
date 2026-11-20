@@ -302,7 +302,7 @@ canvas { max-height: 280px }
   font-weight: 750;
   flex: none;
 }
-.profile-avatar img { width: 100%; height: 100%; object-fit: cover; border-radius: 50% }
+.profile-avatar img { width: 112%; height: 112%; max-width: none; object-fit: cover; border-radius: 50% }
 
 .auth-page {
   min-height: 100vh;
@@ -354,7 +354,6 @@ canvas { max-height: 280px }
 .profile-picker-menu button:hover { background: var(--card-soft); color: var(--em) }
 .profile-identity h2 { margin: 0 0 2px }
 .profile-identity .sub { margin: 0 }
-.profile-tip { color: var(--mut); font-size: 12px; margin: 18px 0 0 }
 .profile-form { min-height: 100% }
 .profile-section-heading { display: flex; justify-content: space-between; gap: 12px; align-items: start; margin-bottom: 20px }
 .profile-section-heading h2 { margin-bottom: 3px }

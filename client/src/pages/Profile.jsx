@@ -49,7 +49,7 @@ export default function Profile({ onLogout, onProfileChange }) {
         <div className="profile-cover">{form.cover && <img className="profile-cover-image" src={form.cover} alt="" style={{ transform: `translate(${form.coverX || 0}px, ${form.coverY || 0}px) scale(${form.coverScale || 1})` }} />}</div>
         <div className="profile-identity">
           <button className="profile-avatar profile-avatar-large" type="button" onClick={() => setShowPicker((p) => !p)} aria-label="Ubah foto atau background profil" aria-expanded={showPicker}>
-            {form.photo ? <img src={form.photo} alt="Foto profil" style={{ transform: `translate(${form.photoX || 0}px, ${form.photoY || 0}px) scale(${form.photoScale || 1})` }} /> : initials}
+            {form.photo ? <img src={form.photo} alt="Foto profil" style={{ transform: `translate(${(form.photoX || 0) * 0.4}px, ${(form.photoY || 0) * 0.4}px) scale(${form.photoScale || 1})` }} /> : initials}
             <span className="avatar-edit">+</span>
           </button>
           {showPicker && <div className="profile-picker-menu">
@@ -58,7 +58,6 @@ export default function Profile({ onLogout, onProfileChange }) {
           </div>}
           <div><h2>{form.name || 'Profil kamu'}</h2><p className="sub">{form.email}</p></div>
         </div>
-        <p className="profile-tip">Klik avatar untuk memilih foto profil atau background.</p>
         <input ref={fileRef} type="file" accept="image/*" onChange={(e) => choosePhoto(e, 'photo')} hidden />
         <input ref={coverRef} type="file" accept="image/*" onChange={(e) => choosePhoto(e, 'cover')} hidden />
       </section>
