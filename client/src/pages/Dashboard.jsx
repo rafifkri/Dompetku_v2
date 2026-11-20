@@ -11,7 +11,7 @@ import pemasukanIcon from '../assets/icons/total-pemasukan.png';
 import pengeluaranIcon from '../assets/icons/total-pengeluaran.png';
 import transaksiIcon from '../assets/icons/total-transaksi.png';
 import saldoIcon from '../assets/icons/sisa-saldo.png';
-import handWaveIcon from '../assets/icons/hand-wave.svg';
+import handWaveIcon from '../assets/icons/hand-wave.png';
 
 export default function Dashboard({ openEdit, onNavigate }) {
   const { S, M, monthTx, delTx } = useFinance();

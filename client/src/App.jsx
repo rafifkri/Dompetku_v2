@@ -17,7 +17,7 @@ import DatePicker from './components/DatePicker';
 import Goals from './pages/Goals';
 import Recurring from './pages/Recurring';
 import Icon from './components/Icon';
-import profileIcon from './assets/icons/profile.svg';
+import profileIcon from './assets/icons/profile.png';
 
 const PAGES = { dash: [Dashboard, 'Dashboard'], hist: [History, 'Riwayat Transaksi'], cat: [Categories, 'Kategori'], bud: [Budget, 'Budget Bulanan'], goals: [Goals, 'Target Keuangan'], recurring: [Recurring, 'Transaksi Berulang'], ana: [Analysis, 'Analisis Keuangan'], set: [Settings, 'Pengaturan'], prof: [Profile, 'Profil Saya'] };
 
