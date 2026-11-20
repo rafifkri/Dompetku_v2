@@ -157,11 +157,18 @@ function ImageAdjuster({ editor, setEditor, onApply }) {
   const wheel = (e) => {
     e.preventDefault();
     e.stopPropagation();
-    setEditor((p) => {
-      const scale = Math.max(1, Math.min(3, p.scale + (e.deltaY < 0 ? .08 : -.08)));
-      if (scale <= 1) return { ...p, scale: 1, x: 0, y: 0 };
-      return { ...p, scale, ...clampPosition(p.x, p.y, scale) };
-    });
+    if (e.ctrlKey || e.metaKey) {
+      setEditor((p) => {
+        const scale = Math.max(1, Math.min(3, p.scale + (e.deltaY < 0 ? .08 : -.08)));
+        if (scale <= 1) return { ...p, scale: 1, x: 0, y: 0 };
+        return { ...p, scale, ...clampPosition(p.x, p.y, scale) };
+      });
+      return;
+    }
+    setEditor((p) => ({
+      ...p,
+      ...clampPosition(p.x - e.deltaX, p.y - e.deltaY, p.scale),
+    }));
   };
   const startDrag = (e) => {
     e.preventDefault();
