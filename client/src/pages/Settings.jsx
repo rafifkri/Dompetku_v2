@@ -51,6 +51,7 @@ export default function Settings() {
             <span>Mode {theme === 'light' ? 'terang' : 'gelap'} aktif</span>
             <span className="theme-status-note">Tersimpan otomatis</span>
           </div>
+          <div className="theme-tip">Perubahan tema langsung diterapkan ke seluruh aplikasi.</div>
         </div>
       </div>
       <div className="card" style={{ marginTop: 18 }}>
