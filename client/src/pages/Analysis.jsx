@@ -1,5 +1,7 @@
 import { useFinance } from '../store';
 import { BLN, daysIn, rp, sum, today } from '../utils';
+import balanceIcon from '../assets/icons/pemasukan-vs-pengeluaran.png';
+import expenseNoteIcon from '../assets/icons/catatan-pengeluaran.png';
 
 export default function Analysis() {
   const { S, M, monthTx } = useFinance();
@@ -11,7 +13,7 @@ export default function Analysis() {
   const top = (m) => Object.entries(m).sort((a, b) => b[1] - a[1])[0];
 
   const I = [];
-  if (!ex.length) I.push(['+', <>Belum ada pengeluaran tercatat pada bulan ini.</>]);
+  if (!ex.length) I.push([expenseNoteIcon, <>Belum ada pengeluaran tercatat pada bulan ini.</>]);
   else {
     const c = top(byC), d = top(byD), f = top(cnt);
     I.push(['#', <>Kategori terbesar: <b>{c[0]}</b> sebesar {rp(c[1])} ({Math.round((c[1] / out) * 100)}% dari pengeluaran).</>]);
@@ -21,7 +23,7 @@ export default function Analysis() {
     I.push(['!', <>Hari pengeluaran tertinggi: <b>{d[0].split('-').reverse().join('/')}</b> sebesar {rp(d[1])}.</>]);
     I.push(['↻', <>Kategori paling sering dipakai: <b>{f[0]}</b> ({f[1]} transaksi).</>]);
   }
-  I.push(['=', <>Pemasukan <b>{rp(inc)}</b> vs pengeluaran <b>{rp(out)}</b>{inc || out ? <> → selisih <b>{rp(inc - out)}</b></> : null}.</>]);
+  I.push([balanceIcon, <>Pemasukan <b>{rp(inc)}</b> vs pengeluaran <b>{rp(out)}</b>{inc || out ? <> → selisih <b>{rp(inc - out)}</b></> : null}.</>]);
   if (inc > 0) {
     const p = ((inc - out) / inc) * 100;
     I.push([p >= 20 ? '✓' : p >= 0 ? '~' : '!', <>Uang yang berhasil disimpan: <b>{Math.round(p)}%</b> dari pemasukan{p < 0 ? ' (pengeluaran melebihi pemasukan)' : p < 20 ? ' — coba targetkan minimal 20%' : ' — kebiasaan bagus!'}.</>]);
@@ -32,7 +34,7 @@ export default function Analysis() {
     <>
       <div className="card">
         <h2>Insight Bulan Ini</h2>
-        {I.map((x, i) => <div className="ins" key={i}><span>{x[0]}</span><div>{x[1]}</div></div>)}
+        {I.map((x, i) => <div className="ins" key={i}><span>{typeof x[0] === 'string' ? x[0] : <img src={x[0]} alt="" />}</span><div>{x[1]}</div></div>)}
       </div>
       <div className="card" style={{ marginTop: 18 }}>
         <h2>Rekapitulasi Semua Bulan</h2>
