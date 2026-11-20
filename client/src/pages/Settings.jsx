@@ -46,6 +46,11 @@ export default function Settings() {
               <img src={theme === 'light' ? themeLightIcon : themeDarkIcon} alt="" />
             </button>
           </div>
+          <div className="theme-status">
+            <span className="theme-status-dot" aria-hidden="true" />
+            <span>Mode {theme === 'light' ? 'terang' : 'gelap'} aktif</span>
+            <span className="theme-status-note">Tersimpan otomatis</span>
+          </div>
         </div>
       </div>
       <div className="card" style={{ marginTop: 18 }}>
