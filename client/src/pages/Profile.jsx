@@ -114,18 +114,16 @@ function ImageAdjuster({ editor, setEditor, onApply }) {
   const clampPosition = (x, y, scale) => {
     const frame = frameRef.current?.getBoundingClientRect();
     if (!frame) return { x, y };
-    const maxX = Math.max(0, frame.width * (scale - 1) / 2);
-    const maxY = Math.max(0, frame.height * (scale - 1) / 2);
+    const overscanX = frame.width * 0.18;
+    const overscanY = frame.height * 0.18;
+    const maxX = overscanX + frame.width * (scale - 1) / 2;
+    const maxY = overscanY + frame.height * (scale - 1) / 2;
     return { x: Math.max(-maxX, Math.min(maxX, x)), y: Math.max(-maxY, Math.min(maxY, y)) };
   };
 
   const settlePosition = (position, scale) => {
-    if (scale <= 1) return { x: 0, y: 0 };
     const frame = frameRef.current?.getBoundingClientRect();
     if (!frame) return position;
-    const maxX = Math.max(0, frame.width * (scale - 1) / 2);
-    const maxY = Math.max(0, frame.height * (scale - 1) / 2);
-    if (Math.abs(position.x) > maxX + 1 || Math.abs(position.y) > maxY + 1) return { x: 0, y: 0 };
     return clampPosition(position.x, position.y, scale);
   };
 
@@ -142,7 +140,6 @@ function ImageAdjuster({ editor, setEditor, onApply }) {
       const ratio = pointerDistance() / pinch.current.distance;
       setEditor((p) => {
         const scale = Math.max(1, Math.min(3, pinch.current.scale * ratio));
-        if (scale <= 1) return { ...p, scale: 1, x: 0, y: 0 };
         return { ...p, scale, ...clampPosition(p.x, p.y, scale) };
       });
       return;
@@ -160,7 +157,6 @@ function ImageAdjuster({ editor, setEditor, onApply }) {
     if (e.ctrlKey || e.metaKey) {
       setEditor((p) => {
         const scale = Math.max(1, Math.min(3, p.scale + (e.deltaY < 0 ? .08 : -.08)));
-        if (scale <= 1) return { ...p, scale: 1, x: 0, y: 0 };
         return { ...p, scale, ...clampPosition(p.x, p.y, scale) };
       });
       return;
