@@ -292,6 +292,11 @@ th { color: var(--mut); font-size: 12px; font-weight: 700 }
 .budget-alert span { color: var(--mut); flex: 1; min-width: 0 }
 .budget-alert .btn { flex: none }
 canvas { max-height: 280px }
+.doughnut-wrap { position: relative; min-height: 280px }
+.doughnut-chart { height: 280px }
+.doughnut-center { position: absolute; top: 42%; left: 50%; display: grid; gap: 2px; transform: translate(-50%, -50%); text-align: center; pointer-events: none; white-space: nowrap }
+.doughnut-center strong { color: var(--tx); font-size: 17px; line-height: 1.2 }
+.doughnut-center span { color: var(--mut); font-size: 11px }
 .chart-filter { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 12px }
 .chart-filter .btn.on { background: var(--pri); color: var(--onpri); border-color: var(--pri) }
 
