@@ -17,7 +17,7 @@ export default function Budget() {
         const msg = !b ? 'Belum ada budget' : p > 100 ? `⚠️ Melebihi budget ${rp(u - b)}` : p >= 80 ? `🟠 Mendekati batas · sisa ${rp(b - u)}` : `Sisa ${rp(b - u)}`;
         return (
           <div className="row" key={c} style={{ alignItems: 'flex-start', flexWrap: 'wrap' }}>
-            <div className="ic"><CategoryIcon value={icon(S.cats, 'expense', c)} /></div>
+            <div className="ic"><CategoryIcon category={c} value={icon(S.cats, 'expense', c)} /></div>
             <div className="grow" style={{ minWidth: 200 }}>
               <b>{c}</b>
               <div className="bar" style={{ margin: '8px 0 4px' }}><i style={{ width: Math.min(100, p) + '%', background: col }} /></div>
