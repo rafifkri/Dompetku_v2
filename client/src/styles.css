@@ -122,7 +122,6 @@ aside {
   max-height: 82px;
   object-fit: contain;
   object-position: left center;
-  filter: brightness(0) invert(1);
 }
 .nav {
   all: unset;

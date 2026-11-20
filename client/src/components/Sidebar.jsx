@@ -1,5 +1,5 @@
 import Icon from './Icon';
-import logo from '../assets/logo.png';
+import logo from '../assets/logo-white.png';
 import dashboard from '../assets/icons/dashboard.png';
 import tambah from '../assets/icons/tambah.png';
 import riwayat from '../assets/icons/riwayat.png';
