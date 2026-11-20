@@ -3,6 +3,7 @@ import { useUI } from '../ui';
 import CategoryIcon from '../components/CategoryIcon';
 import Icon from '../components/Icon';
 import editIcon from '../assets/icons/edit.png';
+import trashIcon from '../assets/icons/sampah.png';
 
 export default function Categories() {
   const { S, upd, renameCat } = useFinance();
@@ -33,10 +34,10 @@ export default function Categories() {
             <div className="row" style={{ border: 0, padding: '0 0 10px' }}>
               <div className="ic"><CategoryIcon category={n} value={c.i} /></div><div className="grow"><b>{n}</b></div>
               <button className="btn g s icon-action" aria-label={`Ubah ${n}`} onClick={() => rename(t, n)}><Icon src={editIcon} /></button>
-              <button className="btn g s icon-action" aria-label={`Hapus ${n}`} onClick={() => del(t, n)}>×</button>
+              <button className="btn g s icon-action" aria-label={`Hapus ${n}`} onClick={() => del(t, n)}><Icon src={trashIcon} /></button>
             </div>
             {c.s.map((s, i) => (
-              <span className="chip" key={s + i}>{s}<button className="chip-edit" aria-label={`Ubah ${s}`} onClick={() => editSub(t, n, i)}><Icon src={editIcon} /></button><button onClick={() => delSub(t, n, i)}>×</button></span>
+              <span className="chip" key={s + i}>{s}<button className="chip-edit" aria-label={`Ubah ${s}`} onClick={() => editSub(t, n, i)}><Icon src={editIcon} /></button><button className="chip-edit" aria-label={`Hapus ${s}`} onClick={() => delSub(t, n, i)}><Icon src={trashIcon} /></button></span>
             ))}
             <button className="btn g s" style={{ margin: 3 }} onClick={() => addSub(t, n)}>+ Sub</button>
           </div>

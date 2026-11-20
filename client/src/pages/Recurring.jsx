@@ -2,6 +2,8 @@ import { useState } from 'react';
 import { useFinance } from '../store';
 import { useUI } from '../ui';
 import { rp, uid } from '../utils';
+import Icon from '../components/Icon';
+import trashIcon from '../assets/icons/sampah.png';
 
 export default function Recurring() {
   const { S, upd } = useFinance();
@@ -31,7 +33,7 @@ export default function Recurring() {
         <button className="btn" type="submit">Tambah jadwal</button>
       </form>
       <div className="card"><h2>Jadwal Aktif</h2>
-        {(S.recurring || []).length ? S.recurring.map((r) => <div className="recurring-item" key={r.id}><div><b>{r.desc}</b><span>{rp(r.amount)} · setiap tanggal {r.day}</span></div><div><button className="btn g s" type="button" onClick={() => toggle(r.id)}>{r.active ? 'Aktif' : 'Nonaktif'}</button><button className="icon-btn" type="button" onClick={() => remove(r.id)} aria-label={`Hapus ${r.desc}`}>×</button></div></div>) : <div className="empty">Belum ada transaksi berulang.</div>}
+        {(S.recurring || []).length ? S.recurring.map((r) => <div className="recurring-item" key={r.id}><div><b>{r.desc}</b><span>{rp(r.amount)} · setiap tanggal {r.day}</span></div><div><button className="btn g s" type="button" onClick={() => toggle(r.id)}>{r.active ? 'Aktif' : 'Nonaktif'}</button><button className="icon-btn" type="button" onClick={() => remove(r.id)} aria-label={`Hapus ${r.desc}`}><Icon src={trashIcon} /></button></div></div>) : <div className="empty">Belum ada transaksi berulang.</div>}
       </div>
     </div>
   );

@@ -4,6 +4,8 @@ import { useUI } from '../ui';
 import { DEF } from '../defaults';
 import { STATIC } from '../api';
 import { download, toCSV } from '../utils';
+import Icon from '../components/Icon';
+import trashIcon from '../assets/icons/sampah.png';
 
 export default function Settings() {
   const { S, upd, restore } = useFinance();
@@ -53,7 +55,7 @@ export default function Settings() {
         <textarea rows={5} placeholder="Tempel JSON backup di sini..." value={txt} onChange={(e) => setTxt(e.target.value)} />
         <button className="btn" style={{ marginTop: 10 }} onClick={() => apply(txt)}>Restore dari teks</button>
         <hr style={{ border: 0, borderTop: '1px solid var(--line)', margin: '18px 0' }} />
-        <button className="btn d" onClick={wipe}>Hapus semua data</button>
+        <button className="btn d icon-text" onClick={wipe}><Icon src={trashIcon} />Hapus semua data</button>
       </div>
     </>
   );

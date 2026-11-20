@@ -2,6 +2,8 @@ import { useState } from 'react';
 import { useFinance } from '../store';
 import { useUI } from '../ui';
 import { rp, uid } from '../utils';
+import Icon from '../components/Icon';
+import trashIcon from '../assets/icons/sampah.png';
 
 export default function Goals() {
   const { S, upd } = useFinance();
@@ -33,7 +35,7 @@ export default function Goals() {
         {goals.length ? goals.map((g) => {
           const percent = Math.min(100, (g.saved / g.target) * 100);
           return <div className="goal-item" key={g.id}>
-            <div className="goal-head"><div><b>{g.name}</b><span>{g.deadline ? `Target ${g.deadline}` : 'Tanpa batas waktu'}</span></div><button className="icon-btn" type="button" onClick={() => remove(g.id)} aria-label={`Hapus ${g.name}`}>×</button></div>
+            <div className="goal-head"><div><b>{g.name}</b><span>{g.deadline ? `Target ${g.deadline}` : 'Tanpa batas waktu'}</span></div><button className="icon-btn" type="button" onClick={() => remove(g.id)} aria-label={`Hapus ${g.name}`}><Icon src={trashIcon} /></button></div>
             <div className="goal-values"><strong>{rp(g.saved)}</strong><span>dari {rp(g.target)} · {Math.round(percent)}%</span></div>
             <div className="bar"><i style={{ width: percent + '%', background: percent >= 100 ? 'var(--em)' : 'var(--focus)' }} /></div>
           </div>;

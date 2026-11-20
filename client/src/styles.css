@@ -243,6 +243,9 @@ th { color: var(--mut); font-size: 12px; font-weight: 700 }
 .empty { text-align: center; color: var(--mut); padding: 30px 10px }
 .icon-btn { border: 0; background: transparent; color: var(--mut); cursor: pointer; font-size: 22px; line-height: 1; padding: 2px 6px }
 .icon-btn:hover { color: var(--exp) }
+.icon-btn .mi { width: 17px; height: 17px; color: #fff }
+.icon-text { display: inline-flex; align-items: center; gap: 7px }
+.icon-text .mi { width: 16px; height: 16px; color: #fff }
 .icon-action .mi { width: 16px; height: 16px; color: #fff }
 .chip-edit { display: inline-flex !important; align-items: center; justify-content: center; }
 .chip-edit .mi { width: 13px; height: 13px; color: #fff }

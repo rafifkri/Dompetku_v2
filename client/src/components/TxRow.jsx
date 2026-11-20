@@ -2,6 +2,7 @@ import { useFinance } from '../store';
 import { icon, rp } from '../utils';
 import Icon from './Icon';
 import editIcon from '../assets/icons/edit.png';
+import trashIcon from '../assets/icons/sampah.png';
 import CategoryIcon from './CategoryIcon';
 
 export default function TxRow({ t, onEdit, onDelete }) {
@@ -16,7 +17,7 @@ export default function TxRow({ t, onEdit, onDelete }) {
       </div>
       <div className={'amt ' + (inc ? 'in' : 'out')}>{inc ? '+' : '−'}{rp(t.amount)}</div>
       {onEdit && <button className="btn g s tx-action" aria-label="Edit transaksi" title="Edit transaksi" onClick={() => onEdit(t)}><Icon src={editIcon} /></button>}
-      {onDelete && <button className="btn g s tx-action tx-delete" aria-label="Hapus transaksi" title="Hapus transaksi" onClick={() => onDelete(t.id)}>×</button>}
+      {onDelete && <button className="btn g s tx-action tx-delete" aria-label="Hapus transaksi" title="Hapus transaksi" onClick={() => onDelete(t.id)}><Icon src={trashIcon} /></button>}
     </div>
   );
 }
