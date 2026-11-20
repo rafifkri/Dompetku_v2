@@ -65,7 +65,7 @@ function Shell({ profile, onLogout, onProfileChange }) {
             <button className="profile-chip" onClick={() => setView('prof')}><span className="profile-avatar">{profile.photo ? <img src={profile.photo} alt="" /> : profile.name.slice(0, 1).toUpperCase()}</span><span>{profile.name}</span></button>
           </div>
         </div>
-        {err && <div className="card out" style={{ marginBottom: 18 }}>⚠️ {err}</div>}
+        {err && <div className="card out" style={{ marginBottom: 18 }}>Error: {err}</div>}
         {ready ? <div className="page" key={view}><Page openEdit={(t) => setForm({ edit: t })} onNavigate={setView} onLogout={onLogout} onProfileChange={onProfileChange} /></div> : <div className="empty">Memuat data…</div>}
       </main>
       {form && <TxForm edit={form.edit} onClose={() => setForm(null)} />}

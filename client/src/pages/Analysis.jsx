@@ -11,20 +11,20 @@ export default function Analysis() {
   const top = (m) => Object.entries(m).sort((a, b) => b[1] - a[1])[0];
 
   const I = [];
-  if (!ex.length) I.push(['🌱', <>Belum ada pengeluaran tercatat pada bulan ini.</>]);
+  if (!ex.length) I.push(['+', <>Belum ada pengeluaran tercatat pada bulan ini.</>]);
   else {
     const c = top(byC), d = top(byD), f = top(cnt);
-    I.push(['🏆', <>Kategori terbesar: <b>{c[0]}</b> sebesar {rp(c[1])} ({Math.round((c[1] / out) * 100)}% dari pengeluaran).</>]);
-    I.push(['👫', <>Pengeluaran main bareng teman: <b>{rp(byC['Main Bareng Teman'] || 0)}</b>.</>]);
-    I.push(['💕', <>Pengeluaran date bareng pacar: <b>{rp(byC['Date Bareng Pacar'] || 0)}</b>.</>]);
-    I.push(['📅', <>Rata-rata pengeluaran per hari: <b>{rp(out / n)}</b> (dihitung {n} hari).</>]);
-    I.push(['🔥', <>Hari pengeluaran tertinggi: <b>{d[0].split('-').reverse().join('/')}</b> sebesar {rp(d[1])}.</>]);
-    I.push(['🔁', <>Kategori paling sering dipakai: <b>{f[0]}</b> ({f[1]} transaksi).</>]);
+    I.push(['#', <>Kategori terbesar: <b>{c[0]}</b> sebesar {rp(c[1])} ({Math.round((c[1] / out) * 100)}% dari pengeluaran).</>]);
+    I.push(['&', <>Pengeluaran main bareng teman: <b>{rp(byC['Main Bareng Teman'] || 0)}</b>.</>]);
+    I.push(['♥', <>Pengeluaran date bareng pacar: <b>{rp(byC['Date Bareng Pacar'] || 0)}</b>.</>]);
+    I.push(['•', <>Rata-rata pengeluaran per hari: <b>{rp(out / n)}</b> (dihitung {n} hari).</>]);
+    I.push(['!', <>Hari pengeluaran tertinggi: <b>{d[0].split('-').reverse().join('/')}</b> sebesar {rp(d[1])}.</>]);
+    I.push(['↻', <>Kategori paling sering dipakai: <b>{f[0]}</b> ({f[1]} transaksi).</>]);
   }
-  I.push(['⚖️', <>Pemasukan <b>{rp(inc)}</b> vs pengeluaran <b>{rp(out)}</b>{inc || out ? <> → selisih <b>{rp(inc - out)}</b></> : null}.</>]);
+  I.push(['=', <>Pemasukan <b>{rp(inc)}</b> vs pengeluaran <b>{rp(out)}</b>{inc || out ? <> → selisih <b>{rp(inc - out)}</b></> : null}.</>]);
   if (inc > 0) {
     const p = ((inc - out) / inc) * 100;
-    I.push([p >= 20 ? '✅' : p >= 0 ? '🟡' : '🚨', <>Uang yang berhasil disimpan: <b>{Math.round(p)}%</b> dari pemasukan{p < 0 ? ' (pengeluaran melebihi pemasukan)' : p < 20 ? ' — coba targetkan minimal 20%' : ' — kebiasaan bagus!'}.</>]);
+    I.push([p >= 20 ? '✓' : p >= 0 ? '~' : '!', <>Uang yang berhasil disimpan: <b>{Math.round(p)}%</b> dari pemasukan{p < 0 ? ' (pengeluaran melebihi pemasukan)' : p < 20 ? ' — coba targetkan minimal 20%' : ' — kebiasaan bagus!'}.</>]);
   }
   const months = [...new Set(S.tx.map((t) => t.date.slice(0, 7)))].sort().reverse();
 

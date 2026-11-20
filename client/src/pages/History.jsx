@@ -24,7 +24,7 @@ export default function History({ openEdit }) {
   return (
     <div className="card">
       <div className="filters">
-        <input placeholder="🔍 Cari nama / deskripsi" value={q} onChange={(e) => setQ(e.target.value)} />
+        <input placeholder="Cari nama / deskripsi" value={q} onChange={(e) => setQ(e.target.value)} />
         <select value={all} onChange={(e) => setAll(e.target.value)}><option value="0">Bulan terpilih</option><option value="1">Semua bulan</option></select>
         <select value={type} onChange={(e) => setType(e.target.value)}><option value="">Semua jenis</option><option value="income">Pemasukan</option><option value="expense">Pengeluaran</option></select>
         <select value={cat} onChange={(e) => setCat(e.target.value)}><option value="">Semua kategori</option>{cats.map((c) => <option key={c}>{c}</option>)}</select>
