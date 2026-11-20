@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { BLN } from '../utils';
+import calendarIcon from '../assets/icons/calender.webp';
 
 const pad = (n) => String(n).padStart(2, '0');
 
@@ -49,7 +50,7 @@ export default function DatePicker({ value, onChange }) {
   return (
     <div className="date-picker" ref={root}>
       <button className="date-trigger" type="button" onClick={() => setOpen((p) => !p)} aria-haspopup="dialog" aria-expanded={open}>
-        <span className="date-trigger-icon">▦</span>
+        <img className="date-trigger-icon" src={calendarIcon} alt="" />
         <span>{d} {BLN[m - 1]} {y}</span>
         <span className="date-chevron">⌄</span>
       </button>
@@ -61,22 +62,9 @@ export default function DatePicker({ value, onChange }) {
               <select aria-label="Pilih bulan" value={cursor.m} onChange={(e) => setCursor((p) => ({ ...p, m: Number(e.target.value) }))}>
                 {BLN.map((name, index) => <option key={name} value={index}>{name}</option>)}
               </select>
-              <div className="date-year-stepper">
-                <button type="button" aria-label="Tahun sebelumnya" onClick={() => setCursor((p) => ({ ...p, y: Math.max(2000, p.y - 1) }))}>‹</button>
-                <input
-                  className="date-year-input"
-                  aria-label="Pilih tahun"
-                  type="number"
-                  min="2000"
-                  max="2100"
-                  value={cursor.y}
-                  onChange={(e) => {
-                    const year = Number(e.target.value);
-                    if (year >= 2000 && year <= 2100) setCursor((p) => ({ ...p, y: year }));
-                  }}
-                />
-                <button type="button" aria-label="Tahun berikutnya" onClick={() => setCursor((p) => ({ ...p, y: Math.min(2100, p.y + 1) }))}>›</button>
-              </div>
+              <select aria-label="Pilih tahun" value={cursor.y} onChange={(e) => setCursor((p) => ({ ...p, y: Number(e.target.value) }))}>
+                {Array.from({ length: 101 }, (_, index) => 2000 + index).map((year) => <option key={year} value={year}>{year}</option>)}
+              </select>
             </div>
             <button type="button" onClick={() => shift(1)} aria-label="Bulan berikutnya">›</button>
           </div>
