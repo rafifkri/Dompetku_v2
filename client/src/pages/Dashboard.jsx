@@ -11,6 +11,7 @@ import pemasukanIcon from '../assets/icons/total-pemasukan.png';
 import pengeluaranIcon from '../assets/icons/total-pengeluaran.png';
 import transaksiIcon from '../assets/icons/total-transaksi.png';
 import saldoIcon from '../assets/icons/sisa-saldo.png';
+import handWaveIcon from '../assets/icons/hand-wave.svg';
 
 export default function Dashboard({ openEdit, onNavigate }) {
   const { S, M, monthTx, delTx } = useFinance();
@@ -62,7 +63,7 @@ export default function Dashboard({ openEdit, onNavigate }) {
 
   return (
     <>
-      {!S.tx.length && <div className="card empty" style={{ marginBottom: 18 }}>👋 Belum ada transaksi. Klik <b>+ Tambah Transaksi</b> untuk mulai mencatat. Semua grafik dihitung dari data yang kamu catat.</div>}
+      {!S.tx.length && <div className="card empty dashboard-welcome" style={{ marginBottom: 18 }}><img src={handWaveIcon} alt="" /> <span>Belum ada transaksi. Klik <b>+ Tambah Transaksi</b> untuk mulai mencatat. Semua grafik dihitung dari data yang kamu catat.</span></div>}
       <div className="grid g4">
         <SummaryCard label="Sisa Saldo" value={rp(bal)} icon={saldoIcon} color="var(--bal)" pct={pc(bal, inc + (+S.saldoAwal || 0))} note={S.saldoAwal > 0 ? 'Termasuk saldo awal ' + rp(S.saldoAwal) : 'Pemasukan − pengeluaran'} />
         <SummaryCard label="Total Pemasukan" value={rp(inc)} icon={pemasukanIcon} color="var(--inc)" pct={inc > 0 ? 100 : 0} note="Uang masuk bulan ini" />

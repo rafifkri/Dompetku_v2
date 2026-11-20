@@ -151,6 +151,8 @@ main { width: calc(100% - 240px); margin-left: 240px; padding: 32px 36px 64px }
   margin-bottom: 26px;
 }
 h1 { font-size: clamp(22px, 2.4vw, 28px); letter-spacing: -.03em; margin: 0 }
+.title-with-icon { display: flex; align-items: center; gap: 9px }
+.title-with-icon .mi { color: var(--focus); flex: none }
 h2 { font-size: 17px; letter-spacing: -.01em; margin: 0 0 14px }
 .sub { color: var(--mut); font-size: 13px; margin-top: 2px }
 .card {
@@ -228,6 +230,8 @@ th { color: var(--mut); font-size: 12px; font-weight: 700 }
 .toast { position: fixed; bottom: calc(24px + env(safe-area-inset-bottom, 0px)); left: 50%; transform: translateX(-50%); background: var(--pri); color: var(--onpri); padding: 10px 18px; border-radius: 99px; z-index: 20; opacity: 0; pointer-events: none; transition: .3s }
 .toast.s { opacity: 1 }
 .empty { text-align: center; color: var(--mut); padding: 30px 10px }
+.dashboard-welcome { display: flex; align-items: center; justify-content: center; gap: 8px; }
+.dashboard-welcome img { width: 18px; height: 18px; flex: none; filter: invert(74%) sepia(32%) saturate(580%) hue-rotate(91deg) brightness(90%) }
 canvas { max-height: 280px }
 
 @media (max-width: 1100px) and (min-width: 861px) {
