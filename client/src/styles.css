@@ -249,14 +249,8 @@ canvas { max-height: 280px }
 .date-popover { position: absolute; left: 0; top: calc(100% + 8px); z-index: 30; width: 320px; padding: 12px; border: 1px solid var(--line); border-radius: 16px; background: var(--card); box-shadow: 0 18px 50px rgba(0, 0, 0, .38) }
 .date-head { display: grid; grid-template-columns: 38px minmax(0, 1fr) 38px; column-gap: 8px; align-items: center; margin-bottom: 10px }
 .date-head b { text-align: center; font-size: 14px }
-.date-head-selects { display: grid; grid-template-columns: 112px 76px; gap: 8px; min-width: 0 }
-.date-head-selects select { width: 112px; min-width: 112px; max-width: 112px; height: 38px; border: 1px solid var(--line); border-radius: 9px; background: var(--card-soft); color: var(--tx); padding: 6px 10px; text-align: center; text-align-last: center; cursor: pointer }
-.date-year-select { position: relative; width: 76px }
-.date-year-trigger { width: 76px !important; min-width: 76px; height: 38px; padding: 6px 8px !important; border: 1px solid var(--line) !important; border-radius: 9px !important; background: var(--card-soft) !important; color: var(--tx) !important; text-align: center; font-size: 15px }
-.date-year-trigger:hover { border-color: #315d91 !important; background: var(--card) !important }
-.date-year-menu { position: absolute; right: 0; top: calc(100% + 6px); z-index: 40; width: 76px; max-height: 304px; overflow-y: auto; overflow-x: hidden; padding: 4px; border: 1px solid var(--line); border-radius: 10px; background: var(--card); box-shadow: 0 14px 36px rgba(0, 0, 0, .42); scrollbar-width: thin }
-.date-year-menu button { width: 66px; height: 34px; min-height: 34px; display: block; border: 0; border-radius: 7px; background: transparent; color: var(--tx); text-align: center; padding: 0; font-size: 14px }
-.date-year-menu button:hover, .date-year-menu button.selected { background: #3979c2; color: #fff }
+.date-head-selects { display: grid; grid-template-columns: repeat(2, 112px); gap: 8px; min-width: 0 }
+.date-head-selects select { width: 112px; min-width: 112px; max-width: 112px; height: 38px; border: 1px solid var(--line); border-radius: 9px; background: var(--card-soft); color: var(--tx); padding: 6px 10px; text-align: center; text-align-last: center; font-size: 15px; cursor: pointer }
 .date-head > button { width: 34px; height: 34px; border: 0; border-radius: 9px; background: var(--card-soft); color: var(--tx); cursor: pointer; font-size: 22px }
 .date-head .date-year-trigger { width: 76px; min-width: 76px; height: 38px; font-size: 15px; font-weight: 700; line-height: 38px; padding: 0 8px; }
 .date-head .date-year-menu { width: 76px; max-height: 270px; padding: 4px; }
