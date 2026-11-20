@@ -79,6 +79,8 @@ function ImageAdjuster({ editor, setEditor, onApply }) {
   const pointers = useRef(new Map());
   const pinch = useRef(null);
   const frameRef = useRef(null);
+  const moveFrame = useRef(null);
+  const latestMove = useRef(null);
   const [isDragging, setIsDragging] = useState(false);
   const [isSettling, setIsSettling] = useState(false);
 
@@ -114,8 +116,8 @@ function ImageAdjuster({ editor, setEditor, onApply }) {
   const clampPosition = (x, y, scale) => {
     const frame = frameRef.current?.getBoundingClientRect();
     if (!frame) return { x, y };
-    const overscanX = frame.width * 0.18;
-    const overscanY = frame.height * 0.18;
+    const overscanX = frame.width * 0.06;
+    const overscanY = frame.height * 0.06;
     const maxX = overscanX + frame.width * (scale - 1) / 2;
     const maxY = overscanY + frame.height * (scale - 1) / 2;
     return { x: Math.max(-maxX, Math.min(maxX, x)), y: Math.max(-maxY, Math.min(maxY, y)) };
@@ -138,17 +140,29 @@ function ImageAdjuster({ editor, setEditor, onApply }) {
     if (pointers.current.size >= 2) {
       if (!pinch.current) pinch.current = { distance: pointerDistance(), scale: editor.scale };
       const ratio = pointerDistance() / pinch.current.distance;
-      setEditor((p) => {
-        const scale = Math.max(1, Math.min(3, pinch.current.scale * ratio));
-        return { ...p, scale, ...clampPosition(p.x, p.y, scale) };
-      });
+      latestMove.current = { type: 'pinch', ratio };
+    } else if (drag.current) {
+      latestMove.current = {
+        type: 'drag',
+        rawX: drag.current.x + e.clientX - drag.current.clientX,
+        rawY: drag.current.y + e.clientY - drag.current.clientY,
+      };
+    } else {
       return;
     }
-    if (!drag.current) return;
-    setEditor((p) => {
-      const rawX = drag.current.x + e.clientX - drag.current.clientX;
-      const rawY = drag.current.y + e.clientY - drag.current.clientY;
-      return { ...p, ...clampPosition(rawX, rawY, p.scale) };
+    if (moveFrame.current) return;
+    moveFrame.current = requestAnimationFrame(() => {
+      moveFrame.current = null;
+      const next = latestMove.current;
+      latestMove.current = null;
+      if (!next) return;
+      setEditor((p) => {
+        if (next.type === 'pinch') {
+          const scale = Math.max(1, Math.min(3, pinch.current.scale * next.ratio));
+          return { ...p, scale, ...clampPosition(p.x, p.y, scale) };
+        }
+        return { ...p, ...clampPosition(next.rawX, next.rawY, p.scale) };
+      });
     });
   };
   const wheel = (e) => {

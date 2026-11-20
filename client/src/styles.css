@@ -257,7 +257,10 @@ canvas { max-height: 280px }
 .date-year-menu { position: absolute; right: 0; top: calc(100% + 6px); z-index: 40; width: 76px; max-height: 304px; overflow-y: auto; overflow-x: hidden; padding: 4px; border: 1px solid var(--line); border-radius: 10px; background: var(--card); box-shadow: 0 14px 36px rgba(0, 0, 0, .42); scrollbar-width: thin }
 .date-year-menu button { width: 66px; height: 34px; min-height: 34px; display: block; border: 0; border-radius: 7px; background: transparent; color: var(--tx); text-align: center; padding: 0; font-size: 14px }
 .date-year-menu button:hover, .date-year-menu button.selected { background: #3979c2; color: #fff }
-.date-head button { width: 34px; height: 34px; border: 0; border-radius: 9px; background: var(--card-soft); color: var(--tx); cursor: pointer; font-size: 22px }
+.date-head > button { width: 34px; height: 34px; border: 0; border-radius: 9px; background: var(--card-soft); color: var(--tx); cursor: pointer; font-size: 22px }
+.date-head .date-year-trigger { width: 76px; min-width: 76px; height: 38px; font-size: 15px; font-weight: 700; line-height: 38px; padding: 0 8px; }
+.date-head .date-year-menu { width: 76px; max-height: 270px; padding: 4px; }
+.date-head .date-year-menu button { width: 66px; height: 34px; min-height: 34px; border-radius: 7px; font-size: 14px; font-weight: 600; line-height: 34px; padding: 0; }
 .date-week, .date-grid { display: grid; grid-template-columns: repeat(7, 1fr); text-align: center }
 .date-week { color: var(--mut); font-size: 11px; margin-bottom: 4px }
 .date-week span { padding: 5px 0 }
@@ -365,7 +368,7 @@ canvas { max-height: 280px }
 .image-adjuster-frame { height: 220px; overflow: hidden; display: grid; place-items: center; border-radius: 14px; background: var(--card-soft); cursor: grab; touch-action: none; overscroll-behavior: none; user-select: none }
 .image-adjuster-frame.round { width: 220px; margin: 0 auto; border-radius: 50% }
 .image-adjuster-frame:active { cursor: grabbing }
-.image-adjuster-frame img { width: 100%; height: 100%; max-width: none; object-fit: cover; pointer-events: none; user-select: none; will-change: transform }
+.image-adjuster-frame img { width: 112%; height: 112%; max-width: none; object-fit: cover; pointer-events: none; user-select: none; will-change: transform }
 .image-adjuster-frame img.moving { transition: none }
 .image-adjuster-frame img.settling { transition: transform .22s cubic-bezier(.22, 1, .36, 1) }
 .image-adjuster label { margin-top: 18px }
