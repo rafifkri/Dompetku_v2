@@ -3,12 +3,14 @@ import { BLN } from '../utils';
 import calendarIcon from '../assets/icons/calender.webp';
 
 const pad = (n) => String(n).padStart(2, '0');
+const MIN_YEAR = 2000;
+const MAX_YEAR = 2011;
 
 export default function DatePicker({ value, onChange }) {
   const [open, setOpen] = useState(false);
   const [cursor, setCursor] = useState(() => {
     const [y, m] = value.split('-').map(Number);
-    return { y, m: m - 1 };
+    return { y: Math.max(MIN_YEAR, Math.min(MAX_YEAR, y)), m: m - 1 };
   });
   const root = useRef();
 
@@ -21,7 +23,7 @@ export default function DatePicker({ value, onChange }) {
   useEffect(() => {
     if (!open) return;
     const [y, m] = value.split('-').map(Number);
-    setCursor({ y, m: m - 1 });
+    setCursor({ y: Math.max(MIN_YEAR, Math.min(MAX_YEAR, y)), m: m - 1 });
   }, [open, value]);
 
   const [y, m, d] = value.split('-').map(Number);
@@ -34,7 +36,10 @@ export default function DatePicker({ value, onChange }) {
 
   const shift = (offset) => setCursor((p) => {
     const date = new Date(p.y, p.m + offset, 1);
-    return { y: date.getFullYear(), m: date.getMonth() };
+    return {
+      y: Math.max(MIN_YEAR, Math.min(MAX_YEAR, date.getFullYear())),
+      m: date.getMonth(),
+    };
   });
 
   const select = (day) => {
@@ -63,7 +68,7 @@ export default function DatePicker({ value, onChange }) {
                 {BLN.map((name, index) => <option key={name} value={index}>{name}</option>)}
               </select>
               <select aria-label="Pilih tahun" value={cursor.y} onChange={(e) => setCursor((p) => ({ ...p, y: Number(e.target.value) }))}>
-                {Array.from({ length: 101 }, (_, index) => 2000 + index).map((year) => <option key={year} value={year}>{year}</option>)}
+                {Array.from({ length: MAX_YEAR - MIN_YEAR + 1 }, (_, index) => MIN_YEAR + index).map((year) => <option key={year} value={year}>{year}</option>)}
               </select>
             </div>
             <button type="button" onClick={() => shift(1)} aria-label="Bulan berikutnya">›</button>
