@@ -207,28 +207,6 @@ function ImageAdjuster({ editor, setEditor, onApply }) {
             style={{ transform: `translate3d(${editor.x}px, ${editor.y}px, 0) scale(${editor.scale})` }}
           />
         </div>
-        <div className="image-adjuster-controls">
-          <label>Geser horizontal
-            <input type="range" min="-200" max="200" step="1" value={editor.x}
-              onChange={(e) => setEditor((p) => ({ ...p, ...clampPosition(Number(e.target.value), p.y, p.scale) }))} />
-          </label>
-          <strong>X {editor.x}</strong>
-          <label>Geser vertikal
-            <input type="range" min="-200" max="200" step="1" value={editor.y}
-              onChange={(e) => setEditor((p) => ({ ...p, ...clampPosition(p.x, Number(e.target.value), p.scale) }))} />
-          </label>
-          <strong>Y {editor.y}</strong>
-          <label>Skala
-            <input type="range" min="1" max="3" step="0.01" value={editor.scale}
-              onChange={(e) => {
-                const scale = Number(e.target.value);
-                setEditor((p) => scale <= 1
-                  ? { ...p, scale: 1, x: 0, y: 0 }
-                  : { ...p, scale, ...clampPosition(p.x, p.y, scale) });
-              }} />
-          </label>
-          <strong>{Math.round(editor.scale * 100)}%</strong>
-        </div>
         <button className="btn g image-adjuster-reset" type="button" onClick={() => setEditor({ ...editor, scale: 1, x: 0, y: 0 })}>Reset posisi</button>
         <button className="btn image-adjuster-apply" type="button" onClick={onApply}>Gunakan gambar</button>
       </div>
