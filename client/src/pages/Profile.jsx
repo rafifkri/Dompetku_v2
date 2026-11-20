@@ -95,8 +95,20 @@ function ImageAdjuster({ editor, setEditor, onApply }) {
         e.stopPropagation();
       }
     };
+    const preventZoomKeys = (e) => {
+      if (e.ctrlKey || e.metaKey) {
+        if (['+', '-', '=', '0'].includes(e.key)) {
+          e.preventDefault();
+          e.stopPropagation();
+        }
+      }
+    };
     document.addEventListener('wheel', preventBrowserZoom, { passive: false, capture: true });
-    return () => document.removeEventListener('wheel', preventBrowserZoom, true);
+    document.addEventListener('keydown', preventZoomKeys, true);
+    return () => {
+      document.removeEventListener('wheel', preventBrowserZoom, true);
+      document.removeEventListener('keydown', preventZoomKeys, true);
+    };
   }, []);
 
   const clampPosition = (x, y, scale) => {
@@ -196,20 +208,24 @@ function ImageAdjuster({ editor, setEditor, onApply }) {
           />
         </div>
         <div className="image-adjuster-controls">
-          <label>Perbesar gambar
-            <input
-              type="range"
-              min="1"
-              max="3"
-              step="0.01"
-              value={editor.scale}
+          <label>Geser horizontal
+            <input type="range" min="-200" max="200" step="1" value={editor.x}
+              onChange={(e) => setEditor((p) => ({ ...p, ...clampPosition(Number(e.target.value), p.y, p.scale) }))} />
+          </label>
+          <strong>X {editor.x}</strong>
+          <label>Geser vertikal
+            <input type="range" min="-200" max="200" step="1" value={editor.y}
+              onChange={(e) => setEditor((p) => ({ ...p, ...clampPosition(p.x, Number(e.target.value), p.scale) }))} />
+          </label>
+          <strong>Y {editor.y}</strong>
+          <label>Skala
+            <input type="range" min="1" max="3" step="0.01" value={editor.scale}
               onChange={(e) => {
                 const scale = Number(e.target.value);
                 setEditor((p) => scale <= 1
                   ? { ...p, scale: 1, x: 0, y: 0 }
                   : { ...p, scale, ...clampPosition(p.x, p.y, scale) });
-              }}
-            />
+              }} />
           </label>
           <strong>{Math.round(editor.scale * 100)}%</strong>
         </div>
