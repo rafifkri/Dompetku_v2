@@ -6,6 +6,8 @@ import { STATIC } from '../api';
 import { download, toCSV } from '../utils';
 import Icon from '../components/Icon';
 import trashIcon from '../assets/icons/sampah.png';
+import themeLightIcon from '../assets/icons/theme-light.png';
+import themeDarkIcon from '../assets/icons/theme-dark.png';
 
 export default function Settings() {
   const { S, upd, restore } = useFinance();
@@ -41,8 +43,7 @@ export default function Settings() {
           <div className="theme-switch-row">
             <span className="sub">Pilih tampilan aplikasi</span>
             <button className={'theme-switch ' + (theme === 'light' ? 'light' : 'dark')} type="button" role="switch" aria-checked={theme === 'light'} aria-label={`Aktifkan mode ${theme === 'light' ? 'gelap' : 'terang'}`} onClick={() => setTheme(theme === 'light' ? 'dark' : 'light')}>
-              <span className="theme-switch-icon">{theme === 'light' ? '☼' : '☾'}</span>
-              <i />
+              <img src={theme === 'light' ? themeLightIcon : themeDarkIcon} alt="" />
             </button>
           </div>
         </div>
