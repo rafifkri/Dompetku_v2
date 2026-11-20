@@ -17,7 +17,7 @@ export const clearToken = () => sessionStorage.removeItem(TOKEN_KEY);
 const KEY = 'dompetku_static_v1';
 const read = () => {
   try { const d = JSON.parse(localStorage.getItem(KEY)); if (d && Array.isArray(d.tx)) return d; } catch { /* abaikan */ }
-  return { tx: [], saldoAwal: 0, budget: {}, cats: null };
+  return { tx: [], saldoAwal: 0, budget: {}, goals: [], recurring: [], cats: null };
 };
 
 function local(url, method, b) {
@@ -57,11 +57,11 @@ function local(url, method, b) {
   } else if (url.startsWith('/api/tx/') && method === 'DELETE') {
     const id = decodeURIComponent(url.slice(8)); d.tx = d.tx.filter((t) => t.id !== id);
   } else if (url === '/api/settings' && method === 'PUT') {
-    d.saldoAwal = Math.max(0, Number(b.saldoAwal) || 0); d.budget = b.budget || {}; if (b.cats) d.cats = b.cats;
+    d.saldoAwal = Math.max(0, Number(b.saldoAwal) || 0); d.budget = b.budget || {}; d.goals = b.goals || []; d.recurring = b.recurring || []; if (b.cats) d.cats = b.cats;
   } else if (url === '/api/rename' && method === 'POST') {
     d.tx = d.tx.map((t) => (t.type === b.type && t.cat === b.from ? { ...t, cat: b.to } : t));
   } else if (url === '/api/restore' && method === 'POST') {
-    Object.assign(d, { tx: b.tx, saldoAwal: b.saldoAwal || 0, budget: b.budget || {}, cats: b.cats });
+    Object.assign(d, { tx: b.tx, saldoAwal: b.saldoAwal || 0, budget: b.budget || {}, goals: b.goals || [], recurring: b.recurring || [], cats: b.cats });
   } else throw new Error('Endpoint tidak dikenal');
   localStorage.setItem(KEY, JSON.stringify(d));
   return { ok: true };
@@ -123,7 +123,7 @@ const cloud = async (url, method = 'GET', b) => {
     ]);
     if (txError || settingsError) throw txError || settingsError;
     const s = Object.fromEntries(settings.map((x) => [x.key, x.value]));
-    return { tx: tx || [], saldoAwal: s.saldoAwal || 0, budget: s.budget || {}, cats: s.cats || null };
+    return { tx: tx || [], saldoAwal: s.saldoAwal || 0, budget: s.budget || {}, goals: s.goals || [], recurring: s.recurring || [], cats: s.cats || null };
   }
   if (url === '/api/tx' && method === 'POST') {
     const r = cleanTransaction(b);
@@ -137,7 +137,7 @@ const cloud = async (url, method = 'GET', b) => {
     return { ok: true };
   }
   if (url === '/api/settings' && method === 'PUT') {
-    const rows = [['saldoAwal', Math.max(0, Number(b.saldoAwal) || 0)], ['budget', b.budget || {}]];
+    const rows = [['saldoAwal', Math.max(0, Number(b.saldoAwal) || 0)], ['budget', b.budget || {}], ['goals', b.goals || []], ['recurring', b.recurring || []]];
     if (b.cats) rows.push(['cats', b.cats]);
     const { error } = await supabase.from('settings').upsert(rows.map(([key, value]) => ({ user_id: user.id, key, value })));
     if (error) throw error;
@@ -153,7 +153,7 @@ const cloud = async (url, method = 'GET', b) => {
     await supabase.from('transactions').delete().eq('user_id', user.id);
     const rows = b.tx.map((t) => ({ ...cleanTransaction(t), user_id: user.id }));
     if (rows.length) await supabase.from('transactions').insert(rows);
-    await supabase.from('settings').upsert([['saldoAwal', b.saldoAwal || 0], ['budget', b.budget || {}], ['cats', b.cats]].map(([key, value]) => ({ user_id: user.id, key, value })));
+    await supabase.from('settings').upsert([['saldoAwal', b.saldoAwal || 0], ['budget', b.budget || {}], ['goals', b.goals || []], ['recurring', b.recurring || []], ['cats', b.cats]].map(([key, value]) => ({ user_id: user.id, key, value })));
     return { ok: true };
   }
   throw new Error('Endpoint tidak dikenal');

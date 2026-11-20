@@ -56,6 +56,7 @@ export default function Dashboard({ openEdit, onNavigate }) {
   const totalBudget = budgetEntries.reduce((s, item) => s + item.budget, 0);
   const usedBudget = budgetEntries.reduce((s, item) => s + item.used, 0);
   const budgetPercent = totalBudget ? Math.min(100, (usedBudget / totalBudget) * 100) : 0;
+  const budgetAlerts = budgetEntries.filter((item) => item.percent >= 80);
   const topCategory = d.cats[0];
   const topCategoryAmount = topCategory ? d.bc[topCategory] : 0;
   const maxDailyExpense = Math.max(...d.de);
@@ -64,6 +65,7 @@ export default function Dashboard({ openEdit, onNavigate }) {
   return (
     <>
       {!S.tx.length && <div className="card empty dashboard-welcome" style={{ marginBottom: 18 }}><img src={handWaveIcon} alt="" /> <span>Belum ada transaksi. Klik <b>+ Tambah Transaksi</b> untuk mulai mencatat. Semua grafik dihitung dari data yang kamu catat.</span></div>}
+      {budgetAlerts.length > 0 && <div className="card budget-alert" style={{ marginBottom: 18 }}><b>Perhatian budget</b><span>{budgetAlerts.length === 1 ? `${budgetAlerts[0].category} sudah mencapai ${Math.round(budgetAlerts[0].percent)}% dari batas.` : `${budgetAlerts.length} kategori sudah mendekati atau melewati batas budget.`}</span><button className="btn g s" type="button" onClick={() => onNavigate?.('bud')}>Lihat budget</button></div>}
       <div className="grid g4">
         <SummaryCard label="Sisa Saldo" value={rp(bal)} icon={saldoIcon} color="var(--bal)" pct={pc(bal, inc + (+S.saldoAwal || 0))} note={S.saldoAwal > 0 ? 'Termasuk saldo awal ' + rp(S.saldoAwal) : 'Pemasukan − pengeluaran'} />
         <SummaryCard label="Total Pemasukan" value={rp(inc)} icon={pemasukanIcon} color="var(--inc)" pct={inc > 0 ? 100 : 0} note="Uang masuk bulan ini" />

@@ -9,6 +9,7 @@ import analisis from '../assets/icons/analisis.png';
 import settings from '../assets/icons/settings.png';
 
 const NAV = [['dash', dashboard, 'Dashboard'], ['add', tambah, 'Tambah Transaksi'], ['hist', riwayat, 'Riwayat Transaksi'], ['cat', kategori, 'Kategori'], ['bud', budget, 'Budget Bulanan'], ['ana', analisis, 'Analisis Keuangan'], ['set', settings, 'Pengaturan']];
+NAV.splice(5, 0, ['goals', budget, 'Target Keuangan'], ['recurring', riwayat, 'Transaksi Berulang']);
 
 export default function Sidebar({ view, onNav }) {
   return (

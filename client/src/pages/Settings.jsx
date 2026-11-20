@@ -46,7 +46,7 @@ export default function Settings() {
         <h2>Ekspor, Backup &amp; Restore</h2>
         <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', marginBottom: 12 }}>
           <button className="btn g" onClick={() => download("laporan-keuangan.csv", toCSV(S.tx), "text/csv;charset=utf-8")}>⬇️ Unduh CSV (Excel)</button>
-          <button className="btn g" onClick={() => download("dompetku-backup.json", JSON.stringify({ tx: S.tx, saldoAwal: S.saldoAwal, budget: S.budget, cats: S.cats }, null, 1), "application/json")}>⬇️ Unduh Backup JSON</button>
+          <button className="btn g" onClick={() => download("dompetku-backup.json", JSON.stringify({ tx: S.tx, saldoAwal: S.saldoAwal, budget: S.budget, goals: S.goals, recurring: S.recurring, cats: S.cats }, null, 1), "application/json")}>⬇️ Unduh Backup JSON</button>
         </div>
         <p className="sub">Restore: pilih file backup .json, atau tempel isinya di kotak berikut.</p>
         <input type="file" accept=".json" onChange={onFile} style={{ marginBottom: 10 }} />

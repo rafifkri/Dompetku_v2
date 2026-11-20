@@ -230,8 +230,25 @@ th { color: var(--mut); font-size: 12px; font-weight: 700 }
 .toast { position: fixed; bottom: calc(24px + env(safe-area-inset-bottom, 0px)); left: 50%; transform: translateX(-50%); background: var(--pri); color: var(--onpri); padding: 10px 18px; border-radius: 99px; z-index: 20; opacity: 0; pointer-events: none; transition: .3s }
 .toast.s { opacity: 1 }
 .empty { text-align: center; color: var(--mut); padding: 30px 10px }
+.icon-btn { border: 0; background: transparent; color: var(--mut); cursor: pointer; font-size: 22px; line-height: 1; padding: 2px 6px }
+.icon-btn:hover { color: var(--exp) }
+.goal-item, .recurring-item { padding: 14px 0; border-bottom: 1px solid var(--line) }
+.goal-item:last-child, .recurring-item:last-child { border-bottom: 0 }
+.goal-head, .recurring-item, .goal-values { display: flex; justify-content: space-between; align-items: center; gap: 12px }
+.goal-head > div:first-child, .recurring-item > div:first-child { min-width: 0 }
+.goal-head b, .goal-head span, .recurring-item b, .recurring-item span { display: block }
+.goal-head span, .recurring-item span { color: var(--mut); font-size: 12px; margin-top: 2px }
+.goal-values { margin: 12px 0 6px; align-items: baseline }
+.goal-values strong { font-size: 18px }
+.goal-values span { color: var(--mut); font-size: 12px }
+.recurring-item > div:last-child { display: flex; align-items: center; gap: 8px; flex: none }
+.recurring-item .btn { color: var(--em); border-color: color-mix(in srgb, var(--em) 45%, var(--line)); }
 .dashboard-welcome { display: flex; align-items: center; justify-content: center; gap: 8px; }
 .dashboard-welcome img { width: 18px; height: 18px; flex: none; filter: invert(74%) sepia(32%) saturate(580%) hue-rotate(91deg) brightness(90%) }
+.budget-alert { display: flex; align-items: center; gap: 10px; padding: 12px 16px; border-color: color-mix(in srgb, #f59e0b 45%, var(--line)); background: color-mix(in srgb, #f59e0b 8%, var(--card)); }
+.budget-alert b { color: #f59e0b; white-space: nowrap }
+.budget-alert span { color: var(--mut); flex: 1; min-width: 0 }
+.budget-alert .btn { flex: none }
 canvas { max-height: 280px }
 
 @media (max-width: 1100px) and (min-width: 861px) {
