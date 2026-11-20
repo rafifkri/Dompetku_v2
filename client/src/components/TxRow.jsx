@@ -2,13 +2,14 @@ import { useFinance } from '../store';
 import { icon, rp } from '../utils';
 import Icon from './Icon';
 import editIcon from '../assets/icons/edit.png';
+import CategoryIcon from './CategoryIcon';
 
 export default function TxRow({ t, onEdit, onDelete }) {
   const { S } = useFinance();
   const inc = t.type === 'income';
   return (
     <div className="row">
-      <div className="ic">{icon(S.cats, t.type, t.cat)}</div>
+      <div className="ic"><CategoryIcon value={icon(S.cats, t.type, t.cat)} /></div>
       <div className="grow">
         <b>{t.desc || t.sub || t.cat}</b>
         <span className="sub">{t.cat}{t.sub ? ' · ' + t.sub : ''} · {t.date.split('-').reverse().join('/')} · {t.method}</span>

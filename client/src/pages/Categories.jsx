@@ -1,5 +1,6 @@
 import { useFinance } from '../store';
 import { useUI } from '../ui';
+import CategoryIcon from '../components/CategoryIcon';
 
 export default function Categories() {
   const { S, upd, renameCat } = useFinance();
@@ -28,7 +29,7 @@ export default function Categories() {
         {Object.entries(S.cats[t]).map(([n, c]) => (
           <div className="card" key={n}>
             <div className="row" style={{ border: 0, padding: '0 0 10px' }}>
-              <div className="ic">{c.i}</div><div className="grow"><b>{n}</b></div>
+              <div className="ic"><CategoryIcon value={c.i} /></div><div className="grow"><b>{n}</b></div>
               <button className="btn g s" onClick={() => rename(t, n)}>✏️</button>
               <button className="btn g s" onClick={() => del(t, n)}>🗑️</button>
             </div>
