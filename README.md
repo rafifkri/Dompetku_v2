@@ -4,502 +4,392 @@
 
 **Personal Monthly Finance Dashboard**
 
-Catat pemasukan dan pengeluaran, pantau budget, dan lihat ke mana uangmu pergi setiap bulan.
+Track income and expenses, manage budgets, set financial goals, and understand monthly spending.
 
 ![React](https://img.shields.io/badge/React-18-61dafb?logo=react&logoColor=white)
 ![Vite](https://img.shields.io/badge/Vite-5-646cff?logo=vite&logoColor=white)
 ![Express](https://img.shields.io/badge/Express-4-000000?logo=express&logoColor=white)
 ![SQLite](https://img.shields.io/badge/SQLite-better--sqlite3-003b57?logo=sqlite&logoColor=white)
+![Supabase](https://img.shields.io/badge/Supabase-cloud%20storage-3ecf8e?logo=supabase&logoColor=white)
 ![Chart.js](https://img.shields.io/badge/Chart.js-4-ff6384?logo=chartdotjs&logoColor=white)
 
 </div>
 
 ---
 
-## Daftar Isi
+## Table of Contents
 
-1. [Tentang Proyek](#1-tentang-proyek)
-2. [Fitur](#2-fitur)
-3. [Teknologi](#3-teknologi)
-4. [Struktur Proyek](#4-struktur-proyek)
-5. [Prasyarat](#5-prasyarat)
-6. [Instalasi dan Menjalankan](#6-instalasi-dan-menjalankan)
-7. [Konfigurasi](#7-konfigurasi)
-8. [Panduan Penggunaan](#8-panduan-penggunaan)
-9. [Arsitektur dan Alur Data](#9-arsitektur-dan-alur-data)
+1. [About](#1-about)
+2. [Features](#2-features)
+3. [Technology](#3-technology)
+4. [Project Structure](#4-project-structure)
+5. [Requirements](#5-requirements)
+6. [Installation and Development](#6-installation-and-development)
+7. [Configuration](#7-configuration)
+8. [Usage Guide](#8-usage-guide)
+9. [Data Architecture](#9-data-architecture)
 10. [Database](#10-database)
-11. [Referensi REST API](#11-referensi-rest-api)
-12. [Arsitektur Frontend](#12-arsitektur-frontend)
-13. [Deployment](#13-deployment)
-14. [Backup dan Restore](#14-backup-dan-restore)
-15. [Keamanan](#15-keamanan)
-16. [Troubleshooting](#16-troubleshooting)
-17. [Batasan yang Diketahui dan Pengembangan Lanjutan](#17-batasan-yang-diketahui-dan-pengembangan-lanjutan)
+11. [Frontend Architecture](#11-frontend-architecture)
+12. [Deployment](#12-deployment)
+13. [Backup and Restore](#13-backup-and-restore)
+14. [Security](#14-security)
+15. [Troubleshooting](#15-troubleshooting)
 
 ---
 
-## 1. Tentang Proyek
+## 1. About
 
-Dompetku adalah aplikasi web full-stack untuk mengelola keuangan pribadi dalam periode bulanan. Semua angka di dashboard dihitung dari transaksi yang benar-benar kamu catat. Aplikasi ini **tidak menggunakan data dummy**. Kategori dan budget awal hanyalah contoh yang bisa diubah atau dihapus.
+Dompetku is a React-based personal finance application for monthly planning and
+tracking. Dashboard totals and charts are calculated from the transactions
+entered by the user. The currency format is Indonesian Rupiah (IDR), for
+example `Rp1.000.000`.
 
-Mata uang yang digunakan adalah Rupiah (IDR) dengan format `Rp1.000.000`.
+The application supports two persistence modes:
 
-Proyek ini terdiri dari tiga lapisan:
-
-| Lapisan | Teknologi | Peran |
+| Mode | Storage | Use case |
 |---|---|---|
-| Frontend | React + Vite + Chart.js | Tampilan, interaksi, dan grafik |
-| Backend | Node.js + Express | REST API dan validasi data |
-| Database | SQLite (`better-sqlite3`) | Penyimpanan permanen dalam satu file |
+| Supabase | Cloud database and Supabase Auth | Production, multi-device accounts |
+| Express | Node.js, Express, and SQLite | Self-hosted deployments |
+| Static fallback | Browser `localStorage` | Demo or offline local development |
 
----
+The deployed GitHub Pages workflow is configured to use Supabase. The static
+fallback is used only when Supabase and an API URL are not configured.
 
-## 2. Fitur
+## 2. Features
 
-### Dashboard
-- Empat kartu ringkasan berurutan: **Sisa Saldo**, **Total Pemasukan**, **Total Pengeluaran**, dan **Total Transaksi**.
-- Empat grafik interaktif:
-  - Pemasukan vs pengeluaran per tanggal (batang)
-  - Pengeluaran per kategori beserta persentasenya (doughnut)
-  - Tren pengeluaran harian (garis)
-  - Aktivitas: hari dengan pengeluaran tertinggi dan terendah
-- Daftar lima transaksi terbaru dengan icon edit dan aksi hapus berkonfirmasi.
-- Pemilih tanggal kalender interaktif di bagian atas; tanggal awal mengikuti tanggal perangkat dan diperbarui otomatis setiap hari.
-- Pemilihan tanggal manual dihentikan dari pembaruan otomatis sampai tombol **Hari ini** dipilih.
+### Dashboard and Calendar
 
-### Akun dan Profil
-- Halaman registrasi dan login.
-- Profil dengan nama, email, dan bio.
-- Avatar lingkaran penuh serta cover latar profil.
-- Menu dari avatar menyediakan pilihan ganti avatar atau ganti background.
-- Editor gambar mendukung drag/pindahkan posisi, zoom, persentase zoom, dan reset.
-- Sesi tetap aktif saat refresh pada tab yang sama; membuka link baru dapat meminta login ulang.
-- Dengan Supabase, profil dan data tersinkron antar perangkat.
+- Balance, income, expense, and transaction summary cards.
+- Interactive monthly calendar with month and year selectors.
+- Daily income and expense charts.
+- Category spending doughnut chart and spending trend chart.
+- Latest transactions and monthly insights.
+- Budget usage warnings beginning at 80% usage.
+- Current-month comparison with the previous month.
 
-### Transaksi
-- Form tambah dan edit dengan **subkategori yang berubah otomatis** mengikuti kategori.
-- Jenis: pemasukan atau pengeluaran. Metode bayar: Cash, Transfer, E-Wallet, atau Lainnya.
-- Kolom deskripsi bisa dipakai sebagai nama kegiatan manual (misalnya untuk kategori Date Bareng Pacar).
-- Validasi nominal (harus lebih dari 0) di frontend dan backend. Setiap transaksi punya ID unik (UUID).
+### Transactions and History
 
-### Riwayat Transaksi
-- Urut dari tanggal terbaru, dengan pembeda warna untuk pemasukan (hijau) dan pengeluaran (merah).
-- Pencarian nama atau deskripsi, filter jenis, filter kategori, dan pilihan **bulan terpilih** atau **semua bulan**.
-- Edit dan hapus langsung dari daftar.
+- Add, edit, and delete income or expense transactions.
+- Payment methods: Cash, Transfer, E-Wallet, and Other.
+- Dynamic subcategories based on the selected category.
+- Search by name or description.
+- Filter by transaction type, category, selected month, or all months.
+- Validation for positive amounts, valid dates, categories, and descriptions.
 
-### Kategori
-- Kategori dan subkategori untuk pemasukan dan pengeluaran bisa **ditambah, diedit, dan dihapus**.
-- Mengganti nama kategori ikut memperbarui transaksi lama dan budget terkait.
+### Budgets, Goals, and Recurring Transactions
 
-### Budget Bulanan
-- Batas pengeluaran per kategori yang bisa diubah kapan saja.
-- Persentase pemakaian, sisa budget, indikator oranye saat pemakaian mencapai 80% atau lebih, dan peringatan merah saat melebihi budget.
+- Monthly budget limits per category with usage indicators.
+- Financial goals with target amount, progress, and deadline.
+- Monthly recurring transactions with active/inactive status.
+- Active recurring transactions are generated once per month.
+- Budget notifications are available from the application header.
 
-### Analisis Keuangan
-- Insight otomatis dari data nyata: kategori terbesar, total pengeluaran bersama teman, total pengeluaran date, rata-rata per hari, hari tertinggi, pemasukan vs pengeluaran, persentase uang yang ditabung, dan kategori paling sering dipakai.
-- Tabel **rekapitulasi semua bulan** untuk membandingkan kondisi keuangan antarbulan.
+### Categories and Icons
 
-### Pengaturan dan Data
-- Saldo awal, tema terang atau gelap (mengikuti pengaturan perangkat secara default).
-- **Unduh CSV** (bisa dibuka di Excel) dan **unduh backup JSON**.
-- Restore dari file `.json` atau teks, dan reset semua data.
-- Pada fallback static, login, profil, dan foto tersimpan di browser.
+- Add, edit, and delete income and expense categories.
+- Add and edit category subcategories.
+- Renaming a category updates related transactions and budgets.
+- Category, edit, delete, search, profile, greeting, calendar, and theme
+  controls use the provided white PNG icon assets.
+- Category icon mappings are maintained in `client/src/categoryIcons.js`.
 
-### Desain
-- Tema utama memakai gradasi hitam-biru gelap dengan kartu berkontras.
-- Warna hijau/koral/biru dipakai untuk makna keuangan, sedangkan merah digunakan untuk pengeluaran.
-- Layout sidebar kiri, kartu bersudut membulat, animasi ringan antar halaman.
-- Responsif untuk desktop, tablet, dan smartphone (sidebar berubah menjadi bar navigasi bawah di layar kecil).
+### Accounts and Profile
 
----
+- Registration, login, logout, and session restoration.
+- Editable name, email, bio, avatar, and cover image.
+- Drag, touch, pinch, zoom, and reset controls for profile image positioning.
+- Profile data is synchronized between devices in Supabase mode.
+- First-time users receive a one-time onboarding guide.
 
-## 3. Teknologi
+### Themes and Interface
 
-| Bagian | Paket | Versi |
-|---|---|---|
-| UI | `react`, `react-dom` | ^18.3 |
-| Build tool | `vite`, `@vitejs/plugin-react` | ^5.4, ^4.3 |
-| Grafik | `chart.js`, `react-chartjs-2` | ^4.4, ^5.2 |
-| Server | `express` | ^4.19 |
-| Database | `better-sqlite3` | ^11.3 |
+- Light and dark themes with a single theme switch.
+- The light theme uses a dark switch with the sun on the right.
+- The dark theme uses a bright switch with the moon on the left.
+- Active theme and automatic persistence status are shown in Settings.
+- Responsive desktop, tablet, and mobile layouts.
+- Sidebar navigation changes to a compact mobile navigation layout.
 
----
+### Analysis and Data Management
 
-## 4. Struktur Proyek
+- Automatic insights for largest categories, frequent categories, daily
+  averages, highest-spending days, savings percentage, and income versus
+  expenses.
+- Monthly summary comparison table.
+- CSV export for spreadsheets.
+- JSON backup and restore, including transactions, budgets, categories, goals,
+  and recurring transactions.
+- Reset-all-data action with confirmation.
 
-```
+## 3. Technology
+
+| Area | Packages |
+|---|---|
+| UI | `react`, `react-dom` |
+| Build | `vite`, `@vitejs/plugin-react` |
+| Charts | `chart.js`, `react-chartjs-2` |
+| API server | `express` |
+| Local database | `better-sqlite3` |
+| Cloud database and auth | `@supabase/supabase-js` |
+
+## 4. Project Structure
+
+```text
 dompetku/
-├── server.js                  # Backend: Express, REST API, SQLite
-├── package.json               # Dependensi backend dan script utama
-├── README.md
-├── data/                      # (otomatis) berisi dompetku.db
-│
-├── client/                    # Frontend React (Vite)
-│   ├── index.html
-│   ├── public/            # Favicon, apple-touch-icon, dan logo untuk README
+├── server.js                  # Express API and SQLite implementation
+├── package.json               # Root scripts and server dependencies
+├── supabase/
+│   └── schema.sql             # Supabase tables, grants, RLS, and trigger
+├── .github/workflows/
+│   └── pages.yml              # GitHub Pages and Supabase build workflow
+├── client/
 │   ├── package.json
-│   ├── vite.config.js         # Proxy /api ke localhost:3000 saat development
+│   ├── vite.config.js
 │   └── src/
-│       ├── main.jsx           # Entry point
-│       ├── App.jsx            # Layout, kalender, pergantian halaman
-│       ├── store.jsx          # State global dan semua panggilan API (useFinance)
-│       ├── ui.jsx             # Toast, dialog input/konfirmasi, tema (useUI)
-│       ├── api.js             # Helper fetch
-│       ├── utils.js           # Format Rupiah, tanggal, helper hitung
-│       ├── defaults.js        # Kategori dan budget awal
-│       ├── chartSetup.js      # Registrasi dan tema Chart.js
-│       ├── styles.css         # Seluruh gaya (design tokens, light/dark)
-│       ├── assets/            # Logo dan ikon navigasi (PNG transparan, warna mengikuti tema)
-│       ├── components/        # Komponen reusable
-│       │   ├── Sidebar.jsx
-│       │   ├── SummaryCard.jsx
-│       │   ├── ChartCard.jsx
-│       │   ├── TxRow.jsx
-│       │   ├── TxForm.jsx
-│       │   └── Modal.jsx
-│       └── pages/             # Satu file per halaman
+│       ├── App.jsx            # Application shell, navigation, onboarding
+│       ├── api.js             # Supabase, API, and local fallback adapters
+│       ├── store.jsx          # Finance state and persistence actions
+│       ├── ui.jsx             # Toasts, dialogs, and theme state
+│       ├── defaults.js        # Default categories and application data
+│       ├── categoryIcons.js   # Category-to-PNG icon registry
+│       ├── styles.css         # Theme, layout, and component styles
+│       ├── assets/icons/      # White interface and category PNG assets
+│       ├── components/        # Shared UI components
+│       └── pages/
 │           ├── Dashboard.jsx
 │           ├── History.jsx
 │           ├── Categories.jsx
 │           ├── Budget.jsx
+│           ├── Goals.jsx
+│           ├── Recurring.jsx
 │           ├── Analysis.jsx
+│           ├── Profile.jsx
 │           └── Settings.jsx
-│
 └── standalone/
-    └── dompetku.html          # Versi satu file tanpa backend (localStorage)
+    └── dompetku.html           # Single-file localStorage version
 ```
 
----
+## 5. Requirements
 
-## 5. Prasyarat
+- Node.js 18 or newer.
+- npm.
+- Internet access for installing dependencies.
+- For Supabase mode: a Supabase project and the SQL schema applied.
+- For SQLite mode: a host with persistent disk storage.
 
-- **Node.js 18 atau lebih baru** (cek dengan `node -v`)
-- **npm** (sudah termasuk dalam Node.js)
-- Koneksi internet saat `npm install` (untuk mengunduh paket, termasuk binary prebuilt `better-sqlite3`)
+## 6. Installation and Development
 
----
-
-## 6. Instalasi dan Menjalankan
-
-### Mode produksi (satu server)
+### Install all dependencies
 
 ```bash
-# 1. Masuk ke folder proyek
-cd dompetku
-
-# 2. Pasang dependensi backend dan frontend
 npm run install:all
+```
 
-# 3. Build frontend React menjadi client/dist
+### Run the Express application
+
+```bash
 npm run build
-
-# 4. Jalankan server
 npm start
 ```
 
-Buka **http://localhost:3000**. Express menyajikan API sekaligus hasil build React, dan file database `data/dompetku.db` dibuat otomatis saat pertama kali jalan.
+Open `http://localhost:3000`.
 
-### Mode development (hot reload)
+### Run with hot reload
 
-Buka dua terminal:
+Use two terminals:
 
 ```bash
-# Terminal 1: backend di http://localhost:3000
+# Terminal 1
 npm run server
 
-# Terminal 2: frontend di http://localhost:5173
+# Terminal 2
 npm run client
 ```
 
-Buka **http://localhost:5173**. Vite meneruskan semua request `/api/*` ke backend di port 3000.
+Open `http://localhost:5173`. Vite proxies `/api/*` to the server on port
+3000.
 
-### Script yang tersedia
+### Available scripts
 
-| Perintah | Fungsi |
+| Command | Description |
 |---|---|
-| `npm run install:all` | Memasang dependensi root dan `client/` |
-| `npm run build` | Build frontend ke `client/dist` |
-| `npm start` / `npm run server` | Menjalankan backend (dan frontend hasil build) |
-| `npm run client` | Menjalankan Vite dev server |
+| `npm run install:all` | Install root and client dependencies |
+| `npm run build` | Build the frontend into `client/dist` |
+| `npm start` | Start the production server |
+| `npm run server` | Start the backend in development |
+| `npm run client` | Start the Vite development server |
 
----
+## 7. Configuration
 
-## 7. Konfigurasi
+### Backend and SQLite variables
 
-Konfigurasi dilakukan lewat environment variable:
-
-| Variabel | Default | Keterangan |
+| Variable | Default | Description |
 |---|---|---|
-| `PORT` | `3000` | Port server |
-| `DB_FILE` | `./data/dompetku.db` | Lokasi file database SQLite |
-| `APP_PASSWORD` | *(kosong)* | Basic Auth tambahan untuk server. Jangan diaktifkan bersamaan dengan login aplikasi tanpa menambahkan header Basic Auth di frontend |
+| `PORT` | `3000` | Express server port |
+| `DB_FILE` | `./data/dompetku.db` | SQLite database path |
+| `APP_PASSWORD` | empty | Optional additional Basic Auth password |
 
-Contoh:
+### Supabase variables
 
-```bash
-PORT=8080 DB_FILE=/var/data/dompetku.db npm start
-```
-
----
-
-## 8. Panduan Penggunaan
-
-1. **Pilih tanggal** lewat kalender interaktif di header. Tanggal awal mengikuti hari ini dan akan diperbarui otomatis.
-2. **Atur kategori** (opsional) di menu *Kategori*. Sesuaikan dengan kebiasaanmu sebelum mulai mencatat.
-3. **Isi saldo awal** (opsional) di *Pengaturan* jika ingin saldo awal ikut dihitung di Sisa Saldo.
-4. **Catat transaksi** lewat tombol **+ Tambah Transaksi** (tersedia di sidebar dan pojok kanan atas). Pilih jenis, isi nominal, kategori, subkategori, tanggal, dan deskripsi.
-5. **Pantau budget** di *Budget Bulanan*. Isi batas per kategori, lalu perhatikan indikator warna:
-   - 🟢 hijau: di bawah 80%
-   - 🟠 oranye: 80% sampai 100%
-   - 🔴 merah: melebihi budget
-6. **Cari dan koreksi transaksi** di *Riwayat Transaksi* dengan filter dan tombol ✏️ atau 🗑️.
-7. **Lihat insight** dan perbandingan antarbulan di *Analisis Keuangan*.
-8. **Kelola akun** lewat tombol profil di kanan atas. Foto profil dapat dipilih dari perangkat.
-9. **Amankan data** secara berkala lewat *Pengaturan* dengan **Unduh Backup JSON**.
-
----
-
-## 9. Arsitektur dan Alur Data
-
-```
-┌──────────────────────────┐        HTTP / JSON         ┌─────────────────────────┐
-│ React (browser)          │ ─── mode normal ───▶ │ Express + SQLite           │
-│ store.jsx / api.js       │                       │ server.js                  │
-│                          │ ─── mode static ───▶ │ localStorage browser       │
-└──────────────────────────┘                       └────────────────────────────┘
-```
-
-- Pada mode normal, frontend login ke API lalu memanggil `GET /api/data`; token Bearer dikirim pada setiap request.
-- Pada mode static (`VITE_STATIC=true`), API ditiru oleh `client/src/api.js` menggunakan `localStorage`.
-- **Transaksi** disimpan ke server pada mode normal atau ke browser pada mode static.
-- **Pengaturan** (saldo awal, budget, kategori) disimpan ke server dengan jeda singkat (debounce 250 ms) supaya tidak membanjiri server saat mengetik.
-- Seluruh ringkasan dan grafik dihitung di frontend dari data transaksi, sehingga langsung berubah setiap ada perubahan.
-- Pada pertama kali dibuka dengan database kosong, frontend mengirim kategori dan budget awal ke server.
-
----
-
-## 10. Database
-
-SQLite dengan mode WAL. Skema dibuat otomatis oleh `server.js`.
-
-### Tabel `users`
-
-Menyimpan akun, password hash, profil, dan foto profil.
-
-### Tabel `sessions`
-
-Menyimpan token sesi yang sudah di-hash beserta masa berlakunya.
-
-### Tabel `transactions`
-
-| Kolom | Tipe | Keterangan |
-|---|---|---|
-| `user_id`, `id` | PK gabungan | Pemilik dan ID transaksi |
-| `ts` | INTEGER | Waktu pembuatan (ms) untuk pengurutan |
-| `type` | TEXT | `income` atau `expense` |
-| `amount` | INTEGER | Rupiah, **harus lebih dari 0** (constraint database) |
-| `cat` | TEXT | Nama kategori |
-| `sub` | TEXT | Nama subkategori (boleh kosong) |
-| `date` | TEXT | Format `YYYY-MM-DD`, ber-index |
-| `desc` | TEXT | Deskripsi / nama kegiatan (maks. 120 karakter) |
-| `method` | TEXT | Cash, Transfer, E-Wallet, atau Lainnya |
-
-### Tabel `kv`
-
-Menyimpan pengaturan sebagai JSON per pengguna:
-
-| Key | Isi |
+| Variable | Description |
 |---|---|
-| `saldoAwal` | Angka saldo awal |
-| `budget` | Objek `{ "Nama Kategori": nominal }`. Berlaku sama untuk semua bulan |
-| `cats` | Objek `{ income: {...}, expense: {...} }`, tiap kategori berisi `{ i: "emoji", s: ["sub1", "sub2"] }` |
+| `VITE_SUPABASE_URL` | Supabase project URL |
+| `VITE_SUPABASE_ANON_KEY` | Supabase publishable or anonymous key |
+| `VITE_API_URL` | Optional Express API URL |
+| `VITE_STATIC` | Set to `true` only for an intentional localStorage build |
 
----
+Do not put a Supabase service-role key in frontend code. The publishable/anon
+key is intended for browser use and must be protected by Row Level Security.
 
-## 11. Referensi REST API
-
-Semua request dan response berformat JSON, kecuali endpoint unduhan.
-
-Endpoint akun tersedia di `POST /api/auth/register`, `POST /api/auth/login`, `GET /api/auth/me`, dan `POST /api/auth/logout`.
-Endpoint profil tersedia di `GET /api/profile` dan `PUT /api/profile`. Endpoint data membutuhkan header `Authorization: Bearer <token>`.
-
-### `GET /api/data`
-Mengambil seluruh data.
-
-```json
-{
-  "tx": [{ "id": "…", "ts": 1795076552062, "type": "expense", "amount": 25000,
-           "cat": "Makan di Luar", "sub": "Makan Siang", "date": "2026-11-19",
-           "desc": "Nasi goreng", "method": "Cash" }],
-  "saldoAwal": 0,
-  "budget": { "Makan di Luar": 400000 },
-  "cats": { "income": { }, "expense": { } }
-}
-```
-`cats` bernilai `null` jika database masih kosong.
-
-### `POST /api/tx`
-Menambah transaksi baru atau memperbarui transaksi dengan `id` yang sama.
-
-```bash
-curl -X POST http://localhost:3000/api/tx \
-  -H "Content-Type: application/json" \
-  -d '{"id":"abc-1","type":"expense","amount":25000,"cat":"Makan di Luar",
-       "sub":"Sarapan","date":"2026-11-19","desc":"Bubur","method":"Cash"}'
-```
-
-| Respons | Keterangan |
-|---|---|
-| `200 {"ok":true}` | Berhasil |
-| `400 {"error":"…"}` | Validasi gagal: nominal ≤ 0, tanggal bukan `YYYY-MM-DD`, jenis tidak valid, ID atau kategori kosong |
-
-### `DELETE /api/tx/:id`
-Menghapus transaksi. Respons: `{"ok":true}`.
-
-### `PUT /api/settings`
-Menyimpan saldo awal, budget, dan kategori.
-
-```json
-{ "saldoAwal": 500000, "budget": { "Token Listrik": 100000 }, "cats": { "income": {}, "expense": {} } }
-```
-
-### `POST /api/rename`
-Mengganti nama kategori pada semua transaksi lama.
-
-```json
-{ "type": "expense", "from": "Transportasi", "to": "Transport" }
-```
-
-### `POST /api/restore`
-Mengganti **seluruh** isi database dengan data backup (dalam satu transaksi database; jika ada satu baris tidak valid, tidak ada yang berubah). Body berformat sama dengan hasil `GET /api/backup.json`.
-
-### `GET /api/backup.json`
-Mengunduh file `dompetku-backup.json`.
-
-### `GET /api/export.csv`
-Mengunduh `laporan-keuangan.csv` (UTF-8 dengan BOM agar terbaca benar di Excel) dengan kolom: Tanggal, Jenis, Kategori, Subkategori, Deskripsi, Metode, Nominal.
-
----
-
-## 12. Arsitektur Frontend
-
-- **`store.jsx`** menyediakan `useFinance()`: `S` (data), `M` (bulan terpilih), `monthTx` (transaksi bulan terpilih), serta aksi `saveTx`, `delTx`, `upd` (ubah pengaturan), `renameCat`, dan `restore`. Semua komunikasi ke backend hanya lewat file ini.
-- **`ui.jsx`** menyediakan `useUI()`: `toast(pesan)`, `ask(judul, nilaiAwal, konfirmasi)` yang mengembalikan Promise (menggantikan `prompt` dan `confirm` bawaan browser), serta `theme` dan `setTheme`.
-- **Komponen reusable** ada di `components/`, sedangkan **halaman** ada di `pages/`, masing-masing satu file.
-- **Tema** memakai CSS variables di `styles.css`. Mode gelap otomatis mengikuti perangkat, dan bisa diubah manual di Pengaturan.
-
-Menambah halaman baru: buat file di `pages/`, daftarkan di objek `PAGES` pada `App.jsx`, lalu tambahkan menunya di `components/Sidebar.jsx`.
-
----
-
-## 13. Deployment
-
-Karena aplikasi memakai SQLite (file lokal), pilih hosting yang menyediakan **penyimpanan persisten** (VPS, atau platform dengan volume).
-
-### VPS dengan PM2
-
-```bash
-npm run install:all && npm run build
-npm install -g pm2
-APP_PASSWORD=rahasia123 PORT=3000 pm2 start server.js --name dompetku
-pm2 save && pm2 startup
-```
-
-Letakkan Nginx atau Caddy di depannya untuk HTTPS.
-
-### GitHub Pages + Supabase Free (sinkron antar perangkat)
-
-GitHub Pages menyajikan frontend secara gratis. Jika variable Supabase diisi, akun, profil, foto, background, transaksi, budget, dan kategori disimpan di Supabase sehingga laptop dan HP dapat memakai data yang sama. Jika variable belum diisi, aplikasi otomatis memakai `localStorage` sebagai fallback lokal.
-
-#### Setup Supabase
-
-1. Buat project baru di Supabase.
-2. Buka **SQL Editor**, lalu jalankan isi [supabase/schema.sql](./supabase/schema.sql).
-3. Di **Authentication → Sign In / Providers**, matikan **Confirm email** pada pengaturan User Signups agar registrasi dapat langsung login.
-4. Salin **Project URL** dan publishable/anon key dari **Project Settings → API Keys**.
-5. Di GitHub, buka **Settings → Secrets and variables → Actions → Variables**, lalu buat:
-
-   ```text
-   VITE_SUPABASE_URL=https://project-id.supabase.co
-   VITE_SUPABASE_ANON_KEY=sb_publishable_... atau publishable/anon key Supabase
-   ```
-
-6. Buka **Settings → Pages → Build and deployment → Source: GitHub Actions**.
-7. Push ke branch `master` atau `main`. Workflow `.github/workflows/pages.yml` akan membangun frontend dengan Supabase.
-
-Supabase Free memiliki kuota penggunaan, tetapi tidak membutuhkan Railway. Foto dibatasi 2 MB per file dan disimpan sebagai data profil.
-
-Untuk menjalankan mode static lokal tanpa backend (PowerShell):
+For a local Supabase build in PowerShell:
 
 ```powershell
 cd client
-$env:VITE_STATIC="true"; $env:VITE_BASE="/Dompetku/"
+$env:VITE_SUPABASE_URL="https://project-id.supabase.co"
+$env:VITE_SUPABASE_ANON_KEY="sb_publishable_..."
+$env:VITE_STATIC="false"
 npm run build
-npm run preview
 ```
 
-Untuk memakai Supabase saat build lokal, gunakan `VITE_SUPABASE_URL` dan `VITE_SUPABASE_ANON_KEY` sebagai environment variable. Jangan masukkan service role key ke frontend.
+## 8. Usage Guide
 
-### Platform PaaS (Railway, Render, Fly.io, dan sejenisnya)
-- Build command: `npm run install:all && npm run build`
-- Start command: `npm start`
-- Pasang **volume persisten** dan arahkan `DB_FILE` ke dalamnya (misalnya `DB_FILE=/data/dompetku.db`). Tanpa volume, database akan hilang setiap deploy ulang.
-- Set `APP_PASSWORD` di pengaturan environment.
+1. Register or sign in.
+2. Select a month and year from the calendar controls.
+3. Optionally set an opening balance in **Settings**.
+4. Customize categories and subcategories.
+5. Add income and expense transactions.
+6. Set category budgets and review their usage indicators.
+7. Create financial goals and track progress.
+8. Add recurring transactions for monthly items.
+9. Review dashboard charts, analysis insights, and notifications.
+10. Export a CSV or JSON backup regularly.
 
----
+## 9. Data Architecture
 
-## 14. Backup dan Restore
+```text
+React UI
+   |
+   +-- Supabase configured --> Supabase Auth + profiles + transactions + settings
+   |
+   +-- API configured ------> Express + SQLite
+   |
+   +-- No remote storage ----> localStorage fallback
+```
 
-**Dari aplikasi (disarankan):** menu *Pengaturan* → **Unduh Backup JSON**. Untuk memulihkan, pilih file `.json` atau tempel isinya, lalu klik **Restore**.
+- `store.jsx` owns finance state and calls the persistence adapter.
+- `api.js` selects Supabase, Express, or localStorage based on environment
+  configuration.
+- Summary cards, charts, and insights are derived in the frontend.
+- Supabase records are scoped to the authenticated user through RLS.
+- Recurring transactions are generated at most once per calendar month.
 
-**Dari server:** hentikan server, lalu salin file `data/dompetku.db` (beserta `dompetku.db-wal` dan `dompetku.db-shm` jika ada).
+## 10. Database
 
-> ⚠️ Restore dan *Hapus semua data* menimpa seluruh isi database. Unduh backup terlebih dahulu.
+### Supabase
 
----
+Run [supabase/schema.sql](./supabase/schema.sql) in the Supabase SQL Editor.
+It creates:
 
-## 15. Keamanan
+- `profiles`: account profile and image positioning data.
+- `transactions`: income and expense rows.
+- `settings`: JSON values for balance, budgets, categories, goals, and
+  recurring transactions.
 
-- Mode normal memakai akun, password hash, token sesi, dan data transaksi terpisah per pengguna.
-- Jika variable Supabase belum diisi, mode GitHub Pages memakai `localStorage`; data hanya tersedia di browser/perangkat yang sama.
-- Jika mode normal diakses dari internet, gunakan **HTTPS**. `APP_PASSWORD` adalah Basic Auth tambahan dan tidak boleh diaktifkan bersamaan dengan login aplikasi tanpa penyesuaian frontend.
-- Query database memakai prepared statement, sehingga aman dari SQL injection. Teks yang tampil di UI di-escape oleh React.
-- Backend memvalidasi ulang semua input, tidak hanya mengandalkan validasi di browser.
+The schema enables Row Level Security and grants each authenticated user access
+only to their own rows. It also creates a trigger that creates a profile after
+registration.
 
----
+### SQLite
 
-## 16. Troubleshooting
+The Express implementation stores users, sessions, transactions, and settings
+in `data/dompetku.db`. Keep the database file and its WAL files on persistent
+storage in production.
 
-| Masalah | Penyebab dan solusi |
+## 11. Frontend Architecture
+
+- `useFinance()` in `store.jsx` exposes finance data, selected month data,
+  transaction actions, settings updates, restore, goals, and recurring data.
+- `useUI()` in `ui.jsx` exposes toast/dialog helpers and theme state.
+- `App.jsx` provides the application shell, route-like page selection,
+  onboarding, and notification center.
+- `components/` contains reusable rows, cards, forms, icons, and modals.
+- `pages/` contains one page component per major application area.
+- CSS variables in `styles.css` define light and dark theme tokens.
+
+To add a page, create a component in `client/src/pages`, register it in
+`App.jsx`, and add its navigation entry to the sidebar.
+
+## 12. Deployment
+
+### GitHub Pages with Supabase
+
+The workflow in `.github/workflows/pages.yml` builds and deploys the frontend
+to GitHub Pages. Configure these GitHub Actions **Variables**:
+
+```text
+VITE_SUPABASE_URL=https://project-id.supabase.co
+VITE_SUPABASE_ANON_KEY=sb_publishable_...
+```
+
+Then:
+
+1. Run `supabase/schema.sql` in the Supabase SQL Editor.
+2. Configure Supabase Authentication providers and email confirmation.
+3. Set GitHub Pages source to **GitHub Actions**.
+4. Push to `master` or `main`.
+
+The current workflow sets `VITE_STATIC=false`, so configured Supabase variables
+are used for cloud persistence. If they are missing, the application falls
+back to browser storage.
+
+### Self-hosted Express and SQLite
+
+```bash
+npm run install:all
+npm run build
+npm install -g pm2
+PORT=3000 pm2 start server.js --name dompetku
+pm2 save
+```
+
+Use HTTPS through Nginx or Caddy and mount persistent storage for `DB_FILE`.
+
+## 13. Backup and Restore
+
+From the application, open **Settings** and use:
+
+- **Download CSV** for spreadsheet reports.
+- **Download JSON Backup** for a complete application backup.
+- File or text restore for importing a JSON backup.
+- **Delete all data** to reset the current account after confirmation.
+
+The JSON backup includes transactions, opening balance, budgets, goals,
+recurring transactions, and categories. A local SQLite deployment should also
+back up `data/dompetku.db` and its `-wal`/`-shm` files when present.
+
+Data stored in a browser-only fallback is not synchronized between devices and
+can be lost when site data is cleared. Existing localStorage data is not
+automatically migrated when switching to Supabase.
+
+## 14. Security
+
+- Supabase tables use Row Level Security policies tied to `auth.uid()`.
+- Never expose a Supabase service-role key in frontend code.
+- Use HTTPS for any public Express deployment.
+- Passwords and sessions are handled by Supabase Auth or the Express backend.
+- Backend and cloud adapters validate transaction values and dates.
+- React escapes rendered user text.
+- Keep backups private because they contain financial data.
+
+## 15. Troubleshooting
+
+| Problem | Solution |
 |---|---|
-| `npm install` gagal pada `better-sqlite3` | Pastikan Node.js 18 atau lebih baru. Jika tidak ada binary prebuilt untuk platformmu, pasang build tools (Windows: *Visual Studio Build Tools*, Linux: `build-essential` dan `python3`), lalu ulangi |
-| Halaman menampilkan "Server tidak terjangkau" | Backend belum jalan. Jalankan `npm start` (atau `npm run server` saat development) |
-| Halaman kosong / `Cannot GET /` | Frontend belum di-build. Jalankan `npm run build` |
-| `EADDRINUSE` (port dipakai) | Gunakan port lain: `PORT=3001 npm start` |
-| Data tidak muncul setelah pindah server | Database ada di `data/dompetku.db` per server. Pindahkan file tersebut atau gunakan backup JSON |
-| Setelah deploy data hilang | Platform tidak punya penyimpanan persisten. Pasang volume dan set `DB_FILE` |
-| Perubahan frontend tidak terlihat di port 3000 | Port 3000 menyajikan hasil build. Jalankan `npm run build` lagi, atau gunakan port 5173 saat development |
-
----
-
-## 17. Batasan yang Diketahui dan Pengembangan Lanjutan
-
-**Batasan saat ini**
-- Fallback static tidak menyinkronkan data antar perangkat. Dengan Supabase Free, data akun dapat digunakan lintas perangkat.
-- Supabase Free memiliki batas kuota dan foto profil disimpan sebagai data profil dengan batas 2 MB per file.
-- Budget berlaku sama untuk semua bulan (belum ada budget terpisah per bulan).
-- Belum ada pengujian otomatis (unit atau end-to-end).
-
-**Ide pengembangan**
-- Budget per bulan dan transaksi berulang (langganan, cicilan).
-- Target tabungan dan notifikasi budget.
-- Impor transaksi dari CSV atau mutasi bank, serta dukungan upload struk.
-- Pengujian dengan Vitest dan Playwright.
-
----
-
-<div align="center">
-
-Dibuat untuk membantu mengelola keuangan pribadi dengan lebih tenang. 💚
-
-</div>
+| The app shows “Demo mode” | Supabase/API variables are not available in the build. Configure them and rebuild. |
+| Supabase requests fail | Run `supabase/schema.sql`, verify the project URL/key, and check Auth settings. |
+| Data does not appear on another device | Confirm the user signed in through Supabase rather than localStorage fallback. |
+| `npm install` fails for `better-sqlite3` | Use Node.js 18+ and install platform build tools if no prebuilt binary exists. |
+| `Server not reachable` | Start the backend with `npm start` or `npm run server`. |
+| `Cannot GET /` | Build the frontend with `npm run build` before starting the production server. |
+| `EADDRINUSE` | Use another port, for example `PORT=3001 npm start`. |
+| A deployed change is not visible | Hard-refresh with `Ctrl+Shift+R` and wait for the Pages workflow to finish. |
