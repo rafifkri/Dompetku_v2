@@ -108,6 +108,7 @@ aside {
   mask-position: center;
   -webkit-mask-size: contain;
   mask-size: contain;
+  color: #fff;
 }
 .logo {
   padding: 2px 12px 26px;
@@ -152,7 +153,7 @@ main { width: calc(100% - 240px); margin-left: 240px; padding: 32px 36px 64px }
 }
 h1 { font-size: clamp(22px, 2.4vw, 28px); letter-spacing: -.03em; margin: 0 }
 .title-with-icon { display: flex; align-items: center; gap: 9px }
-.title-with-icon .mi { color: var(--focus); flex: none }
+.title-with-icon .mi { color: #fff; flex: none }
 h2 { font-size: 17px; letter-spacing: -.01em; margin: 0 0 14px }
 .sub { color: var(--mut); font-size: 13px; margin-top: 2px }
 .card {
@@ -166,7 +167,7 @@ h2 { font-size: 17px; letter-spacing: -.01em; margin: 0 0 14px }
 .g4 { grid-template-columns: repeat(4, minmax(0, 1fr)) }
 .g2 { grid-template-columns: repeat(2, minmax(0, 1fr)) }
 .stat .lbl { color: var(--mut); font-size: 13px; display: flex; justify-content: space-between; align-items: center; gap: 12px }
-.stat .stat-icon { width: 18px; height: 18px; color: var(--mut) }
+.stat .stat-icon { width: 18px; height: 18px; color: #fff }
 .stat .val { font-size: 24px; font-weight: 750; margin: 6px 0 10px }
 .bar { height: 7px; border-radius: 9px; background: var(--line); overflow: hidden }
 .bar i { display: block; height: 100%; border-radius: 9px; transition: width .6s }
@@ -208,7 +209,7 @@ input[type="month"] { color-scheme: inherit }
 .out { color: var(--exp) }
 .amt { font-weight: 700; white-space: nowrap }
 .tx-action { width: 38px; height: 34px; padding: 6px; display: grid; place-items: center }
-.tx-action .mi { width: 17px; height: 17px; color: var(--exp) }
+.tx-action .mi { width: 17px; height: 17px; color: #fff }
 .tx-delete { color: var(--exp); font-size: 23px; line-height: 1; font-weight: 400 }
 .filters { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; margin-bottom: 16px }
 .chip { display: inline-flex; gap: 6px; align-items: center; background: var(--card-soft); border: 1px solid var(--line); border-radius: 99px; padding: 3px 6px 3px 12px; margin: 3px; font-size: 13px }
@@ -244,7 +245,7 @@ th { color: var(--mut); font-size: 12px; font-weight: 700 }
 .recurring-item > div:last-child { display: flex; align-items: center; gap: 8px; flex: none }
 .recurring-item .btn { color: var(--em); border-color: color-mix(in srgb, var(--em) 45%, var(--line)); }
 .dashboard-welcome { display: flex; align-items: center; justify-content: center; gap: 8px; }
-.dashboard-welcome img { width: 18px; height: 18px; flex: none; filter: invert(74%) sepia(32%) saturate(580%) hue-rotate(91deg) brightness(90%) }
+.dashboard-welcome img { width: 18px; height: 18px; flex: none; filter: brightness(0) invert(1) }
 .budget-alert { display: flex; align-items: center; gap: 10px; padding: 12px 16px; border-color: color-mix(in srgb, #f59e0b 45%, var(--line)); background: color-mix(in srgb, #f59e0b 8%, var(--card)); }
 .budget-alert b { color: #f59e0b; white-space: nowrap }
 .budget-alert span { color: var(--mut); flex: 1; min-width: 0 }
