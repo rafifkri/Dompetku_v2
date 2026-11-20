@@ -34,7 +34,7 @@ export default function Analysis() {
     <>
       <div className="card">
         <h2>Insight Bulan Ini</h2>
-        {I.map((x, i) => <div className="ins" key={i}><span>{typeof x[0] === 'string' ? x[0] : <img src={x[0]} alt="" />}</span><div>{x[1]}</div></div>)}
+        {I.map((x, i) => <div className="ins" key={i}><span>{typeof x[0] === 'string' && !x[0].includes('/assets/') ? x[0] : <img src={x[0]} alt="" />}</span><div>{x[1]}</div></div>)}
       </div>
       <div className="card" style={{ marginTop: 18 }}>
         <h2>Rekapitulasi Semua Bulan</h2>
