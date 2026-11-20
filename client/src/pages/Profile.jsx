@@ -88,6 +88,17 @@ function ImageAdjuster({ editor, setEditor, onApply }) {
     return () => { document.body.style.overflow = previousOverflow; };
   }, []);
 
+  useEffect(() => {
+    const preventBrowserZoom = (e) => {
+      if (frameRef.current?.contains(e.target) || e.ctrlKey || e.metaKey) {
+        e.preventDefault();
+        e.stopPropagation();
+      }
+    };
+    document.addEventListener('wheel', preventBrowserZoom, { passive: false, capture: true });
+    return () => document.removeEventListener('wheel', preventBrowserZoom, true);
+  }, []);
+
   const clampPosition = (x, y, scale) => {
     const frame = frameRef.current?.getBoundingClientRect();
     if (!frame) return { x, y };
@@ -183,6 +194,24 @@ function ImageAdjuster({ editor, setEditor, onApply }) {
             className={(isDragging ? 'moving' : '') + (isSettling ? ' settling' : '')}
             style={{ transform: `translate3d(${editor.x}px, ${editor.y}px, 0) scale(${editor.scale})` }}
           />
+        </div>
+        <div className="image-adjuster-controls">
+          <label>Perbesar gambar
+            <input
+              type="range"
+              min="1"
+              max="3"
+              step="0.01"
+              value={editor.scale}
+              onChange={(e) => {
+                const scale = Number(e.target.value);
+                setEditor((p) => scale <= 1
+                  ? { ...p, scale: 1, x: 0, y: 0 }
+                  : { ...p, scale, ...clampPosition(p.x, p.y, scale) });
+              }}
+            />
+          </label>
+          <strong>{Math.round(editor.scale * 100)}%</strong>
         </div>
         <button className="btn g image-adjuster-reset" type="button" onClick={() => setEditor({ ...editor, scale: 1, x: 0, y: 0 })}>Reset posisi</button>
         <button className="btn image-adjuster-apply" type="button" onClick={onApply}>Gunakan gambar</button>
