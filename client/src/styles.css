@@ -297,6 +297,25 @@ canvas { max-height: 280px }
 }
 
 .top-actions { display: flex; gap: 10px; align-items: center }
+.notification-center { position: relative; z-index: 4 }
+.notification-button { position: relative; width: 38px; height: 38px; border: 1px solid var(--line); border-radius: 11px; background: var(--card); color: var(--tx); cursor: pointer; font-size: 20px; line-height: 1 }
+.notification-button span { position: absolute; top: -5px; right: -5px; min-width: 17px; height: 17px; padding: 1px 4px; border-radius: 99px; background: var(--exp); color: #fff; font-size: 10px; font-weight: 800 }
+.notification-menu { position: absolute; top: calc(100% + 8px); right: 0; width: 260px; padding: 10px; border: 1px solid var(--line); border-radius: 14px; background: var(--card); box-shadow: var(--sh) }
+.notification-menu > b { display: block; padding: 4px 6px 8px; font-size: 13px }
+.notification-menu button { display: block; width: 100%; padding: 9px; border: 0; border-radius: 9px; background: var(--card-soft); color: var(--tx); text-align: left; cursor: pointer; margin-top: 5px }
+.notification-menu button:hover { background: color-mix(in srgb, var(--focus) 18%, var(--card-soft)) }
+.notification-menu strong, .notification-menu small { display: block }
+.notification-menu small, .notification-menu p { color: var(--mut); font-size: 11px; margin: 3px 6px }
+.onboarding-backdrop { position: fixed; inset: 0; z-index: 50; display: grid; place-items: center; padding: 20px; background: rgba(2, 5, 12, .74); backdrop-filter: blur(7px) }
+.onboarding-card { width: min(440px, 100%); padding: 28px; border: 1px solid var(--line); border-radius: 22px; background: var(--card); box-shadow: var(--sh); text-align: center }
+.onboarding-mark { width: 54px; height: 54px; display: grid; place-items: center; margin: 0 auto 12px; border-radius: 17px; background: color-mix(in srgb, var(--focus) 18%, var(--card-soft)); color: var(--focus); font-size: 28px }
+.onboarding-step { color: var(--mut); font-size: 11px }
+.onboarding-card h2 { margin: 8px 0 6px; font-size: 21px }
+.onboarding-card p { color: var(--mut); margin: 0 auto; max-width: 330px; font-size: 13px }
+.onboarding-dots { display: flex; justify-content: center; gap: 6px; margin: 22px 0 }
+.onboarding-dots i { width: 7px; height: 7px; border-radius: 50%; background: var(--line) }
+.onboarding-dots i.on { width: 20px; border-radius: 99px; background: var(--focus) }
+.onboarding-actions { display: flex; justify-content: space-between; gap: 10px }
 .profile-chip {
   display: inline-flex;
   align-items: center;
@@ -444,6 +463,9 @@ canvas { max-height: 280px }
 
 @media (max-width: 860px) {
   .top-actions { width: 100%; justify-content: space-between }
+  .notification-menu { right: auto; left: 0 }
+  .budget-alert { align-items: flex-start; flex-wrap: wrap }
+  .budget-alert span { flex-basis: calc(100% - 110px) }
   .profile-chip span:last-child { display: none }
   .auth-page { display: block }
   .auth-art { min-height: 290px; padding: 28px 24px; justify-content: flex-start }

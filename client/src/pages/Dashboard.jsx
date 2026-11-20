@@ -61,6 +61,13 @@ export default function Dashboard({ openEdit, onNavigate }) {
   const topCategoryAmount = topCategory ? d.bc[topCategory] : 0;
   const maxDailyExpense = Math.max(...d.de);
   const busiestDay = maxDailyExpense > 0 ? d.de.indexOf(maxDailyExpense) + 1 : 0;
+  const previousMonth = (() => {
+    const date = new Date(`${M}-01T00:00:00`);
+    date.setMonth(date.getMonth() - 1);
+    return date.toISOString().slice(0, 7);
+  })();
+  const previousExpense = sum(S.tx.filter((t) => t.date.startsWith(previousMonth)), 'expense');
+  const expenseChange = previousExpense ? Math.round(((exp - previousExpense) / previousExpense) * 100) : null;
 
   return (
     <>
@@ -140,6 +147,7 @@ export default function Dashboard({ openEdit, onNavigate }) {
               <div><span className="insight-icon">↗</span><p><b>Kategori terbesar</b><strong>{topCategory || 'Belum ada'}</strong><small>{topCategory ? rp(topCategoryAmount) : 'Belum ada pengeluaran'}</small></p></div>
               <div><span className="insight-icon">◷</span><p><b>Hari pengeluaran tertinggi</b><strong>{busiestDay > 0 ? `Tanggal ${busiestDay}` : 'Belum ada'}</strong><small>{busiestDay > 0 ? rp(maxDailyExpense) : 'Catat transaksi untuk melihat pola'}</small></p></div>
               <div><span className="insight-icon">✓</span><p><b>Rasio pengeluaran</b><strong>{inc ? Math.round((exp / inc) * 100) + '% dari pemasukan' : 'Belum tersedia'}</strong><small>{inc ? 'Jaga agar tetap sesuai rencana' : 'Tambahkan pemasukan bulan ini'}</small></p></div>
+              <div><span className="insight-icon">↔</span><p><b>Dibanding bulan lalu</b><strong>{expenseChange === null ? 'Belum ada pembanding' : `${Math.abs(expenseChange)}% ${expenseChange > 0 ? 'lebih tinggi' : expenseChange < 0 ? 'lebih rendah' : 'sama'}`}</strong><small>{previousExpense ? `Bulan lalu ${rp(previousExpense)}` : 'Catat transaksi bulan sebelumnya'}</small></p></div>
             </div>
           ) : <div className="insight-empty"><span>✦</span><b>Belum ada insight</b><p>Mulai catat transaksi untuk melihat pola pengeluaranmu.</p></div>}
         </div>
