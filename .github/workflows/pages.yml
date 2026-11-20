@@ -1,4 +1,4 @@
-# Deploy otomatis frontend React ke GitHub Pages (data di localStorage)
+# Deploy otomatis frontend React ke GitHub Pages dengan Supabase
 name: Deploy to GitHub Pages
 on:
   push:
@@ -22,7 +22,7 @@ jobs:
       - name: Install & build
         working-directory: client
         env:
-          VITE_STATIC: "true"
+          VITE_STATIC: "false"
           VITE_BASE: /${{ github.event.repository.name }}/
           VITE_SUPABASE_URL: ${{ vars.VITE_SUPABASE_URL }}
           VITE_SUPABASE_ANON_KEY: ${{ vars.VITE_SUPABASE_ANON_KEY }}
