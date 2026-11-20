@@ -17,6 +17,25 @@ export default function Dashboard({ openEdit, onNavigate }) {
   const { S, M, monthTx, delTx } = useFinance();
   const { theme, ask, toast } = useUI();
   const [paymentMethod, setPaymentMethod] = useState('Cash');
+  const centerText = (value) => ({
+    id: 'doughnut-center-' + value,
+    afterDraw(chart) {
+      const { ctx, chartArea } = chart;
+      if (!chartArea) return;
+      const x = (chartArea.left + chartArea.right) / 2;
+      const y = (chartArea.top + chartArea.bottom) / 2;
+      ctx.save();
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillStyle = getComputedStyle(document.documentElement).getPropertyValue('--tx').trim();
+      ctx.font = '700 17px Inter, system-ui, sans-serif';
+      ctx.fillText(rp(value), x, y - 7);
+      ctx.fillStyle = getComputedStyle(document.documentElement).getPropertyValue('--mut').trim();
+      ctx.font = '11px Inter, system-ui, sans-serif';
+      ctx.fillText('Terpakai', x, y + 13);
+      ctx.restore();
+    },
+  });
   themeCharts();
   const n = daysIn(M);
   const inc = sum(monthTx, 'income'), exp = sum(monthTx, 'expense');
@@ -90,7 +109,7 @@ export default function Dashboard({ openEdit, onNavigate }) {
             { label: 'Pengeluaran', data: d.de, backgroundColor: '#d65a43', borderRadius: 5 }] }} />
         </ChartCard>
         <ChartCard title="Pengeluaran per Kategori">
-          <Doughnut key={theme + 'b'} data={{ labels: d.cats, datasets: [{ data: d.cats.map((k) => d.bc[k]), backgroundColor: PAL, borderWidth: 0 }] }}
+          <Doughnut key={theme + 'b'} plugins={[centerText(total)]} data={{ labels: d.cats, datasets: [{ data: d.cats.map((k) => d.bc[k]), backgroundColor: PAL, borderWidth: 0 }] }}
             options={{ responsive: true, cutout: '62%', plugins: { legend: { position: 'bottom' }, tooltip: { callbacks: { label: (c) => ` ${c.label}: ${rp(c.parsed)} (${Math.round((c.parsed / total) * 100)}%)` } } } }} />
         </ChartCard>
         <ChartCard title="Tren Pengeluaran Harian">
@@ -104,7 +123,7 @@ export default function Dashboard({ openEdit, onNavigate }) {
           <div className="chart-filter" role="group" aria-label="Pilih metode pembayaran">
             {d.methods.map((method) => <button key={method} type="button" className={'btn g s' + (paymentMethod === method ? ' on' : '')} onClick={() => setPaymentMethod(method)}>{method}</button>)}
           </div>
-          <Doughnut key={theme + paymentMethod} data={{ labels: [paymentMethod, 'Metode lain'], datasets: [{ data: [d.payment[paymentMethod] || 0, Math.max(0, exp - (d.payment[paymentMethod] || 0))], backgroundColor: ['#467f70', '#27344a'], borderWidth: 0 }] }}
+          <Doughnut key={theme + paymentMethod} plugins={[centerText(d.payment[paymentMethod] || 0)]} data={{ labels: [paymentMethod, 'Metode lain'], datasets: [{ data: [d.payment[paymentMethod] || 0, Math.max(0, exp - (d.payment[paymentMethod] || 0))], backgroundColor: ['#467f70', '#27344a'], borderWidth: 0 }] }}
             options={{ responsive: true, cutout: '62%', plugins: { legend: { position: 'bottom' }, tooltip: { callbacks: { label: (c) => ` ${c.label}: ${rp(c.parsed)}` } } } }} />
         </ChartCard>
         <div className="card budget-summary">
